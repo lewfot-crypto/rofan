@@ -86,7 +86,7 @@ npm run shots          # /tmp/w_*.png 로 장면별 캡처 (눈으로 확인)
 - 외부 스크립트·이미지·네트워크 요청 불가. 허용: Google Fonts 스타일시트(`fonts.googleapis.com`), `localStorage`(try/catch 필수).
 - 이미지는 전부 코드로 생성한 canvas → `data:` URL. 외부 이미지를 쓰려면 **data URI로 인라인**해야 한다 (파일 크기 증가에 주의, 16MB 한도).
 - 레이아웃: 모바일 우선, `viewport-fit=cover`, safe-area 패딩, 다크모드(`prefers-color-scheme` + 수동 토글 `data-theme`).
-- 게시된 링크: 게임 https://claude.ai/artifact/4joCSZMCZAvyQKJXEEhhcb / 소설 리더 https://claude.ai/artifact/1ky3gVxXz73rgJ9iMgcTF1 (claude.ai의 Artifact 도구로만 갱신 가능). GitHub Pages: https://lewfot-crypto.github.io/rofan/ (저장소 맨 앞 `index.html`, 빌드할 때 자동 복사. 공개 링크·로그인 불필요. 같은 주소의 adlvillage 와 저장 키가 겹치지 않음: 이 게임은 `adeline-game-*`, adlvillage 는 `amelia.*`).
+- 게시된 링크: 게임 https://claude.ai/artifact/4joCSZMCZAvyQKJXEEhhcb / 소설 리더 https://claude.ai/artifact/1ky3gVxXz73rgJ9iMgcTF1 (claude.ai의 Artifact 도구로만 갱신 가능). GitHub Pages: https://lewfot-crypto.github.io/rofan/ (**`main` 가지**의 맨 앞 `index.html` 을 게시. 작업을 마치면 `main` 에도 반영해야 페이지가 갱신된다 — 사용자 허락됨. 저장소 맨 앞 `index.html`, 빌드할 때 자동 복사. 공개 링크·로그인 불필요. 같은 주소의 adlvillage 와 저장 키가 겹치지 않음: 이 게임은 `adeline-game-*`, adlvillage 는 `amelia.*`).
 
 ### 화면 구조
 - 화면 상태는 전역 `ui` 객체, 게임 상태는 `S`(저장 대상). 렌더는 `draw()` 가 `innerHTML` 로 통째로 다시 그리고, 클릭은 `document` 위임(`data-act`)으로 처리한다.
