@@ -5,7 +5,9 @@ const $=s=>document.querySelector(s);
 const root=document.documentElement;
 function store(k,v){ try{ if(v===undefined) return localStorage.getItem(k); if(v===null){ localStorage.removeItem(k); return null; } localStorage.setItem(k,v); return v; }catch(e){ return null; } }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function inline(s){ return esc(s).replace(/\*([^*]+)\*/g,'<em>$1</em>'); }
+function inline(s){ return esc(s).replace(/~~([^~]+)~~/g,'<del>$1</del>').replace(/\*([^*]+)\*/g,'<em>$1</em>'); }
+// 노트 한 줄 (줄을 그은 노트는 취소선)
+function jotText(id){ const t=esc(NOTICES[id].text); return (S.crossed&&S.crossed[id])?'<del>'+t+'</del>':t; }
 function renderText(text){
   let out='';
   text.split(/\n\s*\n/).forEach(b=>{
@@ -29,8 +31,8 @@ function applyPref(){
   root.style.setProperty('--dim',[1,.88,.76][pref.dim||0]);
   store('adeline-game-pref',JSON.stringify(pref));
 }
-function freshSave(){ return {scene:'s1',noticed:{},flags:{}}; }
-function loadSave(){ try{ const s=JSON.parse(store('adeline-game-save')||'null'); if(s){ if(s.scene==='s7') s.scene='c2a'; if(SCENES[s.scene]) return s; } }catch(e){} return null; }
+function freshSave(){ return {scene:'s1',noticed:{},flags:{},crossed:{}}; }
+function loadSave(){ try{ const s=JSON.parse(store('adeline-game-save')||'null'); if(s){ if(s.scene==='s7') s.scene='c2a'; if(!s.crossed) s.crossed={}; if(SCENES[s.scene]) return s; } }catch(e){} return null; }
 let S=loadSave();
 function persist(){ if(S) store('adeline-game-save',JSON.stringify(S)); }
 
@@ -52,7 +54,7 @@ function notebookHtml(p){
   const early=Object.keys(SCENES).filter(k=>re.test(k));
   const ids=Object.keys(S.noticed).filter(id=>NOTICES[id]&&early.indexOf(NOTICES[id].scene)>=0).sort((x,y)=>S.noticed[x]-S.noticed[y]).slice(-4);
   if(!ids.length) return '<p class="hint">'+esc(p.empty||'낡은 노트는 거의 비어 있었다.')+'</p>';
-  return ids.map(id=>'<div class="jot">'+esc(NOTICES[id].text)+'</div>').join('');
+  return ids.map(id=>'<div class="jot">'+jotText(id)+'</div>').join('');
 }
 function sceneHtml(){
   const sc=SCENES[S.scene];
@@ -69,7 +71,7 @@ function sceneHtml(){
     paras+='<p>'+inline(t).replace(/\{\{(\w+)\|([^}]+)\}\}/g,(m,id,ph)=>'<span class="notice'+(S.noticed[id]?' done':'')+'" role="button" tabindex="0" data-act="notice" data-id="'+id+'">'+ph+'</span>')+'</p>';
   });
   let jots='';
-  Object.keys(NOTICES).forEach(id=>{ if(NOTICES[id].scene===S.scene&&S.noticed[id]) jots+='<div class="jot">'+esc(NOTICES[id].text)+'</div>'; });
+  Object.keys(NOTICES).forEach(id=>{ if(NOTICES[id].scene===S.scene&&S.noticed[id]) jots+='<div class="jot">'+jotText(id)+'</div>'; });
   let body;
   if(sc.end){
     const n=Object.keys(S.noticed).length;
@@ -139,7 +141,7 @@ function notesHtml(){
   const ids=Object.keys(S.noticed).filter(id=>NOTICES[id]).sort((a,b)=>S.noticed[a]-S.noticed[b]);
   if(!ids.length) return '<div class="empty"><b>아직 아무것도 적지 않았어요</b>장면 속 밑줄 친 부분을 누르면 노트에 한 줄이 쌓여요.</div>';
   let o='<div class="hint">'+ids.length+'줄</div>';
-  ids.forEach(id=>{ o+='<div class="ent"><div class="jot">'+esc(NOTICES[id].text)+'</div></div>'; });
+  ids.forEach(id=>{ o+='<div class="ent"><div class="jot">'+jotText(id)+'</div></div>'; });
   return o;
 }
 function mansionHtml(){
@@ -239,7 +241,7 @@ document.addEventListener('click',e=>{
    case 'sound': pref.sound=v==='1'; applyPref(); break;
    case 'toggleCode': ui.code=!ui.code; break;
    case 'copyCode': { const ta=$('#codeOut'); if(ta){ ta.select(); try{ navigator.clipboard.writeText(ta.value); ui.msg='복사했어요.'; }catch(err){ ui.msg='선택된 코드를 직접 복사해 주세요.'; } } break; }
-   case 'importCode': { const ta=$('#codeIn'); let ok=false; try{ const j=JSON.parse(atob((ta.value||'').trim())); if(j&&SCENES[j.scene]){ S={scene:j.scene,noticed:j.noticed||{},flags:j.flags||{}}; persist(); ok=true; } }catch(err){} ui.msg=ok?'불러왔어요.':'코드를 읽지 못했어요. 다시 확인해 주세요.'; break; }
+   case 'importCode': { const ta=$('#codeIn'); let ok=false; try{ const j=JSON.parse(atob((ta.value||'').trim())); if(j&&SCENES[j.scene]){ S={scene:j.scene,noticed:j.noticed||{},flags:j.flags||{},crossed:j.crossed||{}}; persist(); ok=true; } }catch(err){} ui.msg=ok?'불러왔어요.':'코드를 읽지 못했어요. 다시 확인해 주세요.'; break; }
    case 'endNo': ui.confirmEnd=false; break;
    case 'endYes': ui.confirmEnd=false; resetGame(); return;
    case 'notice': { const id=el.dataset.id; if(!S.noticed[id]){ S.noticed[id]=Date.now(); persist(); } break; }
@@ -247,6 +249,7 @@ document.addEventListener('click',e=>{
      const sc=SCENES[S.scene], c=sc.choices[+el.dataset.i]; if(!c) return;
      if(c.flag) S.flags[c.flag]=1;
      if(c.note&&!S.noticed[c.note]) S.noticed[c.note]=Date.now();   // 선택으로 노트에 적기
+     if(c.cross&&S.noticed[c.cross]){ if(!S.crossed) S.crossed={}; S.crossed[c.cross]=Date.now(); }   // 노트 줄 긋기
      if(c.go==='notes'){ ui.tab='notes'; }
      else if(c.go==='library'){ ui.tab='settings'; ui.sub='reader'; ui.chap=c.chap||4; ui.fork=null; }
      else if(c.go==='restart'){ ui.confirmEnd=true; }
