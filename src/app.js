@@ -53,7 +53,7 @@ function notebookHtml(){
 }
 function sceneHtml(){
   const sc=SCENES[S.scene];
-  const stage=stageSVG(sc.place,sc.season,sc.chars);
+  const stage=stageSVG(sc.place,sc.season,sc.chars,sc.time);
   let paras='';
   (sc.paras||[]).forEach(p=>{
     let t=p;

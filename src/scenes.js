@@ -55,7 +55,7 @@ const SCENES={
    {t:'나는 가방 한쪽을 같이 들었다. 탠지는 눈을 동그랗게 떴다가, 이내 환하게 웃었다. 그 웃음이 아주 조금 늦게 도착했다.',if:'helpedBag'}
   ],
   choices:[{label:'저녁 식탁으로 내려간다',next:'s6'}]},
- s6:{place:'dining',season:'늦가을',age:'열 살',chLabel:CHLAB,chars:[{id:'marot',pos:'left'}],
+ s6:{place:'dining',time:'night',season:'늦가을',age:'열 살',chLabel:CHLAB,chars:[{id:'marot',pos:'left'}],
   paras:[
    '저녁 식사는 혼자였다.',
    '긴 식탁 끝에 놓인 의자 하나가 나를 위한 자리였고, 반대편 끝의 의자는 {{chair|비어 있었다.}} 그런데 그 앞에도 접시와 식기가 정확히 놓여 있었다. 누구도 앉지 않을 자리에, 누군가는 매번 식기를 놓는 것이다.',
@@ -63,7 +63,7 @@ const SCENES={
    '마로트의 설명은 완벽했다. 나는 수프를 한 숟갈 떴다. 뜨겁지도 차갑지도 않은, {{soup|어린아이가 먹기 가장 좋은 온도였다.}}'
   ],
   choices:[{label:'못 들은 듯 수프를 먹는다',next:'s6b'}]},
- s6b:{place:'dining',season:'늦가을',age:'열 살',chLabel:CHLAB,chars:[{id:'marot',pos:'left'}],
+ s6b:{place:'dining',time:'night',season:'늦가을',age:'열 살',chLabel:CHLAB,chars:[{id:'marot',pos:'left'}],
   paras:[
    '창밖에서 낙엽이 한 번 흔들렸다. 위층 어디선가 {{chairsound|의자가 끌리는 소리}}가 아주 작게 들렸다. 집사는 못 들은 듯 서 있었고, 나는 못 들은 듯 수프를 먹었다.',
    '우리는 둘 다 연기가 서툴지 않았다.'
@@ -139,7 +139,7 @@ const SCENES={
    '"……{{orange|오렌지 양은 오늘도 변함없으시군요.}}"'
   ],
   choices:[{label:'고개를 끄덕인다',next:'c3c'}]},
- c3c:{place:'kitchen',season:'겨울',age:'열 살',chLabel:'1권 · 3장 부엌의 소식통',chars:[{id:'tangie',pos:'center',expr:'smile'}],
+ c3c:{place:'kitchen',season:'겨울',age:'열 살',chLabel:'1권 · 3장 부엌의 소식통',chars:[{id:'tangie',pos:'right',expr:'smile'}],
   paras:[
    '점심이 지나고 부엌이 조용해졌을 때, 나는 탠지가 앞치마 주머니에 무언가를 몰래 넣는 것을 보았다.',
    '{{bread|마른 빵 한 덩이였다.}} 점심에 나온 것보다 크기가 컸고, 아직 반쯤 남은 것을 손수건에 싸서 넣고 있었다. 그녀는 내가 보고 있다는 걸 알아채자 환하게 웃었다.',
@@ -148,7 +148,7 @@ const SCENES={
    '탠지가 설거지통에서 물동이를 들어 올릴 때, 장갑 끝으로 {{hands|손바닥이 잠깐 보였다. 붉게 부르튼 자국이 겹겹이 있었다.}} 그녀는 곧 손을 앞치마에 감추고, 아무 일 없다는 듯이 다음 이야기를 이어 갔다.'
   ],
   choices:[{label:'"……내일 아침 물은 제가 같이 길어도 돼요?"',next:'c3d',flag:'offeredWater',req:'hands'},{label:'아무 말 하지 않는다',next:'c3e',flag:'silentKitchen'}]},
- c3d:{place:'kitchen',season:'겨울',age:'열 살',chLabel:'1권 · 3장 부엌의 소식통',chars:[{id:'tangie',pos:'center',expr:'surprise'}],
+ c3d:{place:'kitchen',season:'겨울',age:'열 살',chLabel:'1권 · 3장 부엌의 소식통',chars:[{id:'tangie',pos:'right',expr:'surprise'}],
   paras:[
    '탠지의 웃음이 멈췄다. 아주 짧은 순간이었다. 나는 그 순간 그녀의 얼굴에서 처음으로 웃음이 아닌 것을 보았다. 놀람과, 그 뒤에 따라온 무언가. 안도라고 하기엔 너무 조심스러웠고, 두려움이라고 하기엔 너무 따뜻한 것.',
    '"아가씨는 아가씨시잖아요. 그런 건 제 일이에요!"',
@@ -157,13 +157,13 @@ const SCENES={
    '"……그건, 안 될 거 없죠."'
   ],
   choices:[{label:'저녁이 된다',next:'c3e'}]},
- c3e:{place:'bedroom',season:'겨울',age:'열 살',chLabel:'1권 · 3장 부엌의 소식통',chars:[],
+ c3e:{place:'bedroom',time:'night',season:'겨울',age:'열 살',chLabel:'1권 · 3장 부엌의 소식통',chars:[],
   paras:[
    {t:'그날 저녁, 나는 잠들기 전에 서랍에서 작은 연고 통을 꺼냈다. {{ointment|어젯밤 방에 놓여 있던 것이었다.}} 누가 두었는지는 적혀 있지 않았다. 내 손은 부르튼 곳이 없었으니 나를 위한 것은 아니었을 것이다. 아마도 마로트일 것이다. 그는 말하지 않고 준비해 두는 사람이니까.',ifN:'hands'},
    {t:'그날 저녁, 서랍에서 작은 연고 통을 발견했다. 누가 두었는지는 적혀 있지 않았다. 내 손은 부르튼 곳이 없었으니, 무엇을 위한 것인지 알 수 없었다. 나는 그것을 도로 서랍에 넣었다.',notN:'hands'}
   ],
   choices:[{label:'연고 통을 들고 탠지의 방 앞으로 간다. 노크하지 않고 문 앞에 두고 돌아선다',next:'c3f',flag:'leftOintment',req:'hands'},{label:'탠지의 방문을 두드린다',next:'c3f',flag:'knocked',req:'hands'},{label:'잠자리에 든다',next:'c3g',not:'hands'}]},
- c3f:{place:'bedroom',season:'겨울',age:'열 살',chLabel:'1권 · 3장 부엌의 소식통',chars:[{id:'tangie',pos:'center',expr:'smile'}],
+ c3f:{place:'bedroom',time:'night',season:'겨울',age:'열 살',chLabel:'1권 · 3장 부엌의 소식통',chars:[{id:'tangie',pos:'center',expr:'smile'}],
   paras:[
    {t:'문 아래로 가느다란 불빛이 새어 나왔고, 안에서 작은 소리가 들렸다. 웃음소리가 아니라 숨을 고르는 소리였다. 나는 노크하지 않았다. 대신 문 앞 바닥에 연고 통을 내려놓고, 아무것도 적지 않은 채 돌아섰다. 노크를 하면 그녀는 웃으며 문을 열 것이고, 그러면 나는 그 웃음을 마주해야 한다. 오늘은 그녀가 웃지 않아도 되는 밤이어야 했다.',if:'leftOintment'},
    {t:'복도 끝에서 돌아보니 문틈의 불빛이 한 번 흔들렸다. 아침에 일어나 보니 문 앞에는 빈 연고 통이 아니라, {{tangerine|작은 귤 하나}}가 놓여 있었다. 껍질에는 서툰 글씨로 한 줄이 새겨져 있었다.',if:'leftOintment'},

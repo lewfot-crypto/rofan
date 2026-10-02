@@ -99,6 +99,7 @@ npm run shots          # /tmp/w_*.png 로 장면별 캡처 (눈으로 확인)
 ```js
 SCENES.c3c = {
   place:'kitchen', season:'겨울', age:'열 살', chLabel:'1권 · 3장 부엌의 소식통',
+  time:'night',                                          // 선택: 밤이면 창이 밤하늘, 방이 어두워지고 불빛만 밝음 (인물도 어둡게)
   chars:[{id:'tangie', pos:'center', expr:'smile'}],     // pos: left|center|right, expr: neutral|smile|sad|worry|surprise
   paras:[
     '일반 단락. {{hands|밑줄 칠 문구}} 처럼 쓰면 눌러서 "알아차릴" 수 있다.',
