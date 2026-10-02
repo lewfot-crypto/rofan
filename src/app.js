@@ -64,6 +64,12 @@ function notebookHtml(p){
   if(!ids.length) return '<p class="hint">'+esc(p.empty||'낡은 노트는 거의 비어 있었다.')+'</p>';
   return ids.map(id=>'<div class="jot">'+jotText(id)+'</div>').join('');
 }
+// 조건부 단락(if/not/ifN/notN)이 지금 보이는지
+function paraOn(p){ return typeof p!=='object'||!((p.if&&!S.flags[p.if])||(p.not&&S.flags[p.not])||(p.ifN&&!S.noticed[p.ifN])||(p.notN&&S.noticed[p.notN])); }
+function letterHtml(id){
+  const L=LETTERS[id]; if(!L) return '';
+  return '<div class="letter"><div class="lh">'+esc(L.head)+'</div><p class="to">'+esc(L.to)+'</p>'+L.paras.filter(paraOn).map(p=>'<p>'+inline(typeof p==='object'?p.t:p)+'</p>').join('')+'<p class="sign">'+esc(L.sign)+'</p></div>';
+}
 function sceneHtml(){
   const sc=SCENES[S.scene];
   const stage=stageSVG(sc.place,sc.season,sc.chars,sc.time,sc.props);
@@ -71,9 +77,9 @@ function sceneHtml(){
   (sc.paras||[]).forEach(p=>{
     let t=p;
     if(typeof p==='object'){
-      if(p.if&&!S.flags[p.if]) return; if(p.not&&S.flags[p.not]) return;
-      if(p.ifN&&!S.noticed[p.ifN]) return; if(p.notN&&S.noticed[p.notN]) return;
+      if(!paraOn(p)) return;
       if(p.fn==='notebook'){ paras+=notebookHtml(p); return; }
+      if(p.fn==='letter'){ paras+=letterHtml(p.id); return; }
       t=p.t;
     }
     paras+='<p>'+inline(t).replace(/\{\{(\w+)\|([^}]+)\}\}/g,(m,id,ph)=>'<span class="notice'+(S.noticed[id]?' done':'')+'" role="button" tabindex="0" data-act="notice" data-id="'+id+'">'+ph+'</span>')+'</p>';
@@ -141,9 +147,14 @@ function qBtn(){ const t=curTheme(); const ic=t==='dark'?'<path d="M20 14.5A8 8 
 function panelHtml(fromTitle){
   const t=ui.tab;
   if(t==='notes') return head('노트','장면으로','closeTab')+'<div class="pc notebook">'+notesHtml()+'</div>';
-  if(t==='letters') return head('편지','장면으로','closeTab')+'<div class="pc"><div class="empty"><b>아직 편지가 없어요</b>첫 편지는 몇 계절이 지난 뒤에 도착해요.</div></div>';
+  if(t==='letters') return head('편지','장면으로','closeTab')+'<div class="pc">'+lettersHtml()+'</div>';
   if(t==='mansion') return head('저택','장면으로','closeTab')+'<div class="pc">'+mansionHtml()+'</div>';
   return settingsHtml(fromTitle);
+}
+function lettersHtml(){
+  const ids=Object.keys(LETTERS).filter(id=>S.flags[LETTERS[id].open]);
+  if(!ids.length) return '<div class="empty"><b>아직 편지가 없어요</b>첫 편지는 몇 계절이 지난 뒤에 도착해요.</div>';
+  return ids.map(id=>'<div class="lmeta">'+esc(LETTERS[id].season)+' · '+esc(LETTERS[id].who)+'</div>'+letterHtml(id)).join('');
 }
 function notesHtml(){
   const ids=Object.keys(S.noticed).filter(id=>NOTICES[id]).sort((a,b)=>S.noticed[a]-S.noticed[b]);
@@ -199,7 +210,7 @@ function settingsHtml(fromTitle){
     return o+'</div>';
   }
   if(sub==='log') return logHtml(back);
-  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">'+CHANGELOG[0].v+'</span></div><div class="field">플레이할 수 있는 장면<span style="color:var(--soft);font-size:13px">1권 전체 · 2권 10~14장</span></div><div class="field">이야기 서재<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물은 코드로 그린 픽셀 그림이에요. 나중에 실제 일러스트로 바꿔 끼울 수 있게 만들어 두었어요.</p></div>';
+  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">'+CHANGELOG[0].v+'</span></div><div class="field">플레이할 수 있는 장면<span style="color:var(--soft);font-size:13px">1권 전체 · 2권 10~15장</span></div><div class="field">이야기 서재<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물은 코드로 그린 픽셀 그림이에요. 나중에 실제 일러스트로 바꿔 끼울 수 있게 만들어 두었어요.</p></div>';
   return '';
 }
 // 업데이트 기록: 한 장에 한 판씩. 왼쪽으로 넘기면(또는 오른쪽 단추) 더 이전 업데이트.

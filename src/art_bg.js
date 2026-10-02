@@ -487,7 +487,8 @@ function carriage3(o,P){
   // 창 (가운데 큰 창): 지나가는 풍경
   const wx=52, wy=24, ww=136, wh=64;
   R(wx-6,wy-6,ww+12,wh+12,WB[0]); R(wx-4,wy-4,ww+8,wh+8,GD2[1]); R(wx-3,wy-3,ww+6,wh+6,WB[3]);
-  bands(o,wx,wy,ww,wh,[P.sky[0],P.sky[1],P.sky[2]]);
+  bands(o,wx,wy,ww,wh,P.night?['#0e1430','#18204a','#2a3062']:[P.sky[0],P.sky[1],P.sky[2]]);
+  if(P.night){ const st=rng(11); for(let k=0;k<26;k++){ const X=wx+Math.floor(st()*ww), Y=wy+Math.floor(st()*wh*.5); px(X,Y,st()>.6?'#fff6dc':'#9aa4d0'); } }
   for(let X=0;X<ww;X++){ const h=Math.round(wh*.55+Math.sin((X)/13)*3); R(wx+X,wy+h,1,wh-h,P.far[0]); px(wx+X,wy+h,mix(P.far[0],'#ffffff',.2)); }
   R(wx,wy+wh-12,ww,12,P.gr[1]); R(wx,wy+wh-12,ww,1,P.gr[0]);
   [[wx+20,wy+40],[wx+70,wy+38],[wx+112,wy+42]].forEach(t=>{ R(t[0]-1,t[1],3,12,P.trunk); o.ell(t[0],t[1]-4,10,9,P.leaf[2]); o.ell(t[0]-2,t[1]-6,7,6,P.leaf[1]); o.ell(t[0]-4,t[1]-8,3,3,P.leaf[0]); });
@@ -734,7 +735,7 @@ const BGCACHE={};
 const NIGHT_LIGHTS={
  dining:[[80,10,34],[160,10,34],[104,106,16],[136,106,16],[110,96,12],[130,96,12]],
  bedroom:[[225,84,40],[182,82,18],[120,10,22]],
- hall:[[120,14,48]], schoolroom:[[118,86,34],[60,10,18]], kitchen:[[120,86,54]], office:[[225,84,30]], ballroom:[[120,8,30]], salon:[[88,84,40],[62,40,14],[114,40,14]]
+ hall:[[120,14,48]], schoolroom:[[118,86,34],[60,10,18]], kitchen:[[120,86,54]], office:[[225,84,30]], carriage:[[24,36,22],[216,36,22]], ballroom:[[120,8,30]], salon:[[88,84,40],[62,40,14],[114,40,14]]
 };
 function bgCanvas(place,season,time){
   const night=time==='night'&&place!=='corridor'&&place!=='study';
