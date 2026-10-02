@@ -7,7 +7,7 @@
 - `ade2.js` — 새 아델라인 `adeSprite(expr)` (얼굴은 점 지도 `ADE_HEAD`, 땋은 머리 점 지도), `outlinePass()`
 - `more2.js` — 새 탠지(굵은 컬 단발) `tangieSprite`, 남자 얼굴 지도 + 몸 `maleSprite('edric'|'marot')`
 - `more3.js` — 홀트·마르타(어른 여자 얼굴 지도 `femSprite`), 소년들(아이 얼굴 지도 `boySprite(id,expr)`: adrian·kylen·julian·lionel·sebastian·hadel), 소녀들(`girlSprite(id,expr)`: rosalie·serena), 어른 남자 추가(`adultMale(id,expr)`: gregor·count). 캡처 `node wip/batch1_view.js 파일.png`
-- `bg2.js` — 새 배경. 대저택판 `exterior3`·`hall3`·`school3`(사용자: "완전 대저택") — 처음 그린 `exterior2`·`hall2`·`school2`는 작아서 폐기 예정 (공통 재료 `frameWin`·`curtainPair`·`plankFloor`). 캡처 `node wip/bg_view.js 파일.png exterior,hall,schoolroom 늦가을`
+- `bg2.js` — 새 배경. 대저택판 `exterior3`·`hall3`·`school3`·`bedroom3`·`dining3`·`kitchen3`(사용자: "완전 대저택") — 처음 그린 `exterior2`·`hall2`·`school2`는 작아서 폐기 예정 (공통 재료 `frameWin`·`curtainPair`·`plankFloor`). 캡처 `node wip/bg_view.js 파일.png exterior,hall,schoolroom 늦가을`
 - `ade_view.js`, `more_view.js`, `cmp.js` — 비교 캡처 (`node wip/more_view.js /tmp/more.png`, 먼저 `npm run build`)
 - 미리보기 결과: `preview/study-redraw-compare.png`, `preview/adeline-redraw.png`, `preview/tangie-edric-marot-redraw.png`, `preview/holt-marta-adrian-redraw.png`, `preview/kylen-julian-lionel-redraw.png` (`node wip/batch2_view.js`), `preview/sebastian-hadel-rosalie-redraw.png` (`node wip/batch3_view.js`), `preview/serena-gregor-count-redraw.png` (`node wip/batch4_view.js`)
 
