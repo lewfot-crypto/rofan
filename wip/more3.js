@@ -33,6 +33,8 @@ function femHead(o,x,y,cfg,expr){
   stampMap(o,F_TOP[cfg.hs],x,y,pal);
   const ex=F_EXPR[expr]||{}; const base=F_FACE.map((r,j)=>(cfg.round&&F_ROUND[j])||r);
   const rows=base.map((r,j)=>ex[j]||r);
+  // 엄격하지만 다정한 얼굴: 곧은 눈썹은 그대로, 입꼬리만 살짝 올린다
+  if(cfg.kind&&(!expr||expr==='neutral')){ rows[9]="sSSSSSSmSSSSmSSSSsss"; rows[10]="sSSSSSSSmmmmSSSSSsss"; }
   rows.forEach((r,j)=>{ const side=j<4?['Hh','hH']:j<8?['sS','Ss']:['..','..']; stampMap(o,['.'+side[0]+r+side[1]+'.'],x,y+10+j,pal); });
   if(cfg.gray){ [[3,4],[4,3],[2,6],[22,5],[23,7],[21,3],[12,0],[10,1]].forEach(p=>o.p(x+p[0],y+p[1],'#d8d4dc')); }
   if(cfg.glasses){ const F=cfg.glasses, gy=y+10+3; [[x+4,gy],[x+15,gy]].forEach(g=>{ o.r(g[0],g[1],7,1,F); o.r(g[0],g[1]+4,7,1,F); o.r(g[0],g[1],1,5,F); o.r(g[0]+6,g[1],1,5,F); o.p(g[0]+5,g[1]+1,'#ffffff'); });
@@ -64,7 +66,7 @@ function femBody(o,cfg){
   else celPath(o,'M20 36 C23 33 33 33 36 36 L33 40 C30 41 26 41 23 40 Z',T);
 }
 const FEM_FIG={
- holt:{hs:'bun',hair:['#3a2a20','#4e3828','#6a5240','#86705a'],eye:['#3e4250','#6a7080'],
+ holt:{hs:'bun',hair:['#3a2a20','#4e3828','#6a5240','#86705a'],eye:['#4a3428','#8a6448'],kind:true,
    dress:['#2e2e38','#45454f','#5e5e6a','#7a7a86','#9898a4'],trim:['#a9a3b0','#d6d1da','#eeeaf0','#ffffff'],belt:['#2e2e38','#45454f','#5e5e6a'],highneck:true,patch:'#72707e',feet:128},
  marta:{hs:'bun',hair:['#6e665e','#8e867c','#b0a89e','#cec6bc'],eye:['#4a3a2a','#7a6248'],gray:true,round:true,blush:true,
    dress:['#3e2a1e','#5a3e2a','#7a5638','#9a6e4a','#b88c64'],trim:['#b9ad9a','#ddd3c0','#f3ecdc','#fffaf0'],belt:['#b9ad9a','#ddd3c0','#f3ecdc'],apron:true,rolled:true,wide:3,feet:126}
