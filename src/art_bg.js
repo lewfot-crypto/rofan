@@ -679,7 +679,7 @@ function ballroom3(o,P){
   for(let j=0;j<7;j++){ const Y=104+j*8+Math.floor(j*j/4), h=6+j; for(let X=-(j%2)*14;X<240;X+=28){ R(X,Y,14,h,'#e8e0d8'); R(X+14,Y,14,h,'#b8a8b0'); R(X,Y,14,1,'#ffffff'); } }
   R(0,104,240,1,'#2a1820');
   // 멀리 춤추는 사람들 그림자
-  [[96,92,'#3a2a48'],[108,90,'#5a3a50'],[134,92,'#2a3a4a'],[146,90,'#6a4a5a'],[30,94,'#3a3a48'],[214,94,'#4a3040']].forEach(d=>{ const x=d[0],y=d[1]; o.ell(x,y-14,3,3,'#d8b8a8'); o.poly([[x-5,y+12],[x+5,y+12],[x+3,y-10],[x-3,y-10]],d[2]); });
+  if(!P.night) [[96,92,'#3a2a48'],[108,90,'#5a3a50'],[134,92,'#2a3a4a'],[146,90,'#6a4a5a'],[30,94,'#3a3a48'],[214,94,'#4a3040']].forEach(d=>{ const x=d[0],y=d[1]; o.ell(x,y-14,3,3,'#d8b8a8'); o.poly([[x-5,y+12],[x+5,y+12],[x+3,y-10],[x-3,y-10]],d[2]); });
   // 크리스털 샹들리에 셋
   [[40,0,.8],[120,0,1.2],[200,0,.8]].forEach(c=>{ const cx=c[0], w=Math.round(22*c[2]); o.line(cx,0,cx,8,GD2[1]); R(cx-w,8,w*2,2,GD2[2]); R(cx-w+3,12,w*2-6,1,GD2[1]);
     for(let k=-w;k<=w;k+=5){ R(cx+k,4,1,4,'#f2ead8'); px(cx+k,3,'#ffd75a'); } for(let k=-w+1;k<w;k+=3){ px(cx+k,11,'#e8f4ff'); px(cx+k,13,'#b8d0e8'); px(cx+k+1,15,'#ffffff'); }
@@ -734,7 +734,7 @@ const BGCACHE={};
 const NIGHT_LIGHTS={
  dining:[[80,10,34],[160,10,34],[104,106,16],[136,106,16],[110,96,12],[130,96,12]],
  bedroom:[[225,84,40],[182,82,18],[120,10,22]],
- hall:[[120,14,48]], schoolroom:[[118,86,34],[60,10,18]], kitchen:[[120,86,54]], office:[[225,84,30]], salon:[[88,84,40],[62,40,14],[114,40,14]]
+ hall:[[120,14,48]], schoolroom:[[118,86,34],[60,10,18]], kitchen:[[120,86,54]], office:[[225,84,30]], ballroom:[[120,8,30]], salon:[[88,84,40],[62,40,14],[114,40,14]]
 };
 function bgCanvas(place,season,time){
   const night=time==='night'&&place!=='corridor'&&place!=='study';
