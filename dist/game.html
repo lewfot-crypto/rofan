@@ -7812,7 +7812,15 @@ function applyPref(){
   store('adeline-game-pref',JSON.stringify(pref));
 }
 function freshSave(){ return {scene:'s1',noticed:{},flags:{},crossed:{}}; }
-function loadSave(){ try{ const s=JSON.parse(store('adeline-game-save')||'null'); if(s){ if(s.scene==='s7') s.scene='c2a'; if(!s.crossed) s.crossed={}; if(SCENES[s.scene]) return s; } }catch(e){} return null; }
+// 지금 만들어진 마지막 장 (c13a 같은 장 첫 장면 id로 계산)
+const LAST_CH=Math.max(...Object.keys(SCENES).map(k=>(k.match(/^c(\d+)a$/)||[0,0])[1]*1));
+// 이전 판의 끝 카드(send)에 멈춰 있던 저장은, 그때 끝난 장의 다음 장 첫 장면으로 옮긴다
+function resumeFromEnd(s){
+  let ch=s.endAt;
+  if(!ch){ ch=1; Object.keys(s.noticed||{}).forEach(id=>{ const n=NOTICES[id], m=n&&n.scene.match(/^c(\d+)/); if(m) ch=Math.max(ch,+m[1]); }); }
+  if(ch<LAST_CH&&SCENES['c'+(ch+1)+'a']){ s.scene='c'+(ch+1)+'a'; delete s.endAt; }
+}
+function loadSave(){ try{ const s=JSON.parse(store('adeline-game-save')||'null'); if(s){ if(s.scene==='s7') s.scene='c2a'; if(!s.crossed) s.crossed={}; if(!s.noticed) s.noticed={}; if(!s.flags) s.flags={}; if(s.scene==='send') resumeFromEnd(s); if(SCENES[s.scene]) return s; } }catch(e){} return null; }
 let S=loadSave();
 function persist(){ if(S) store('adeline-game-save',JSON.stringify(S)); }
 
@@ -8033,7 +8041,7 @@ document.addEventListener('click',e=>{
    case 'sound': pref.sound=v==='1'; applyPref(); break;
    case 'toggleCode': ui.code=!ui.code; break;
    case 'copyCode': { const ta=$('#codeOut'); if(ta){ ta.select(); try{ navigator.clipboard.writeText(ta.value); ui.msg='복사했어요.'; }catch(err){ ui.msg='선택된 코드를 직접 복사해 주세요.'; } } break; }
-   case 'importCode': { const ta=$('#codeIn'); let ok=false; try{ const j=JSON.parse(atob((ta.value||'').trim())); if(j&&SCENES[j.scene]){ S={scene:j.scene,noticed:j.noticed||{},flags:j.flags||{},crossed:j.crossed||{}}; persist(); ok=true; } }catch(err){} ui.msg=ok?'불러왔어요.':'코드를 읽지 못했어요. 다시 확인해 주세요.'; break; }
+   case 'importCode': { const ta=$('#codeIn'); let ok=false; try{ const j=JSON.parse(atob((ta.value||'').trim())); if(j&&SCENES[j.scene]){ S={scene:j.scene,noticed:j.noticed||{},flags:j.flags||{},crossed:j.crossed||{}}; if(j.endAt) S.endAt=j.endAt; if(S.scene==='send') resumeFromEnd(S); persist(); ok=true; } }catch(err){} ui.msg=ok?'불러왔어요.':'코드를 읽지 못했어요. 다시 확인해 주세요.'; break; }
    case 'endNo': ui.confirmEnd=false; break;
    case 'endYes': ui.confirmEnd=false; resetGame(); return;
    case 'notice': { const id=el.dataset.id; if(!S.noticed[id]){ S.noticed[id]=Date.now(); persist(); } break; }
@@ -8045,7 +8053,7 @@ document.addEventListener('click',e=>{
      if(c.go==='notes'){ ui.tab='notes'; }
      else if(c.go==='library'){ ui.tab='settings'; ui.sub='reader'; ui.chap=c.chap||4; ui.fork=null; }
      else if(c.go==='restart'){ ui.confirmEnd=true; }
-     else if(c.next){ S.scene=c.next; ui.keep='top'; }
+     else if(c.next){ S.scene=c.next; if(c.next==='send') S.endAt=LAST_CH; ui.keep='top'; }
      persist(); break;
    }
    default: return;
