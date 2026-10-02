@@ -235,6 +235,76 @@ function girlSprite(id,expr){
     o.r(37,6,3,3,RB[1]); o.p(38,7,RB[0]); o.p(31,5,RB[3]); o.p(45,4,RB[3]); }
   return {c:o.c,feet:128};
 }
+// ── 세레나 전용: 공단 나비 리본, 겹치마 드레스, 물결치는 금발, 고운 눈매
+const SERENA_RIBBON=[
+"..OOOO.....OOOO..",
+".O4433O...O3344O.",
+"O443322O.O223344O",
+"O4332211O1122334O",
+"O332211O3O112233O",
+"O32211O343O11223O",
+".O2211O232O1122O.",
+"..OO11O222O11OO..",
+"....OOO121OOO....",
+".....O21O12O.....",
+".....O21O12O.....",
+"....O21O.O12O....",
+"....OO1O.O1OO....",
+"....O.OO.OO.O...."];
+function serenaSprite(expr){
+  const o=PX(56,132); const R=(x,y,w,h,c)=>o.r(x,y,w,h,c);
+  const HR=['#8a6428','#b8903e','#e0bc68','#f2d890','#fff4cc'];
+  const IV=['#a89cb0','#cfc6d6','#ebe6ee','#f8f5f8','#ffffff'];          // 상아빛 흰 드레스
+  const LI=['#6a5a98','#8a7ab8','#ab9cd4','#cbbfe6','#e6def6'];          // 연보라
+  const LC=['#b8acc8','#d8cee6','#efe8f6','#fffcff'];                    // 레이스
+  const SK=['#c98a78','#e2a892','#f7d5c0','#fde8d8'];
+  // 뒷머리: 허리 아래까지, 끝은 동그란 컬
+  celPath(o,'M13 20 C9 40 8 66 9 84 C9 92 15 92 17 88 C18 93 25 93 26 88 C28 93 33 93 35 88 C37 93 43 93 44 88 C47 92 48 84 47 76 C48 60 47 40 43 20 Z',HR);
+  for(let y=34;y<88;y++){ const w=Math.round(1.2*Math.sin(y/4.5)); [12,17,39,44].forEach((x,k)=>o.p(x+w,y,k%2?HR[1]:HR[3])); }
+  [[13,89],[21,90],[30,90],[39,90]].forEach(c=>{ o.p(c[0],c[1],HR[4]); o.p(c[0]+1,c[1]-1,HR[3]); o.p(c[0]+2,c[1],HR[1]); o.p(c[0]+1,c[1]+1,HR[1]); });
+  // 속치마(연보라 레이스 단 3층)
+  celPath(o,'M23 60 L33 60 C37 80 41 102 44 122 L12 122 C15 102 19 80 23 60 Z',LI.slice(1));
+  [78,94,110].forEach((y,k)=>{ const half=6+k*4+Math.round((y-78)/5); for(let X=28-half;X<=28+half;X++){ o.p(X,y,LC[(X%3===0)?3:2]); o.p(X,y+1,(X%3===0)?LC[1]:LC[2]); if(X%3===1) o.p(X,y+2,LC[1]); } });
+  // 겉치마(앞이 열린 상아빛)
+  celPath(o,'M20 60 C16 78 10 102 5 124 L18 124 C20 100 23 80 26 61 Z',IV); celPath(o,'M36 60 C40 78 46 102 51 124 L38 124 C36 100 33 80 30 61 Z',IV);
+  o.line(26,62,18,123,LI[2]); o.line(30,62,38,123,LI[2]);
+  [[13,96],[16,84],[42,96],[39,84],[12,110],[43,110]].forEach(p=>{ o.p(p[0],p[1],LI[3]); o.p(p[0]+1,p[1],LI[2]); o.p(p[0],p[1]+1,LI[2]); });  // 작은 꽃수
+  for(let X=5;X<52;X++){ const y=121+((X%4)<2?0:1); R(X,y,1,124-y,LC[2]); o.p(X,124,LC[0]); if(X%4===1) o.p(X,120,LC[3]); }
+  R(17,125,8,3,'#8a7aa8'); R(31,125,8,3,'#8a7aa8'); R(18,125,5,1,'#b4a8d0'); R(32,125,5,1,'#b4a8d0');
+  // 몸판
+  celPath(o,'M19 38 C22 36 34 36 37 38 L36 60 L20 60 Z',IV);
+  celPath(o,'M23 39 L33 39 L28 56 Z',LC);  [43,47,51].forEach(y=>{ o.line(25,y,31,y,LI[2]); }); o.p(28,55,LI[1]);
+  // 허리띠 + 앞 리본
+  R(20,57,16,4,LI[2]); R(20,57,16,1,LI[4]); R(20,60,16,1,LI[0]);
+  celPath(o,'M28 58 C24 54 20 57 22 61 C24 62 26 61 28 59 Z',LI); celPath(o,'M28 58 C32 54 36 57 34 61 C32 62 30 61 28 59 Z',LI);
+  o.r(27,57,3,3,LI[1]); o.p(28,58,LI[3]);
+  // 소매: 부푼 어깨 + 연보라 띠
+  celPath(o,'M12 44 C10 36 18 33 23 38 L22 47 C19 48 14 48 12 44 Z',IV); celPath(o,'M44 44 C46 36 38 33 33 38 L34 47 C37 48 42 48 44 44 Z',IV);
+  R(13,45,9,2,LI[2]); R(34,45,9,2,LI[2]); o.p(15,45,LI[4]); o.p(40,45,LI[4]);
+  celPath(o,'M14 47 C13 53 16 60 22 64 L26 62 C22 58 20 53 20 48 Z',IV); celPath(o,'M42 47 C43 53 40 60 34 64 L30 62 C34 58 36 53 36 48 Z',IV);
+  R(19,61,5,3,LC[2]); R(32,61,5,3,LC[2]); for(let X=19;X<24;X+=2) o.p(X,64,LC[3]); for(let X=32;X<37;X+=2) o.p(X,64,LC[3]);
+  celPath(o,'M23 62 C25 60 31 60 33 62 C33 66 30 68 28 68 C26 68 23 66 23 62 Z',SK); o.p(28,63,SK[1]); o.p(28,64,SK[1]);
+  // 목 + 레이스 깃 + 진주
+  R(25,30,6,7,SK[2]); R(29,30,2,7,SK[1]); R(25,30,6,1,SK[1]);
+  celPath(o,'M20 37 C23 34 33 34 36 37 L33 41 C30 42 26 42 23 41 Z',LC);
+  for(let X=22;X<35;X+=2) o.p(X,41+((X%4)?0:1),LC[0]);
+  [[24,34],[26,35],[28,35],[30,35],[32,34]].forEach(p=>o.p(p[0],p[1],'#fffaf0')); o.p(28,36,'#e8e0f0');
+  // 앞으로 내린 옆머리 두 갈래(물결)
+  const lock=(x0,dir)=>{ for(let y=26;y<70;y++){ const x=x0+Math.round(1.4*Math.sin((y-26)/4))*dir; R(x,y,4,1,HR[2]); o.p(x,y,dir>0?HR[3]:HR[1]); o.p(x+3,y,dir>0?HR[1]:HR[3]); if((y-26)%8===2){ o.p(x+1,y,HR[4]); o.p(x+2,y,HR[3]); } }
+    const ex=x0+Math.round(1.4*Math.sin(44/4))*dir; celPath(o,`M${ex-1} 69 C${ex-2} 74 ${ex+5} 75 ${ex+5} 70 Z`,HR); };
+  lock(13,1); lock(39,-1);
+  outlinePass(o);
+  // 얼굴·머리 (아델라인 지도 + 금발 + 보라 눈 + 고운 속눈썹)
+  const pal=Object.assign({},ADE_PAL,{h:HR[1],H:HR[2],L:HR[3],W:HR[4],b:'#4a3a7a',B:'#8a7ab0',c:'#d0c4f0',r:'#f6b8b8',m:'#d0707a',O:'#5a3e30'});
+  const rows=ADE_HEAD.slice(); const ex=ADE_EXPR[expr]; if(ex) for(const k in ex) rows[k]=ex[k];
+  setAt(rows,6,10,'LWWLLWLL'); setAt(rows,7,9,'LLW'); setAt(rows,5,18,'LL');          // 정수리 윤기(천사의 고리)
+  if(expr!=='smile'){ setAt(rows,16,5,'e'); setAt(rows,16,21,'e'); setAt(rows,15,5,'e'); setAt(rows,15,21,'e'); }   // 바깥으로 올라간 속눈썹
+  if(!expr||expr==='neutral'){ setAt(rows,24,12,'SmmS'); }
+  stampMap(o,rows,14,2,pal);
+  // 공단 나비 리본 (머리 위 오른쪽)
+  stampMap(o,SERENA_RIBBON,30,0,{O:'#6a5a7e','1':'#b4acc4','2':'#dcd6e6','3':'#f2eef8','4':'#ffffff'});
+  return {c:o.c,feet:128};
+}
 // ── 어른 남자 추가: 그레고르 대공(수염, 털 망토, 큰 키), 발트하임 백작(회색 머리, 지친 눈, 모자를 든 손)
 const MALE2={
  gregor:{type:'m',hs:'short',hair:['#2e2218','#3e2e20','#52402e','#6e5842'],eye:['#3a4a5a','#7a8a9a'],coat:['#22262e','#2e333e','#3e4452','#525a6a'],vest:['#4a3a2e','#5e4a3a','#7a6250','#947a66'],pants:['#1a1c22','#24272e','#2e323a','#3c414a'],cravat:false,long:true,feet:131,beard:true,mantle:['#2a2026','#3a2c34','#4e3c46','#62505a'],fur:['#6e665e','#958b80','#bdb2a6','#e0d8ce']},
