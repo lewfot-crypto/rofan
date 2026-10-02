@@ -12,3 +12,5 @@ node -e "
 const h=require('fs').readFileSync('dist/game.html','utf8');
 const s=h.split('<script>')[1].split('</script>')[0];
 new Function(s); console.log('build ok', Math.round(h.length/1024)+' KB');"
+# GitHub Pages(https://lewfot-crypto.github.io/rofan/)용: 저장소 맨 앞 index.html = 게임과 같은 파일
+cp dist/game.html index.html
