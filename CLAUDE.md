@@ -128,9 +128,9 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 
 ## 그림 시스템
 ### 현재 (코드로 그린 픽셀아트)
-- 스테이지 캔버스 240×160. 배경은 `BG[place](o,P,rnd)` 함수들(`exterior, hall, bedroom, dining, study, orchard, kitchen, schoolroom, carriage`). `P = seasonPal(season)` 로 계절 팔레트(늦가을/겨울/봄/여름).
-- 인물은 56×132 캔버스, `fp(o, SVG경로, 램프, 옵션)` 로 마스크 도형을 만들고 디더링 음영(`o.shade`)을 입힌 뒤 색 윤곽선을 둘러 완성. 표정은 `sprite(id, expr)`.
-- 인물 정의는 `art_sprites.js` 의 `FIG`. 아델라인: `hs:'sbraid'`(은발 땋은 머리).
+- 스테이지 캔버스 240×160. 배경은 `BG[place](o,P)` 함수들(`exterior, hall, bedroom, dining, study, orchard, kitchen, schoolroom, corridor, office, carriage`). `P = seasonPal(season)` 로 계절 팔레트(늦가을/겨울/봄/여름). 저택은 **대저택** 규모(사용자 결정).
+- 그림체(2026-10 새로 그림, 사용자 승인): 스타듀풍. **점무늬(디더링) 금지**, 셀 음영(`celShade`) + 색 윤곽선(`outlinePass`), 얼굴은 점 지도(`ADE_HEAD`, `M_FACE`, `F_FACE`). 아이는 머리 크기 그대로 다리·치마 줄을 빼서 작게(`KID`). 작업 기록은 `wip/README.md`.
+- 인물은 56×132 캔버스. `sprite(id, expr)` → `{c, feet, top}`. 인물별 그리는 함수는 `art_sprites.js` 의 `FIG` (adeSprite, tangieSprite, maleSprite, femSprite, boySprite, girlSprite, adultMale). 표정 5종 neutral·smile·sad·worry·surprise.
 - 표시할 때 `<img class="px">` + CSS `image-rendering: pixelated`. 썸네일(저택 탭)은 `image-rendering:auto`.
 
 ### 그림 교체 (Flow 등으로 만든 일러스트가 생겼을 때)
