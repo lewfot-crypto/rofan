@@ -64,7 +64,7 @@ function femBody(o,cfg){
   else celPath(o,'M20 36 C23 33 33 33 36 36 L33 40 C30 41 26 41 23 40 Z',T);
 }
 const FEM_FIG={
- holt:{hs:'bun',hair:['#3a2a20','#4e3828','#6a5240','#86705a'],eye:['#3e4250','#6a7080'],glasses:'#6a5432',
+ holt:{hs:'bun',hair:['#3a2a20','#4e3828','#6a5240','#86705a'],eye:['#3e4250','#6a7080'],
    dress:['#2e2e38','#45454f','#5e5e6a','#7a7a86','#9898a4'],trim:['#a9a3b0','#d6d1da','#eeeaf0','#ffffff'],belt:['#2e2e38','#45454f','#5e5e6a'],highneck:true,patch:'#72707e',feet:128},
  marta:{hs:'bun',hair:['#6e665e','#8e867c','#b0a89e','#cec6bc'],eye:['#4a3a2a','#7a6248'],gray:true,round:true,blush:true,
    dress:['#3e2a1e','#5a3e2a','#7a5638','#9a6e4a','#b88c64'],trim:['#b9ad9a','#ddd3c0','#f3ecdc','#fffaf0'],belt:['#b9ad9a','#ddd3c0','#f3ecdc'],apron:true,rolled:true,wide:3,feet:126}
@@ -104,3 +104,12 @@ function adrianSprite(expr){
   outlinePass(o);
   return {c:o.c,feet:fy};
 }
+
+// ── 아이 키 줄이기: 머리 크기는 그대로, [y0,y1) 사이(다리·치마)에서 n줄을 고르게 빼고 윗부분을 내린다. 발 위치(feet)는 그대로.
+function shrinkKid(s,y0,y1,n){
+  const W=s.c.width,H=s.c.height, o=PX(W,H); const drop=new Set(); for(let k=0;k<n;k++) drop.add(Math.floor(y0+(k+.5)*(y1-y0)/n));
+  let ty=H-1; for(let y=H-1;y>=0;y--){ if(drop.has(y)) continue; o.x.drawImage(s.c,0,y,W,1,0,ty,W,1); ty--; }
+  return {c:o.c,feet:s.feet};
+}
+const KID={adeline:[62,120,18],adrian:[64,116,18],tangie:[62,110,10]};
+function kid(id,s){ const k=KID[id]; return k?shrinkKid(s,k[0],k[1],k[2]):s; }
