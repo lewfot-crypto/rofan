@@ -145,14 +145,16 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 
 ## 현재 구현 상태 (v0.5)
 - 완성: 실행화면, 게임 화면, 4개 탭, 설정(읽기·소리·저장·서재·인물 사전·정보), 소설 전문 열람(본편 30장 + 번외 7편, 30장 아홉 갈래 선택 UI), 새 그림체 배경 11곳(대저택)·인물 16명·표정 5종, 밤 장면(`time:'night'`).
-- 플레이 가능: **1권 1~8장** (장면 63개). 마지막은 `send` 끝 카드("1권 8장까지").
+- 플레이 가능: **1권 전체(1~9장)** (장면 72개). 마지막은 `send` 끝 카드("1권 〈겨울의 문턱〉을 다 읽었어요").
+- 9장(사용자 승인): 장갑 질문 `askedGlove`(노트 `glove` 필요)/`silentGlove` — 2권 카일런 편지·재회 장면에서 다시 쓸 것. 마지막 줄 노트 `slowly`.
 - 8장(사용자 승인): `dustless` → "빼앗은 게 아니었네요"(`notTaken`) / "그랬군요"(`soItWas`). 노트 줄 긋기 choice `cross:'misread'`(`crossedLine`) / 긋지 않음(`keptLine`) / 오해 노트가 없으면 `newLine`. 모두 노트 `gladWrong`. 줄 그은 노트는 `S.crossed` 에 저장, 노트 탭·본문에서 `<del>`.
 - 7장(사용자 승인): 1장 `notebook` 노트 → 회색 노트 고백(`graynote`), `clock` → 홀트의 시계 말과 연결, `lie` → 의역 장면 한 줄. 선택: 시계 `notAskedWatch`/`askedWatch`, 마지막 줄 `wroteMaybe`(노트 `maybeNot`, `graynote` 필요)/`closedNote`.
 - 6장 분기(사용자 승인): 안경 `tookGlasses`/`onlyLooked`, 오해의 노트 `wroteMisread`(노트 `misread`)/`wroteNothing`. 8장에서 `misread` 에 줄 긋기, `dustless` 사용.
 - 5장 분기(사용자 승인): 성 선택 `nameTrone`/`nameEverhart`/`nameSilent`(2권 이후 아드리안 장면에 다시 쓸 것), 차 `gaveTea`/`keptTea`.
 - 4장 분기(사용자 승인): 설탕 두 조각/넣지 않음(`sugar`/`noSugar`, 8장에서 다시 쓸 예정), "원하지 않아요"/"말씀하셔도 돼요"(`noTell`/`mayTell`), 누구의 말인지 묻기/외투(`askedWhose`/`tookCoat`). 노트 표시 `{fn:'notebook', pre:'c4', empty:'…'}`.
-- 미구현: 편지 탭 내용(첫 편지는 10장 이후), 저택 탭의 장소 이동, 소리, 9장 이후 장면.
+- 미구현: 편지 탭 내용(첫 편지는 10장 이후), 저택 탭의 장소 이동, 소리, 2권(10장~) 장면.
+- 앞으로 다시 쓸 1권 플래그: 성 `nameTrone/nameEverhart/nameSilent`(아드리안), 차 `gaveTea/keptTea`, 설탕 `sugar/noSugar`, `mayTell`, 장갑 `askedGlove/silentGlove`, 줄 긋기 `crossedLine/keptLine`.
 - 읽기 화면: 테마 자동/밝게/종이/어둡게 + 밝기 3단계(`pref.dim`), 상태줄·서재 본문 오른쪽 위 빠른 단추(`qtheme`).
 
 ## 다음 할 일
-`docs/roadmap.md` 참고. 우선순위: ① 1권 9장 장면화(설계 완료, 8장까지 끝남) ② 2권 이후. (노트 줄 긋기 완료) (`corridor`/`office` 배경은 완료)
+`docs/roadmap.md` 참고. 우선순위: ① 2권(10~17장) 장면 설계 — 장마다 초안 승인 ② 편지 탭(10장 이후 카일런 편지) ③ 이른 봄 배경 등 그림 보강. (1권 완료) (`corridor`/`office` 배경은 완료)

@@ -303,7 +303,7 @@ function femSprite(id,expr){ const cfg=FEM_FIG[id]; const o=PX(56,132); femBody(
 const BOY_FIG={
  adrian:{hair:['#9a7a4a','#c8a46a','#e4c890','#f6e2b4'],eye:['#3e5a3a','#6a8a5a','#a8c890'],lock:'r',
    coat:['#3e5468','#56708a','#7290aa','#8eaac2','#b0c8da'],vest:['#8a7a5a','#a8987a','#c4b494','#dccdb0'],pants:['#3a3434','#4e4848','#625c5c','#7a7474'],boots:['#2a1e18','#3e2e24','#56402e','#6e5640'],btn:'#e8d6a8',ink:true,map:true},
- kylen:{hair:['#141822','#222836','#343c50','#4a5470'],eye:['#3a5a8a','#7a9ac0','#c0d8f0'],lock:'l',tuft:true,
+ kylen:{hair:['#121016','#1e1c24','#2e2c36','#46434f'],eye:['#3a5a8a','#7a9ac0','#c0d8f0'],lock:'none',slick:true,glove1:true,
    coat:['#1a2234','#26304a','#344262','#46587e','#5a6e96'],vest:['#26304a','#344262','#46587e','#5a6e96'],pants:['#181c26','#22283a','#2e3448','#3c4458'],boots:['#141218','#221e28','#34303c','#4a4452'],btn:'#b8c0d0',fur:['#8a8a94','#b4b4bc','#d6d6dc','#f0f0f4'],gloves:['#2a2024','#3e3034','#56444a','#6e5a60'],face:'kylen',skin:'#f8e2d6'},
  julian:{hair:['#8a6430','#b08a58','#d6b47c','#f2dcaa'],eye:['#3a5a8a','#6a8ab0','#b0c8e8'],lock:'l',
    coat:['#a8a094','#cfc6ba','#e6dfd6','#f4efe8','#ffffff'],vest:['#a08850','#c0a868','#d8c08a','#ecd8a8'],pants:['#8e8678','#aaa294','#c4bcae','#dcd4c6'],boots:['#2a1e18','#3e2e24','#56402e','#6e5640'],btn:'#d9b24a',epaulet:['#8a6a20','#c09030','#d9b24a','#f0d878'],sash:['#2e3e78','#40549a','#5a70b8'],face:'julian',clasp:true,wavy:true},
@@ -371,7 +371,9 @@ function boySprite(id,expr){
     [[16,38],[20,36],[24,35],[32,35],[36,36],[40,38]].forEach(p=>{ o.p(p[0],p[1],f.fur[3]); o.p(p[0]+1,p[1]+1,f.fur[1]); }); }
   if(f.clasp){ o.r(19,60,5,3,C[1]); o.r(32,60,5,3,C[1]);
     celPath(o,'M23 61 C25 59 31 59 33 61 C33 65 30 67 28 67 C26 67 23 65 23 61 Z',WH); o.p(28,62,WH[0]); o.p(28,63,WH[0]); o.p(30,61,WH[1]); }
-  else if(f.gloves){ o.r(12,76,6,3,C[1]); o.r(38,76,6,3,C[1]); celPath(o,'M12 78 L18 78 L18 83 C17 86 13 86 12 83 Z',f.gloves); celPath(o,'M38 78 L44 78 L44 83 C43 86 39 86 38 83 Z',f.gloves); }
+  else if(f.gloves){ o.r(12,76,6,3,C[1]); o.r(38,76,6,3,C[1]); celPath(o,'M12 78 L18 78 L18 83 C17 86 13 86 12 83 Z',f.gloves);
+    if(f.glove1){ celPath(o,'M38 78 L44 78 L44 83 C43 86 39 86 38 83 Z',SK); }   // 장갑은 오른손(화면 왼쪽)에만
+    else celPath(o,'M38 78 L44 78 L44 83 C43 86 39 86 38 83 Z',f.gloves); }
   else { o.r(12,77,6,2,WH[2]); o.r(38,77,6,2,WH[2]);
     celPath(o,'M12 79 L18 79 L18 83 C17 86 13 86 12 83 Z',SK); celPath(o,'M38 79 L44 79 L44 83 C43 86 39 86 38 83 Z',SK); }
   if(f.sword){ celPath(o,'M45 66 L48 65 L53 104 L50 105 Z',['#2a1e18','#3e2e24','#56402e','#6e5640']); o.p(51,104,'#c0c4cc'); o.p(52,103,'#c0c4cc');
@@ -404,6 +406,11 @@ function boySprite(id,expr){
     const put=(j,i,c)=>{ const r=out[j]; if(/[HLh]/.test(r[i])) out[j]=r.slice(0,i)+c+r.slice(i+1); };
     [[3,9],[5,16],[7,6]].forEach(w=>{ const j=w[0],i=w[1]; put(j,i,'L'); put(j,i+1,'L'); put(j+1,i-1,'L'); put(j+1,i+2,'L'); put(j+1,i,'h'); put(j+1,i+1,'h'); });
     out[10]=out[10].slice(0,7)+'hHh'+out[10].slice(10); out[11]=out[11].slice(0,7)+'.hH'+out[11].slice(10);
+  }
+  if(f.slick){   // 뒤로 단정하게 넘긴 머리: 앞머리 없이 이마를 드러내고, 뒤로 흐르는 윤기 줄
+    const SL={8:"..HLLLHHHHHHHHHHHHHHHHHHh...",9:"..HLHHHHHHHHHHHHHHHHHHHHh...",10:"..HHhhSSSSSSSSSSSSSShhHh....",11:".HHhSSSSSSSSSSSSSSSSSShHh...",12:".HHhSSSSSSSSSSSSSSSSSShHh..."};
+    for(const j in SL){ const r=SL[j]; out[j]=r.padEnd(28,'.').slice(0,28); }
+    [[2,9],[3,10],[4,12],[5,14],[6,16],[7,18],[3,15],[4,17],[5,19]].forEach(q=>{ const r=out[q[0]]; if(r[q[1]]==='H') out[q[0]]=r.slice(0,q[1])+'L'+r.slice(q[1]+1); });
   }
   stampMap(o,out,14,0,pal);
   if(f.glasses){ const G=f.glasses; [[19,15],[29,15]].forEach(g=>{ const x=g[0],y=g[1]; o.r(x+1,y,5,1,G); o.r(x+1,y+6,5,1,G); o.r(x,y+1,1,5,G); o.r(x+6,y+1,1,5,G); o.p(x+5,y+1,'#ffffff'); }); o.r(26,17,3,1,G); }
