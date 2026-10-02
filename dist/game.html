@@ -5586,7 +5586,7 @@ function boySprite(id,expr){
 // ── 소녀들: 아델라인 몸·얼굴 지도를 색만 바꿔 쓰고, 땋은 머리 대신 늘어뜨린 긴 머리. 로잘리(세레나도 여기로)
 const GIRL_FIG={
  rosalie:{hair:['#6a2a14','#8a3e1e','#cc7a44','#e8a070','#f6c8a0'],eye:['#2e6a5e','#6aa89a','#b0e0d4'],face:'rosalie',
-   dress:['#7a3a4e','#a85a72','#d890a2','#eab0be','#f8d0da'],lace:['#b9ad9a','#ddd3c0','#f3ecdc','#fffaf0'],sash:['#2e6a5e','#4a8a7c','#6aa89a','#8ac4b6'],notebook:true,pin:true},
+   dress:['#7a3a4e','#a85a72','#d890a2','#eab0be','#f8d0da'],lace:['#b9ad9a','#ddd3c0','#f3ecdc','#fffaf0'],sash:['#2e6a5e','#4a8a7c','#6aa89a','#8ac4b6'],notebook:true,freckles:true,ribbons2:true},
  serena:{hair:['#8a6a30','#c8a458','#e8c880','#f4dca8','#fff2d0'],eye:['#4a3a7a','#8a7ab0','#c8bce8'],face:'serena',
    dress:['#9a90a8','#c4bccc','#e4dee8','#f4efea','#ffffff'],lace:['#a89ab8','#c9b8e0','#e4d8f0','#f6f0fc'],sash:['#5a4a8a','#7a6aa8','#a090c8','#c9b8e0'],ribbon:true}
 };
@@ -5625,6 +5625,10 @@ function girlSprite(id,expr){
   }
   stampMap(o,rows,14,2,pal);
   if(f.pin){ R(36,9,3,2,SA[2]); o.p(36,9,SA[3]); o.p(38,10,SA[0]); }   // 앞머리 옆 작은 머리핀
+  if(f.freckles){ [[20,22],[22,23],[21,24],[34,22],[36,23],[35,24]].forEach(q=>o.p(q[0],q[1],'#c8784e')); }   // 주근깨
+  if(f.ribbons2){   // 색이 서로 다른 리본 두 개 (소설 11장)
+    const bow=(x,y,c)=>{ R(x,y,3,3,c[1]); R(x+4,y,3,3,c[1]); o.p(x,y,c[2]); o.p(x+4,y,c[2]); R(x+3,y+1,1,1,c[0]); o.p(x+2,y+3,c[0]); o.p(x+4,y+3,c[0]); };
+    bow(13,8,['#2e6a5e','#4a9a8a','#8ad0c0']); bow(37,7,['#a83a5a','#e0708e','#f8b0c4']); }
   if(f.ribbon){ // 하얀 리본 (머리 위 오른쪽, 나비 모양)
     const RB=['#9a94a8','#c4bed0','#ece8f2','#ffffff'];
     celPath(o,'M33 9 L37 8 L35 13 L33 15 Z',RB); celPath(o,'M40 9 L44 8 L43 15 L41 13 Z',RB);
@@ -6317,10 +6321,50 @@ function study2(o,P){
   x.save(); x.globalAlpha=.12; x.globalCompositeOperation='lighter'; o.poly([[wx,wy+wh],[wx+ww,wy+wh],[wx+ww+18,110],[wx+6,110]],'#5a74c0'); x.restore();
 }
 
+// 황궁 정원 다과회 (2권 11장): 하얀 천막, 긴 탁자, 찻잔과 케이크 단, 사과꽃과 장미, 멀리 황궁
+function palace3(o,P){
+  const R=(x,y,w,h,c)=>o.r(x,y,w,h,c), px=(x,y,c)=>o.p(x,y,c);
+  bands(o,0,0,240,80,[P.sky[0],P.sky[1],P.sky[1],P.sky[2]]);
+  const cl=mix(P.sky[2],'#ffffff',.6); [[30,10],[200,14]].forEach(c=>{ o.ell(c[0],c[1],10,3,cl); o.ell(c[0]+8,c[1]-2,6,2,cl); });
+  // 멀리 황궁 (흰 벽, 푸른 둥근 지붕)
+  const PW=['#b8b4c4','#d4d0dc','#ecE8f2'.toLowerCase(),'#ffffff'];
+  R(70,40,100,34,PW[0]); R(71,41,98,33,PW[2]); for(let k=0;k<9;k++){ R(76+k*11,48,4,8,'#8a9ac0'); R(76+k*11,60,4,8,'#8a9ac0'); }
+  o.ell(120,40,14,10,'#5a78b0'); o.ell(118,38,9,6,'#7a98d0'); R(119,26,2,6,GD2[2]); o.ell(84,42,6,5,'#5a78b0'); o.ell(156,42,6,5,'#5a78b0');
+  R(70,72,100,2,PW[0]);
+  // 산울타리
+  for(let X=0;X<240;X++){ const h=Math.round(72+Math.sin(X/6)*1.5); R(X,h,1,26,'#3e6a3a'); px(X,h,'#5a8a4e'); }
+  for(let X=4;X<240;X+=9) o.ell(X,78,4,2,'#4e7e46');
+  // 잔디
+  R(0,96,240,64,P.gr[0]); R(0,96,240,1,mix(P.gr[0],'#ffffff',.2)); R(0,130,240,30,P.gr[1]); R(0,130,240,1,P.gr[2]);
+  for(let k=0;k<40;k++){ const X=(k*53)%240, Y=100+(k*29)%58; R(X,Y,3,1,Y>130?P.gr[2]:P.gr[1]); }
+  // 사과꽃 나무 (양옆 뒤)
+  const blossom=(x,y,s)=>{ R(x-2,y,4,Math.round(26*s),P.trunk); const r=Math.round(16*s);
+    [[0,-r*.3,r],[-r*.8,r*.1,r*.7],[r*.8,r*.1,r*.7],[0,-r*.9,r*.7]].forEach(b=>{ o.ell(Math.round(x+b[0]),Math.round(y+b[1]),Math.round(b[2])+1,Math.round(b[2]*.8)+1,'#c890a8'); o.ell(Math.round(x+b[0]),Math.round(y+b[1]),Math.round(b[2]),Math.round(b[2]*.8),'#f2c8d8'); o.ell(Math.round(x+b[0]-2),Math.round(y+b[1]-2),Math.round(b[2]*.5),Math.round(b[2]*.4),'#fff0f4'); }); };
+  blossom(14,64,1.1); blossom(226,66,1.1);
+  // 하얀 천막
+  const TW=['#b8b0b8','#d8d2d8','#f0ecf0','#ffffff'];
+  R(28,20,184,6,TW[2]); o.poly([[28,20],[120,4],[212,20]],TW[3]); o.poly([[120,4],[212,20],[170,20]],TW[1]);
+  for(let X=28;X<212;X+=12){ o.ell(X+6,26,6,4,TW[2]); o.ell(X+6,25,5,2,TW[3]); px(X+6,30,TW[0]); }
+  for(let X=28;X<212;X+=12) R(X+5,30,2,3,'#d8b45a');
+  [[30,26],[208,26]].forEach(p=>{ R(p[0],p[1],3,72,TW[1]); R(p[0],p[1],1,72,TW[3]); }); R(119,4,2,4,GD2[2]);
+  const X0=o.x; X0.save(); X0.globalAlpha=.10; X0.fillStyle='#4a4060'; X0.fillRect(30,74,180,22); X0.restore();
+  // 긴 탁자 (흰 천, 레이스)
+  R(26,98,188,2,'#e8e2d8'); R(24,100,192,8,'#f8f4ec'); R(24,100,192,1,'#ffffff'); R(24,108,192,10,'#ece6dc');
+  for(let X=24;X<216;X+=4){ R(X,117,2,2,'#f8f4ec'); px(X+1,119,'#d8d0c4'); }
+  [[30,118],[208,118]].forEach(l=>{ R(l[0],l[1],4,16,WD2[2]); R(l[0],l[1],1,16,WD2[4]); });
+  // 탁자 위: 찻잔, 케이크 단, 꽃병
+  for(let k=0;k<9;k++){ const x=36+k*20; o.ell(x,99,4,1,'#ffffff'); R(x-2,95,5,4,'#f6f2fa'); R(x-2,95,5,1,'#c8d0e8'); px(x+3,96,'#f6f2fa'); }
+  [[70,'#e8a0b8'],[170,'#f0d080']].forEach(c=>{ const x=c[0]; R(x-1,82,2,16,GD2[1]); o.ell(x,96,9,2,'#ffffff'); o.ell(x,88,6,1,'#ffffff'); o.ell(x,94,7,2,c[1]); o.ell(x,86,4,2,'#d8f0c8'); px(x,80,GD2[3]); });
+  R(117,84,6,12,'#c8d8f0'); R(118,83,4,1,'#e0e8f8'); [[114,80],[120,77],[126,80],[117,75],[123,75]].forEach(f=>{ o.ell(f[0],f[1],3,2,'#e05a7a'); px(f[0],f[1]-1,'#ff9ab0'); }); o.ell(120,84,5,1,'#4e7e46');
+  // 장미 덤불 (앞쪽 양옆)
+  [[8,140],[232,142],[52,150],[188,152]].forEach(b=>{ o.ell(b[0],b[1],12,8,'#2f5a36'); o.ell(b[0]-2,b[1]-2,9,6,'#3e7a46'); [[-6,-3],[3,-5],[6,1],[-2,2],[-8,3]].forEach(r=>{ o.ell(b[0]+r[0],b[1]+r[1],2,2,'#c03050'); px(b[0]+r[0]-1,b[1]+r[1]-1,'#f07090'); }); });
+  if(P.part){ for(let k=0;k<20;k++){ const X=(k*97)%236, Y=(k*61)%120+8; px(X,Y,P.part); px(X+1,Y,mix(P.part,'#7a3a14',.25)); } }
+}
+
 const BG={
  exterior:(o,P)=>exterior3(o,P), hall:(o,P)=>hall3(o,P), bedroom:(o,P)=>bedroom5(o,P), dining:(o,P)=>dining3(o,P),
  study:(o,P)=>study2(o,P), orchard:(o,P)=>orchard3(o,P), kitchen:(o,P)=>kitchen3(o,P), schoolroom:(o,P)=>school3(o,P),
- corridor:(o,P)=>corridor3(o,P), office:(o,P)=>office3(o,P), carriage:(o,P)=>carriage3(o,P)
+ corridor:(o,P)=>corridor3(o,P), office:(o,P)=>office3(o,P), carriage:(o,P)=>carriage3(o,P), palace:(o,P)=>palace3(o,P)
 };
 const PLACES={exterior:'저택 앞',hall:'현관 홀',bedroom:'내 방',dining:'식당',study:'서재 앞',orchard:'과수원 담장',kitchen:'부엌',schoolroom:'공부방',corridor:'이층 복도'};
 const BGCACHE={};
@@ -7254,11 +7298,110 @@ const SCENES={
    {fn:'notebook',pre:'c10',empty:'그 밖에는 아무것도 적지 않았다.'},
    {t:'적고 나서 오래 그 줄을 보았다. 서명할 필요가 없다고 생각하는 사람은, 매년 같은 노트를 고르지 않는다. 나는 그 줄을 지우지 않았다. 틀린 줄인지 아닌지는, 다음 생일이 알려 줄 것이다.',if:'readNoNeed'}
   ],
-  choices:[{label:'10장을 마친다',next:'send'}]},
+  choices:[{label:'10장을 마친다',next:'c11a'}]},
 
- send:{place:'dining',season:'겨울',age:'열한 살',chLabel:'2권 · 10장까지',chars:[],end:true,paras:[],
-  endTitle:'2권 10장까지 읽었어요',
-  choices:[{label:'노트 열기',go:'notes'},{label:'이야기 서재에서 11장 읽기',go:'library',chap:11},{label:'처음부터 다시 하기',go:'restart'}]}
+ // ── 2권 11장 〈첫 다과회〉 (사용자 승인 설계: 가지 말라는 뜻인지 / 황후에게 대답 / 율리안의 왼손(thumb 필요))
+ c11a:{place:'dining',season:'봄',age:'열두 살',chLabel:'2권 · 11장 첫 다과회',chars:[{id:'edric',pos:'center'}],
+  paras:[
+   '열한 살의 한 해는 조용히 지나갔다.',
+   '홀트 선생과의 수업은 어느새 질문과 대답이 아니라 토론이 되었고, 나는 문장으로 말하는 데 익숙해졌다. 담 너머의 아드리안은 산맥 지도를 끝까지 완성해서 형에게 칭찬을 들었고, 탠지의 손은 아주 깨끗해졌으며, 마로트는 \'오렌지 양\'을 이제 한 달에 네 번 불렀다. 그해 생일 아침에도 문 앞에는 책이 한 권 놓여 있었다. 나는 그 책들을 책장 가장 높은 칸에 나란히 세워 두었다.',
+   {t:'두 번째 책에도 서명은 없었다. 서명할 필요가 없다고 생각하는 사람은, 매년 같은 노트를 고르지 않는다. 나는 작년에 적은 줄을 다시 읽었다. 첫 번째가 아니었다.',if:'readNoNeed'},
+   '열두 살이 되던 봄, 황실의 인장이 찍힌 초대장이 도착했다.',
+   '마로트가 은쟁반에 받쳐 서재로 가져갔고, 나는 그날 저녁 식탁에서 그 이야기를 들었다.',
+   '"황후 폐하께서 주최하는 봄 다과회다. 귀족가 자제들만 모이는 작은 자리라고 한다."',
+   '에드릭은 수프를 뜨며 말했다. 시선은 접시에 둔 채였다.',
+   '"가지 않아도 된다."'
+  ],
+  choices:[{label:'"가겠어요."',next:'c11b',flag:'willGo'},{label:'"……가지 않아도 된다는 건, 가지 말라는 뜻이에요?"',next:'c11b',flag:'askedMeaning'}]},
+ c11b:{place:'dining',season:'봄',age:'열두 살',chLabel:'2권 · 11장 첫 다과회',chars:[{id:'edric',pos:'center'}],
+  paras:[
+   {t:'"……가지 않아도 된다는 건, 가지 말라는 뜻이에요?"',if:'askedMeaning'},
+   {t:'숟가락이 멈췄다. 그는 한참 접시를 보다가 말했다. "……네가 정하라는 뜻이다."',if:'askedMeaning'},
+   '"가겠어요."',
+   {t:'숟가락이 멈췄다.',if:'willGo'},
+   '"……이유가 있나."',
+   '"안 가면 이유가 생기니까요."',
+   '공작은 한참 나를 보았다. 그의 눈 속에서 아주 짧게 무엇인가가 오갔다. 걱정이라고 해도 좋고, 감탄이라고 해도 좋았다.',
+   '"……마로트. 마차를 준비해라."',
+   '"이미 준비해 두었습니다, 각하."',
+   '"……언제부터."',
+   '"{{ready|초대장이 도착한 순간부터입니다.}}"',
+   '우리는 둘 다 웃지 않았다. 하지만 그 식탁의 공기는 조금 가벼워졌다.'
+  ],
+  choices:[{label:'황궁의 정원',next:'c11c'}]},
+ c11c:{place:'palace',season:'봄',age:'열두 살',chLabel:'2권 · 11장 첫 다과회',chars:[{id:'rosalie',pos:'left',expr:'smile'},{id:'serena',pos:'right'}],
+  paras:[
+   '황궁의 정원은 사과꽃과 장미 사이에서 시간이 멈춘 것 같았다.',
+   '하얀 천막 아래 긴 탁자가 놓였고, 열두 명쯤 되는 아이들이 정해진 자리에 앉아 있었다. 홀트 선생이 마지막 수업에서 한 말이 떠올랐다. *{{bowfirst|방에 들어가면 가장 먼저 누구에게 인사할지가 아니라, 누가 누구에게 먼저 인사하는지를 보십시오.}}* 나는 걸음을 늦추고 방 안의 힘의 방향을 읽었다.',
+   '중심에는 한 소녀가 있었다. 금빛 머리를 높게 올리고 등을 곧게 편, 인형처럼 완벽한 아이. 다른 아이들의 시선이 자꾸 그쪽으로 기울었다. 발트하임 백작가의 영애 세레나, 황후 후보 일순위라고 모두가 속삭이는 사람. {{muscle|그녀는 웃고 있었지만 그 웃음은 근육으로 만든 것이었다.}}',
+   '"트로네 영애시죠!"',
+   '갑자기 팔을 붙들렸다. 주근깨 있는 소녀가 숨을 헐떡이며 서 있었다. 리본이 두 개나 다른 색이었다.',
+   '"저는 로잘리 클레어몬트예요! 소문 들었어요! 아, 좋은 소문이요! 아니, 별로 소문은 아니고! 잠깐, 제가 말이 많죠? {{rosalie|저 원래 이래요!}}"',
+   '"……괜찮아요."'
+  ],
+  choices:[{label:'로잘리의 소개를 듣는다',next:'c11d'}]},
+ c11d:{place:'palace',season:'봄',age:'열두 살',chLabel:'2권 · 11장 첫 다과회',chars:[{id:'lionel',pos:'left'},{id:'sebastian',pos:'center'},{id:'hadel',pos:'right'}],
+  paras:[
+   '"그럼 소개해 드릴게요! 저기 은수저를 세고 있는 애는 리오넬이에요, 베르몬트 상단 집안이고 계산이 엄청 빨라요. 저쪽 식탁 밑에서 책 읽는 애는 세바스티안, 동쪽 마탑 영지에서 왔는데 부르면 세 번째에 대답해요. 그리고 저기 칼 차고 서 있는 애는 하델이에요, 서부 기사단장님 아들이고, 아무도 앉으라고 안 했는데 안 앉고 서 있어요!"',
+   '나는 그들을 하나씩 보았다. 로잘리가 말한 대로였다. 한 소년은 접시 가장자리의 은 무게를 눈짐작으로 재고 있었고, 한 소년은 탁자보 아래에서 책장을 넘기고 있었고, 한 소년은 파수꾼처럼 천막 기둥 옆에 곧게 서 있었다. 나는 그 모든 것을 기억해 두었다. 아직 누구에게 어떤 의미가 될지 모르면서.'
+  ],
+  choices:[{label:'정원 입구가 웅성인다',next:'c11e'}]},
+ c11e:{place:'palace',season:'봄',age:'열두 살',chLabel:'2권 · 11장 첫 다과회',chars:[{id:'julian',pos:'center',expr:'smile'}],
+  paras:[
+   '그때 정원 입구에서 웅성임이 일었다.',
+   '"황자 전하께서 오십니다."',
+   '문이 열리고 소년 하나가 걸어 들어왔다. 열세 살쯤. 밝은 갈색 머리가 햇빛에 풀어졌고, 입가에는 모든 방이 기다리던 웃음이 있었다. 그는 문턱에서 한 번 방을 둘러보고, 그것만으로 방 전체를 장악했다.',
+   '"늦어서 죄송합니다. 오는 길에 장미가 너무 예뻐서 한참 보고 있었어요. 그러다 보니 장미들한테 늦은 사과를 해야 했고요."',
+   '웃음이 터졌다. 그는 한 사람씩 다른 말을 건넸다. 이 영애에게는 새 머리 장식을, 저 소년에게는 지난 승마 대회를. 모든 인사가 정확하게 상대가 듣고 싶은 말이었다. 둘째 황자 율리안 렌하르트. 아주 훌륭한 연기였다.',
+   '나는 한 가지를 알아챘다. {{thumb|그가 웃는 동안 왼손이 등 뒤에서 오른손 엄지손톱을 계속 누르고 있었다.}} 아주 규칙적으로, 아주 오래.'
+  ],
+  choices:[{label:'다과회가 한 시간쯤 지났을 때',next:'c11f'}]},
+ c11f:{place:'palace',season:'봄',age:'열두 살',chLabel:'2권 · 11장 첫 다과회',chars:[],
+  paras:[
+   '다과회가 한 시간쯤 지났을 때, 황후가 내게 물었다.',
+   '"새로 오신 트로네 영애. 공작가의 식탁은 어떠한가?"',
+   '모든 소리가 멈췄다. 나는 찻잔을 내려놓고 일어섰다. 목소리가 떨릴 것 같았지만, 홀트 선생에게 배운 대로 숨을 한 번 쉬었다.'
+  ],
+  choices:[{label:'"조용합니다, 폐하. 하지만 비어 있지는 않아요."',next:'c11g',flag:'notEmpty'},{label:'"……조용합니다, 폐하."',next:'c11g',flag:'justQuiet'}]},
+ c11g:{place:'palace',season:'봄',age:'열두 살',chLabel:'2권 · 11장 첫 다과회',chars:[{id:'julian',pos:'right'}],
+  paras:[
+   {t:'"조용합니다, 폐하. 하지만 비어 있지는 않아요."',if:'notEmpty'},
+   {t:'황후의 눈이 아주 조금 가늘어졌다. 웃음이라고 하기에는 짧았고, 인정이라고 하기에는 길었다.',if:'notEmpty'},
+   {t:'"그렇군. 좋은 대답이야."',if:'notEmpty'},
+   {t:'"……조용합니다, 폐하."',if:'justQuiet'},
+   {t:'"그렇군." 황후는 그 한마디로 다음 아이에게 시선을 옮겼다. 나는 자리에 앉으며 하지 못한 뒷말을 찻잔 속에 넣었다. 하지만 비어 있지는 않아요.',if:'justQuiet'},
+   '자리에 앉자 어디선가 낮은 소리가 들렸다. {{adopted|"입양된 아이가 대답은 잘하네."}} 누군가의 부채 뒤였다. 나는 돌아보지 않았다.',
+   {t:'"좋은 대답이었어요."',if:'notEmpty'},
+   {t:'"짧은 대답이었어요. 그런데 이상하게 뒷말이 들리던데요."',if:'justQuiet'},
+   '옆에서 목소리가 났다. 어느새 율리안이 내 옆자리로 와 있었다. 그는 찻잔을 들고 정원 쪽을 향해 앉아, 마치 우연인 듯 말했다.',
+   '"그런데 이상하군요. 대답한 쪽이 더 외로워 보이는 건 왜일까요."'
+  ],
+  choices:[{label:'"……전하께서는 웃을 때 왼손을 쓰세요."',next:'c11h',flag:'toldThumb',req:'thumb'},{label:'"……감사합니다, 전하."',next:'c11h',flag:'politeJulian'}]},
+ c11h:{place:'palace',season:'봄',age:'열두 살',chLabel:'2권 · 11장 첫 다과회',chars:[{id:'julian',pos:'right'}],
+  paras:[
+   {t:'"……전하께서는 웃을 때 왼손을 쓰세요."',if:'toldThumb'},
+   {t:'말해 놓고 나서야 후회했다. 율리안의 찻잔이 입술 앞에서 멈췄다. 웃음은 그대로였다. 하지만 눈이 변했다. 처음으로 가면이 아닌 눈이 나를 보았다.',if:'toldThumb'},
+   {t:'"……제 왼손이요?"',if:'toldThumb'},
+   {t:'"엄지손톱을 누르세요. 웃을 때마다, 규칙적으로요. 죄송해요, 말하지 말았어야 했는데."',if:'toldThumb'},
+   {t:'한참 정적이 흘렀다. 그리고 그가 낮게, 아주 낮게 웃었다. 이번 웃음은 방 안의 어떤 웃음과도 달랐다. 조금 서툴고, 조금 놀란, 처음 보는 웃음이었다.',if:'toldThumb'},
+   {t:'"트로네 양. 이건 비밀로 해 주실 수 있나요?"',if:'toldThumb'},
+   {t:'"……네."',if:'toldThumb'},
+   {t:'"고맙습니다."',if:'toldThumb'},
+   {t:'그는 곧 평소의 얼굴로 돌아가 일어섰다. 방 안은 다시 그를 향해 열렸다. 하지만 나는 알고 있었다. 이 방에서 그의 연기를 알아본 사람이 한 명 생겼다는 것을. 그리고 그가 그것을 알게 되었다는 것을.',if:'toldThumb'},
+   {t:'"……감사합니다, 전하."',if:'politeJulian'},
+   {t:'율리안은 완벽하게 고개를 끄덕이고, 다른 탁자로 옮겨 갔다. 방 안은 다시 그를 향해 열렸다. 그의 왼손은 여전히 등 뒤에서 엄지손톱을 누르고 있었다. 아주 규칙적으로. 그것을 아는 사람이 이 방에 한 명 있다는 것을, 그는 아직 몰랐다.',if:'politeJulian'}
+  ],
+  choices:[{label:'집으로 돌아오는 마차',next:'c11i'}]},
+ c11i:{place:'carriage',season:'봄',age:'열두 살',chLabel:'2권 · 11장 첫 다과회',chars:[],
+  paras:[
+   '집으로 돌아오는 마차에서 나는 오래 창밖을 보았다. 노트를 펼 힘도 없이.',
+   {fn:'notebook',pre:'c11',empty:'그날은 아무것도 적지 못했다. 본 것은 많았지만, 적을 힘이 없었다.'}
+  ],
+  choices:[{label:'11장을 마친다',next:'send'}]},
+
+ send:{place:'palace',season:'봄',age:'열두 살',chLabel:'2권 · 11장까지',chars:[],end:true,paras:[],
+  endTitle:'2권 11장까지 읽었어요',
+  choices:[{label:'노트 열기',go:'notes'},{label:'이야기 서재에서 12장 읽기',go:'library',chap:12},{label:'처음부터 다시 하기',go:'restart'}]}
 
 };
 const NOTICES={
@@ -7325,6 +7468,12 @@ const NOTICES={
  nosign:{scene:'c10f',text:'생일 아침 문 앞의 회색 노트. 쪽지도, 서명도 없었다.'},
  courage:{scene:'c10g',byChoice:true,text:'서명이 없는 것은 서명할 용기가 없었다는 뜻이다. 두 번째가 맞을 것 같다.'},
  noneed:{scene:'c10g',byChoice:true,text:'서명이 없는 것은 서명할 필요가 없다고 생각했다는 뜻이다. 첫 번째가 맞을 것 같다.'},
+ ready:{scene:'c11b',text:'마로트 님은 공작님보다 먼저 준비한다. 마차는 초대장이 온 순간부터.'},
+ bowfirst:{scene:'c11c',text:'홀트 선생님: 누구에게 먼저 인사할지가 아니라, 누가 누구에게 먼저 인사하는지를 보라.'},
+ muscle:{scene:'c11c',text:'세레나 발트하임은 웃는 법을 배운 사람이다.'},
+ rosalie:{scene:'c11c',text:'로잘리는 모두의 이름을 안다. 그러나 누구도 로잘리의 이름을 오래 부르지 않는다.'},
+ thumb:{scene:'c11e',text:'율리안 전하는 웃는 동안 왼손으로 오른 엄지손톱을 누른다. 웃는 법밖에 못 배운 사람이다.'},
+ adopted:{scene:'c11g',text:'"입양된 아이." 오늘 누군가 그렇게 불렀다.'},
  orange:{scene:'c3b',text:'마로트 님은 기분이 좋으면 호칭이 바뀐다. "오렌지 양"이라 부를 때 눈이 부드러워진다.'},
  bread:{scene:'c3c',text:'탠지는 점심 빵을 남겨 손수건에 싼다. 간식이라고 했다. 대답이 질문보다 먼저 왔다.'},
  hands:{scene:'c3c',text:'탠지의 손바닥에 붉게 부르튼 자국이 겹겹이 있다. 새 상처가 아니다.'},

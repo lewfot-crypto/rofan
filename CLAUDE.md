@@ -145,7 +145,8 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 
 ## 현재 구현 상태 (v0.5)
 - 완성: 실행화면, 게임 화면, 4개 탭, 설정(읽기·소리·저장·서재·인물 사전·정보), 소설 전문 열람(본편 30장 + 번외 7편, 30장 아홉 갈래 선택 UI), 새 그림체 배경 11곳(대저택)·인물 16명·표정 5종, 밤 장면(`time:'night'`).
-- 플레이 가능: **1권 전체 + 2권 10장** (장면 80개). 마지막은 `send` 끝 카드("2권 10장까지"). 2권은 사용자 결정으로 **한 장씩 설계 승인** 후 제작.
+- 플레이 가능: **1권 전체 + 2권 10~11장** (장면 89개). 마지막은 `send` 끝 카드("2권 11장까지").
+- 11장(사용자 승인): `willGo`/`askedMeaning`, 황후에게 `notEmpty`/`justQuiet`, 율리안 비밀 `toldThumb`(노트 `thumb` 필요, 이후 "율" 호칭 장면에 씀)/`politeJulian`. 새 배경 `palace`(황궁 정원 다과회, PLACES 밖). 로잘리 그림: 주근깨·색이 다른 리본 두 개(소설대로, 사용자 승인). 세레나는 그림 유지(머리를 올린 소설 묘사와 다름, 사용자 결정). 2권은 사용자 결정으로 **한 장씩 설계 승인** 후 제작.
 - 10장(사용자 승인): 편들기 `defended`(노트 `latelaugh` 필요)/`justWatched`, 떠나는 카일런에게 `saidBye`/`spokeUp`(15장 화해에서 다시 씀), 서명 없는 노트 해석 `readCourage`(노트 `courage`)/`readNoNeed`(노트 `noneed`). 편지 탭은 15장(첫 편지)과 함께 연다.
 - 9장(사용자 승인): 장갑 질문 `askedGlove`(노트 `glove` 필요)/`silentGlove` — 2권 카일런 편지·재회 장면에서 다시 쓸 것. 마지막 줄 노트 `slowly`.
 - 8장(사용자 승인): `dustless` → "빼앗은 게 아니었네요"(`notTaken`) / "그랬군요"(`soItWas`). 노트 줄 긋기 choice `cross:'misread'`(`crossedLine`) / 긋지 않음(`keptLine`) / 오해 노트가 없으면 `newLine`. 모두 노트 `gladWrong`. 줄 그은 노트는 `S.crossed` 에 저장, 노트 탭·본문에서 `<del>`.

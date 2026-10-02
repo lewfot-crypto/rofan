@@ -422,7 +422,7 @@ function boySprite(id,expr){
 // ── 소녀들: 아델라인 몸·얼굴 지도를 색만 바꿔 쓰고, 땋은 머리 대신 늘어뜨린 긴 머리. 로잘리(세레나도 여기로)
 const GIRL_FIG={
  rosalie:{hair:['#6a2a14','#8a3e1e','#cc7a44','#e8a070','#f6c8a0'],eye:['#2e6a5e','#6aa89a','#b0e0d4'],face:'rosalie',
-   dress:['#7a3a4e','#a85a72','#d890a2','#eab0be','#f8d0da'],lace:['#b9ad9a','#ddd3c0','#f3ecdc','#fffaf0'],sash:['#2e6a5e','#4a8a7c','#6aa89a','#8ac4b6'],notebook:true,pin:true},
+   dress:['#7a3a4e','#a85a72','#d890a2','#eab0be','#f8d0da'],lace:['#b9ad9a','#ddd3c0','#f3ecdc','#fffaf0'],sash:['#2e6a5e','#4a8a7c','#6aa89a','#8ac4b6'],notebook:true,freckles:true,ribbons2:true},
  serena:{hair:['#8a6a30','#c8a458','#e8c880','#f4dca8','#fff2d0'],eye:['#4a3a7a','#8a7ab0','#c8bce8'],face:'serena',
    dress:['#9a90a8','#c4bccc','#e4dee8','#f4efea','#ffffff'],lace:['#a89ab8','#c9b8e0','#e4d8f0','#f6f0fc'],sash:['#5a4a8a','#7a6aa8','#a090c8','#c9b8e0'],ribbon:true}
 };
@@ -461,6 +461,10 @@ function girlSprite(id,expr){
   }
   stampMap(o,rows,14,2,pal);
   if(f.pin){ R(36,9,3,2,SA[2]); o.p(36,9,SA[3]); o.p(38,10,SA[0]); }   // 앞머리 옆 작은 머리핀
+  if(f.freckles){ [[20,22],[22,23],[21,24],[34,22],[36,23],[35,24]].forEach(q=>o.p(q[0],q[1],'#c8784e')); }   // 주근깨
+  if(f.ribbons2){   // 색이 서로 다른 리본 두 개 (소설 11장)
+    const bow=(x,y,c)=>{ R(x,y,3,3,c[1]); R(x+4,y,3,3,c[1]); o.p(x,y,c[2]); o.p(x+4,y,c[2]); R(x+3,y+1,1,1,c[0]); o.p(x+2,y+3,c[0]); o.p(x+4,y+3,c[0]); };
+    bow(13,8,['#2e6a5e','#4a9a8a','#8ad0c0']); bow(37,7,['#a83a5a','#e0708e','#f8b0c4']); }
   if(f.ribbon){ // 하얀 리본 (머리 위 오른쪽, 나비 모양)
     const RB=['#9a94a8','#c4bed0','#ece8f2','#ffffff'];
     celPath(o,'M33 9 L37 8 L35 13 L33 15 Z',RB); celPath(o,'M40 9 L44 8 L43 15 L41 13 Z',RB);

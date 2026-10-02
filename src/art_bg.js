@@ -635,10 +635,50 @@ function study2(o,P){
   x.save(); x.globalAlpha=.12; x.globalCompositeOperation='lighter'; o.poly([[wx,wy+wh],[wx+ww,wy+wh],[wx+ww+18,110],[wx+6,110]],'#5a74c0'); x.restore();
 }
 
+// 황궁 정원 다과회 (2권 11장): 하얀 천막, 긴 탁자, 찻잔과 케이크 단, 사과꽃과 장미, 멀리 황궁
+function palace3(o,P){
+  const R=(x,y,w,h,c)=>o.r(x,y,w,h,c), px=(x,y,c)=>o.p(x,y,c);
+  bands(o,0,0,240,80,[P.sky[0],P.sky[1],P.sky[1],P.sky[2]]);
+  const cl=mix(P.sky[2],'#ffffff',.6); [[30,10],[200,14]].forEach(c=>{ o.ell(c[0],c[1],10,3,cl); o.ell(c[0]+8,c[1]-2,6,2,cl); });
+  // 멀리 황궁 (흰 벽, 푸른 둥근 지붕)
+  const PW=['#b8b4c4','#d4d0dc','#ecE8f2'.toLowerCase(),'#ffffff'];
+  R(70,40,100,34,PW[0]); R(71,41,98,33,PW[2]); for(let k=0;k<9;k++){ R(76+k*11,48,4,8,'#8a9ac0'); R(76+k*11,60,4,8,'#8a9ac0'); }
+  o.ell(120,40,14,10,'#5a78b0'); o.ell(118,38,9,6,'#7a98d0'); R(119,26,2,6,GD2[2]); o.ell(84,42,6,5,'#5a78b0'); o.ell(156,42,6,5,'#5a78b0');
+  R(70,72,100,2,PW[0]);
+  // 산울타리
+  for(let X=0;X<240;X++){ const h=Math.round(72+Math.sin(X/6)*1.5); R(X,h,1,26,'#3e6a3a'); px(X,h,'#5a8a4e'); }
+  for(let X=4;X<240;X+=9) o.ell(X,78,4,2,'#4e7e46');
+  // 잔디
+  R(0,96,240,64,P.gr[0]); R(0,96,240,1,mix(P.gr[0],'#ffffff',.2)); R(0,130,240,30,P.gr[1]); R(0,130,240,1,P.gr[2]);
+  for(let k=0;k<40;k++){ const X=(k*53)%240, Y=100+(k*29)%58; R(X,Y,3,1,Y>130?P.gr[2]:P.gr[1]); }
+  // 사과꽃 나무 (양옆 뒤)
+  const blossom=(x,y,s)=>{ R(x-2,y,4,Math.round(26*s),P.trunk); const r=Math.round(16*s);
+    [[0,-r*.3,r],[-r*.8,r*.1,r*.7],[r*.8,r*.1,r*.7],[0,-r*.9,r*.7]].forEach(b=>{ o.ell(Math.round(x+b[0]),Math.round(y+b[1]),Math.round(b[2])+1,Math.round(b[2]*.8)+1,'#c890a8'); o.ell(Math.round(x+b[0]),Math.round(y+b[1]),Math.round(b[2]),Math.round(b[2]*.8),'#f2c8d8'); o.ell(Math.round(x+b[0]-2),Math.round(y+b[1]-2),Math.round(b[2]*.5),Math.round(b[2]*.4),'#fff0f4'); }); };
+  blossom(14,64,1.1); blossom(226,66,1.1);
+  // 하얀 천막
+  const TW=['#b8b0b8','#d8d2d8','#f0ecf0','#ffffff'];
+  R(28,20,184,6,TW[2]); o.poly([[28,20],[120,4],[212,20]],TW[3]); o.poly([[120,4],[212,20],[170,20]],TW[1]);
+  for(let X=28;X<212;X+=12){ o.ell(X+6,26,6,4,TW[2]); o.ell(X+6,25,5,2,TW[3]); px(X+6,30,TW[0]); }
+  for(let X=28;X<212;X+=12) R(X+5,30,2,3,'#d8b45a');
+  [[30,26],[208,26]].forEach(p=>{ R(p[0],p[1],3,72,TW[1]); R(p[0],p[1],1,72,TW[3]); }); R(119,4,2,4,GD2[2]);
+  const X0=o.x; X0.save(); X0.globalAlpha=.10; X0.fillStyle='#4a4060'; X0.fillRect(30,74,180,22); X0.restore();
+  // 긴 탁자 (흰 천, 레이스)
+  R(26,98,188,2,'#e8e2d8'); R(24,100,192,8,'#f8f4ec'); R(24,100,192,1,'#ffffff'); R(24,108,192,10,'#ece6dc');
+  for(let X=24;X<216;X+=4){ R(X,117,2,2,'#f8f4ec'); px(X+1,119,'#d8d0c4'); }
+  [[30,118],[208,118]].forEach(l=>{ R(l[0],l[1],4,16,WD2[2]); R(l[0],l[1],1,16,WD2[4]); });
+  // 탁자 위: 찻잔, 케이크 단, 꽃병
+  for(let k=0;k<9;k++){ const x=36+k*20; o.ell(x,99,4,1,'#ffffff'); R(x-2,95,5,4,'#f6f2fa'); R(x-2,95,5,1,'#c8d0e8'); px(x+3,96,'#f6f2fa'); }
+  [[70,'#e8a0b8'],[170,'#f0d080']].forEach(c=>{ const x=c[0]; R(x-1,82,2,16,GD2[1]); o.ell(x,96,9,2,'#ffffff'); o.ell(x,88,6,1,'#ffffff'); o.ell(x,94,7,2,c[1]); o.ell(x,86,4,2,'#d8f0c8'); px(x,80,GD2[3]); });
+  R(117,84,6,12,'#c8d8f0'); R(118,83,4,1,'#e0e8f8'); [[114,80],[120,77],[126,80],[117,75],[123,75]].forEach(f=>{ o.ell(f[0],f[1],3,2,'#e05a7a'); px(f[0],f[1]-1,'#ff9ab0'); }); o.ell(120,84,5,1,'#4e7e46');
+  // 장미 덤불 (앞쪽 양옆)
+  [[8,140],[232,142],[52,150],[188,152]].forEach(b=>{ o.ell(b[0],b[1],12,8,'#2f5a36'); o.ell(b[0]-2,b[1]-2,9,6,'#3e7a46'); [[-6,-3],[3,-5],[6,1],[-2,2],[-8,3]].forEach(r=>{ o.ell(b[0]+r[0],b[1]+r[1],2,2,'#c03050'); px(b[0]+r[0]-1,b[1]+r[1]-1,'#f07090'); }); });
+  if(P.part){ for(let k=0;k<20;k++){ const X=(k*97)%236, Y=(k*61)%120+8; px(X,Y,P.part); px(X+1,Y,mix(P.part,'#7a3a14',.25)); } }
+}
+
 const BG={
  exterior:(o,P)=>exterior3(o,P), hall:(o,P)=>hall3(o,P), bedroom:(o,P)=>bedroom5(o,P), dining:(o,P)=>dining3(o,P),
  study:(o,P)=>study2(o,P), orchard:(o,P)=>orchard3(o,P), kitchen:(o,P)=>kitchen3(o,P), schoolroom:(o,P)=>school3(o,P),
- corridor:(o,P)=>corridor3(o,P), office:(o,P)=>office3(o,P), carriage:(o,P)=>carriage3(o,P)
+ corridor:(o,P)=>corridor3(o,P), office:(o,P)=>office3(o,P), carriage:(o,P)=>carriage3(o,P), palace:(o,P)=>palace3(o,P)
 };
 const PLACES={exterior:'저택 앞',hall:'현관 홀',bedroom:'내 방',dining:'식당',study:'서재 앞',orchard:'과수원 담장',kitchen:'부엌',schoolroom:'공부방',corridor:'이층 복도'};
 const BGCACHE={};
