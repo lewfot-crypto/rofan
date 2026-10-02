@@ -776,37 +776,51 @@ function figSVG(id){
   o.x.drawImage(s.c,0,Math.max(0,s.top-3),56,64,0,0,56,64);
   IMGCACHE[key]=toImg(o.c,'px',id); return IMGCACHE[key];
 }
+// 처음 실행 화면 (150×300 세로): 해 질 녘 공작가 마차 창 — 금장 판넬 벽, 창밖 언덕 위 저택, 벨벳 누빔 (사용자 선택)
+const TW=150, TH=300;
 function titleSVG(season){
-  // 처음 실행 화면: 공작가 마차 안에서 본 창 — 마차 안 배경과 같은 새 그림체(점무늬 없음)
   const key='ti|'+season; if(IMGCACHE[key]) return IMGCACHE[key];
-  const o=PX(120,214); if(!o.x) return ''; const P=seasonPal(season); const R=(x,y,w,h,c)=>o.r(x,y,w,h,c), px=(x,y,c)=>o.p(x,y,c);
-  const WB=['#2a1810','#4a2c1c','#6a4028','#8a5838','#aa7450'], VB=['#141a34','#1e2a50','#2c3c6e','#3e5290','#5a70b0'];
-  // 나무 벽
-  R(0,0,120,214,WB[2]); for(let X=0;X<120;X+=10){ R(X,0,1,214,WB[1]); R(X+1,0,1,214,WB[3]); }
-  R(0,0,120,56,WB[1]); for(let X=0;X<120;X+=10){ R(X,0,1,56,WB[0]); } R(0,54,120,2,GD2[1]);   // 제목 자리(어둡게 비움)
-  // 창 (세로로 긴)
-  const wx=22, wy=70, ww=76, wh=82;
-  R(wx-6,wy-6,ww+12,wh+12,WB[0]); R(wx-4,wy-4,ww+8,wh+8,GD2[1]); R(wx-3,wy-3,ww+6,wh+6,WB[3]); R(wx-3,wy-3,ww+6,1,WB[4]);
-  bands(o,wx,wy,ww,wh,[P.sky[0],P.sky[0],P.sky[1],P.sky[2]]);
-  const cl=mix(P.sky[2],'#ffffff',.6); o.ell(wx+18,wy+14,8,2,cl); o.ell(wx+24,wy+12,5,2,cl); o.ell(wx+56,wy+24,7,2,cl);
-  for(let X=0;X<ww;X++){ const h=Math.round(wh*.58+Math.sin(X/11)*3); R(wx+X,wy+h,1,wh-h,P.far[0]); px(wx+X,wy+h,mix(P.far[0],'#ffffff',.2)); }
-  for(let X=0;X<ww;X++){ const h=Math.round(wh*.68+Math.sin((X+20)/8)*2); R(wx+X,wy+h,1,wh-h,P.far[1]); }
-  R(wx,wy+wh-16,ww,16,P.gr[1]); R(wx,wy+wh-16,ww,1,P.gr[0]);
-  [[wx+14,wy+66,.8],[wx+60,wy+70,.7]].forEach(t=>{ const x=t[0], y=t[1], r=Math.round(12*t[2]); R(x-1,y,3,Math.round(14*t[2]),P.trunk);
-    o.ell(x,y-4,r+1,r,mix(P.leaf[2],'#000000',.3)); o.ell(x,y-4,r,r-1,P.leaf[2]); o.ell(x-2,y-6,Math.round(r*.7),Math.round(r*.55),P.leaf[1]); o.ell(x-4,y-8,Math.round(r*.35),Math.round(r*.3),P.leaf[0]); });
-  if(P.part){ for(let k=0;k<10;k++){ const X=wx+3+(k*29)%(ww-6), Y=wy+4+(k*17)%(wh-24); px(X,Y,P.part); px(X+1,Y,P.part==='#ffffff'?'#e8eef6':mix(P.part,'#7a3a14',.35)); } }
-  // 창에 비친 아델라인 (흐리게)
-  const s=sprite('adeline','neutral'); o.x.save(); o.x.globalAlpha=.22; o.x.drawImage(s.c,0,Math.max(0,s.top-2),56,64,wx+10,wy+18,56,64); o.x.restore();
-  R(wx+Math.floor(ww/2)-1,wy,2,wh,WB[1]); R(wx+Math.floor(ww/2)-1,wy,1,wh,WB[3]);
-  for(let k=0;k<3;k++) o.line(wx+5+k*4,wy+5,wx+2+k*4,wy+22,mix(P.sky[2],'#ffffff',.6));
-  // 커튼 + 금 봉
-  const CU=['#4a1828','#6e2236','#923048','#b04a5e'];
-  curtainPair(o,4,60,16,100,CU,true); curtainPair(o,100,60,16,100,CU,true);
-  R(0,57,120,4,GD2[2]); R(0,57,120,1,GD2[3]); R(0,60,120,1,GD2[0]); o.ell(2,58,2,2,GD2[3]); o.ell(117,58,2,2,GD2[3]);
-  // 아래 남색 벨벳 누빔 + 금단추
-  R(0,160,120,54,VB[2]); R(0,158,120,2,GD2[2]); R(0,160,120,1,GD2[0]);
-  for(let X=-24;X<144;X+=12){ o.line(X,161,X+52,213,VB[1]); o.line(X+52,161,X,213,VB[1]); o.line(X+1,161,X+53,213,VB[3]); }
-  for(let j=0;j<7;j++) for(let X=(j%2)*6;X<120;X+=12){ const y=167+j*7; R(X,y,2,2,GD2[1]); px(X,y,GD2[3]); }
-  // 벽 등
+  const o=PX(TW,TH); if(!o.x) return '';
+  titleCarriage(o,seasonPal(season));
   IMGCACHE[key]=toImg(o.c,'bgsvg px','').replace('class="bgsvg px"','class="bgsvg px" aria-hidden="true"'); return IMGCACHE[key];
 }
+function titleCarriage(o,P){
+  const R=(x,y,w,h,c)=>o.r(x,y,w,h,c), px=(x,y,c)=>o.p(x,y,c);
+  const WB=['#1e110b','#341e13','#4a2a1b','#633a26','#7e4e34'], VB=['#0e1228','#161c3c','#202a56','#2e3c74','#46589a'];
+  // 벽: 짙은 호두나무 + 금장 몰딩 판넬
+  R(0,0,TW,TH,WB[1]);
+  const panel=(x,y,w,h)=>{ R(x,y,w,h,WB[0]); R(x+1,y+1,w-2,h-2,GD2[1]); R(x+2,y+2,w-4,h-4,WB[2]); R(x+2,y+2,w-4,1,WB[3]); R(x+2,y+2,1,h-4,WB[3]); R(x+3,y+3,w-6,h-6,WB[1]); px(x+1,y+1,GD2[3]); px(x+w-2,y+1,GD2[3]); px(x+1,y+h-2,GD2[3]); px(x+w-2,y+h-2,GD2[3]); };
+  panel(8,10,134,74);                       // 제목 자리 판넬
+  R(0,0,TW,3,WB[0]); R(0,3,TW,1,GD2[2]);
+  // 창 틀
+  const wx=24, wy=104, ww=102, wh=104;
+  R(wx-8,wy-8,ww+16,wh+16,WB[0]); R(wx-6,wy-6,ww+12,wh+12,GD2[1]); R(wx-5,wy-5,ww+10,wh+10,GD2[2]); R(wx-5,wy-5,ww+10,1,GD2[3]); R(wx-4,wy-4,ww+8,wh+8,WB[3]); R(wx-2,wy-2,ww+4,wh+4,WB[0]);
+  // 해 질 녘 하늘
+  bands(o,wx,wy,ww,wh,['#3a3a74','#5a4a88','#865a92','#b86a88','#e08a7a','#f2aa78','#f8c88a','#fbe0a8']);
+  o.ell(wx+70,wy+70,9,9,'#fff0c8'); o.ell(wx+70,wy+70,7,7,'#fff8e0'); warmGlow(o,wx+70,wy+70,[[22,.06],[12,.08]]);
+  [[wx+18,wy+22,14],[wx+60,wy+36,18],[wx+34,wy+54,12]].forEach(c=>{ R(c[0]-c[2],c[1],c[2]*2,2,'#d88a92'); R(c[0]-c[2]+4,c[1]-1,c[2]*2-10,1,'#eab0a0'); R(c[0]-c[2]+2,c[1]+2,c[2]*2-4,1,'#a86a8a'); });
+  // 언덕 위 먼 저택 실루엣 (불빛 몇 개)
+  for(let X=0;X<ww;X++){ const h=Math.round(wh*.66+Math.sin(X/14)*3); R(wx+X,wy+h,1,wh-h,'#5a3a5a'); }
+  const mx=wx+40, my=wy+64; R(mx,my-10,26,10,'#3a2440'); R(mx-8,my-6,8,6,'#3a2440'); R(mx+26,my-6,8,6,'#3a2440'); o.poly([[mx-1,my-10],[mx+27,my-10],[mx+22,my-15],[mx+4,my-15]],'#2e1c36'); R(mx+11,my-19,4,5,'#2e1c36');
+  [[mx+3,my-7],[mx+9,my-7],[mx+19,my-4],[mx-5,my-4],[mx+29,my-4]].forEach(w=>{ R(w[0],w[1],2,2,'#ffd27a'); });
+  // 가까운 나무·길
+  for(let X=0;X<ww;X++){ const h=Math.round(wh*.8+Math.sin((X+30)/9)*2); R(wx+X,wy+h,1,wh-h,'#3a2438'); }
+  [[wx+10,wy+80],[wx+90,wy+82]].forEach(t=>{ R(t[0],t[1],2,10,'#24142a'); o.ell(t[0]+1,t[1]-5,9,8,'#2a1a32'); o.ell(t[0]-1,t[1]-7,6,5,'#3a2440'); });
+  R(wx,wy+wh-8,ww,8,'#2a1a2e'); for(let k=0;k<5;k++) R(wx+6+k*20,wy+wh-4,10,1,'#6a4a5a');
+  // 창 가운데 살·유리 반사
+  R(wx+ww/2-1,wy,2,wh,WB[0]); R(wx+ww/2-1,wy,1,wh,WB[3]);
+  // 커튼 (술 장식)
+  const CU=['#3a1020','#5a1a2c','#7e2840','#a03e56'];
+  curtainPair(o,wx-12,wy-10,20,wh+20,CU,true); curtainPair(o,wx+ww-8,wy-10,20,wh+20,CU,true);
+  [[wx-4,wy+wh+12],[wx+ww+4,wy+wh+12]].forEach(t=>{ R(t[0]-1,t[1]-6,3,3,GD2[2]); for(let k=-2;k<=2;k++) R(t[0]+k,t[1]-3,1,6,k%2?GD2[1]:GD2[2]); });
+  R(wx-14,wy-14,ww+28,4,GD2[2]); R(wx-14,wy-14,ww+28,1,GD2[3]); R(wx-14,wy-11,ww+28,1,GD2[0]); o.ell(wx-15,wy-12,2,3,GD2[3]); o.ell(wx+ww+14,wy-12,2,3,GD2[3]);
+  // 양옆 벽등
+  [[8,150],[142,150]].forEach(l=>{ R(l[0]-1,l[1],3,10,GD2[1]); R(l[0]-2,l[1]-8,5,8,GD2[1]); R(l[0]-1,l[1]-7,3,6,'#ffe2a0'); warmGlow(o,l[0],l[1]-4,[[18,.06],[9,.08]]); });
+  // 아래: 남색 벨벳 누빔 + 금단추
+  const vy=228; R(0,vy-3,TW,3,GD2[2]); R(0,vy-3,TW,1,GD2[3]); R(0,vy,TW,TH-vy,VB[1]);
+  for(let X=-30;X<TW+30;X+=14){ o.line(X,vy,X+70,vy+70,VB[0]); o.line(X+70,vy,X,vy+70,VB[0]); o.line(X+1,vy,X+71,vy+70,VB[2]); }
+  for(let j=0;j<10;j++) for(let X=(j%2)*7;X<TW;X+=14){ const y=vy+7*j; R(X,y,2,2,GD2[0]); px(X,y,GD2[2]); }
+  for(let j=0;j<40;j++){ o.x.save(); o.x.globalAlpha=.03*j; o.x.fillStyle='#05060e'; o.x.fillRect(0,vy+30+j,TW,1); o.x.restore(); }
+  void P;
+}
+

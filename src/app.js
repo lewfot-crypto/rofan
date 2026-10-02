@@ -102,7 +102,7 @@ function drawTitle(){
   } else {
     menu=(S?'<button class="tbtn main" data-act="continue">이어하기</button><button class="tbtn" data-act="new">새로 시작</button>':'<button class="tbtn main" data-act="new">새로 시작</button>')+'<button class="tbtn" data-act="titleSettings">설정</button>';
   }
-  app.innerHTML='<div class="title">'+titleSVG(season)+'<div class="tt-wrap"><h1 class="tt-h serif">트로네 공작가의<br>아델라인</h1><p class="tt-sub">조용히 알아차리는 아이의 이야기</p></div><div class="tt-menu">'+menu+'</div></div>';
+  app.innerHTML='<div class="title">'+titleSVG(season)+'<div class="tt-wrap"><h1 class="tt-h serif"><span class="tt-k">트로네 공작가의</span>아델라인</h1><div class="tt-orn" aria-hidden="true"><i></i><b></b><i></i></div></div><div class="tt-menu">'+menu+'</div></div>';
 }
 
 function nav(){

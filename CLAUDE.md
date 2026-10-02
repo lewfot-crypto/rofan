@@ -164,6 +164,7 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 - 4장 분기(사용자 승인): 설탕 두 조각/넣지 않음(`sugar`/`noSugar`, 8장에서 다시 쓸 예정), "원하지 않아요"/"말씀하셔도 돼요"(`noTell`/`mayTell`), 누구의 말인지 묻기/외투(`askedWhose`/`tookCoat`). 노트 표시 `{fn:'notebook', pre:'c4', empty:'…'}`.
 - 미구현: 편지 탭 내용(첫 편지는 10장 이후), 저택 탭의 장소 이동, 소리, 2권(10장~) 장면.
 - 앞으로 다시 쓸 1권 플래그: 성 `nameTrone/nameEverhart/nameSilent`(아드리안), 차 `gaveTea/keptTea`, 설탕 `sugar/noSugar`, `mayTell`, 장갑 `askedGlove/silentGlove`, 줄 긋기 `crossedLine/keptLine`.
+- 실행 화면(0.8.1, 사용자 선택): 해 질 녘 마차 창 150×300 (`titleCarriage`), 제목 금빛 명조 + 장식선, 단추 금테 고전풍. 부제 문구 없음.
 - 읽기 화면: 테마 자동/밝게/종이/어둡게 + 밝기 3단계(`pref.dim`), 상태줄·서재 본문 오른쪽 위 빠른 단추(`qtheme`).
 
 ## 다음 할 일
