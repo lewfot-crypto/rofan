@@ -19,6 +19,12 @@
 }
 :root[data-theme="dark"]{ --bg:#11141b; --panel:#1a1e28; --ink:#dcd9d2; --soft:#8f8c96; --line:#2d3240; --accent:#c9a27f; }
 :root[data-theme="light"]{ --bg:#ecece6; --panel:#f6f6f1; --ink:#26222c; --soft:#6a6672; --line:#cfd0c8; --accent:#7a4f3a; }
+:root[data-theme="paper"]{ --bg:#eadfc8; --panel:#f2e8d4; --ink:#3a2e24; --soft:#7a6a58; --line:#d4c4a6; --accent:#8a4f2a; }
+#app{ filter:brightness(var(--dim,1)); }
+.status .qt{ display:flex; align-items:center; gap:10px; }
+.qbtn{ border:0; background:none; padding:4px; margin:0 -4px 0 0; color:var(--soft); display:flex; align-items:center; cursor:pointer; }
+.qbtn svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.ph .qbtn{ margin-left:auto; }
 html{ height:100%; }
 body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-family:var(--sans); word-break:keep-all; -webkit-text-size-adjust:100%; }
 button{ font:inherit; color:inherit; background:none; border:1px solid var(--line); border-radius:8px; padding:.55em 1em; cursor:pointer; }

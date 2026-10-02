@@ -21,11 +21,12 @@ function renderText(text){
   return out;
 }
 
-let pref={fs:18,theme:'auto',sound:false};
+let pref={fs:18,theme:'auto',sound:false,dim:0};
 try{ const p=JSON.parse(store('adeline-game-pref')||'null'); if(p) pref=Object.assign(pref,p); }catch(e){}
 function applyPref(){
   root.style.setProperty('--fs',pref.fs+'px');
   if(pref.theme==='auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme',pref.theme);
+  root.style.setProperty('--dim',[1,.88,.76][pref.dim||0]);
   store('adeline-game-pref',JSON.stringify(pref));
 }
 function freshSave(){ return {scene:'s1',noticed:{},flags:{}}; }
@@ -104,7 +105,7 @@ function drawGame(){
   const tb=$('#tb'), pn=$('.panel');
   const ts=tb?tb.scrollTop:0, ps=pn?pn.scrollTop:0;
   const sc=SCENES[S.scene];
-  app.innerHTML='<div class="gs">'+(ui.tab?'':'<div class="status"><span>'+sc.season+' · '+sc.age+'</span><span>'+sc.chLabel+'</span></div>')+'<div class="main">'+sceneHtml()+(ui.tab?'<div class="panel">'+panelHtml(false)+'</div>':'')+'</div>'+nav()+'</div>';
+  app.innerHTML='<div class="gs">'+(ui.tab?'':'<div class="status"><span>'+sc.season+' · '+sc.age+'</span><span class="qt"><span>'+sc.chLabel+'</span>'+qBtn()+'</span></div>')+'<div class="main">'+sceneHtml()+(ui.tab?'<div class="panel">'+panelHtml(false)+'</div>':'')+'</div>'+nav()+'</div>';
   const tb2=$('#tb'), pn2=$('.panel');
   if(tb2&&ui.keep!=='top') tb2.scrollTop=ts;
   if(pn2&&ui.keep!=='top') pn2.scrollTop=ps;
@@ -119,9 +120,14 @@ function draw(){
   else drawGame();
 }
 
-function head(title,backLabel,act,v){
-  return '<div class="ph"><button class="bk" data-act="'+act+'"'+(v!==undefined?' data-v="'+v+'"':'')+'>'+ICON.back+backLabel+'</button><h2>'+title+'</h2></div>';
+function head(title,backLabel,act,v,q){
+  return '<div class="ph"><button class="bk" data-act="'+act+'"'+(v!==undefined?' data-v="'+v+'"':'')+'>'+ICON.back+backLabel+'</button><h2>'+title+'</h2>'+(q?qBtn():'')+'</div>';
 }
+// 읽는 화면에서 바로 바꾸는 화면 색: 밝게 → 종이 → 어둡게
+const THEME_NAME={auto:'자동',light:'밝게',paper:'종이',dark:'어둡게'};
+function curTheme(){ if(pref.theme!=='auto') return pref.theme; return (window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'; }
+function qBtn(){ const t=curTheme(); const ic=t==='dark'?'<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>':t==='paper'?'<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h7"/>':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+  return '<button class="qbtn" data-act="qtheme" aria-label="화면 색 바꾸기 (지금: '+THEME_NAME[t]+')"><svg viewBox="0 0 24 24" aria-hidden="true">'+ic+'</svg></button>'; }
 function panelHtml(fromTitle){
   const t=ui.tab;
   if(t==='notes') return head('노트','장면으로','closeTab')+'<div class="pc notebook">'+notesHtml()+'</div>';
@@ -151,12 +157,12 @@ function settingsHtml(fromTitle){
   if(sub==='root'){
     const n=S?Object.keys(S.noticed).length:0;
     const row=(k,lb,v)=>'<button class="row" data-act="sub" data-v="'+k+'">'+lb+'<span class="v">'+(v||'')+'</span>'+ICON.go+'</button>';
-    return head('설정',rootBack[0],rootBack[1])+'<div class="pc">'+row('reading','읽기 설정',pref.fs+'px · '+({auto:'자동',light:'밝게',dark:'어둡게'})[pref.theme])+row('sound','소리',pref.sound?'켬':'끔')+row('save','저장과 불러오기',S?('노트 '+n+'줄'):'')+row('library','이야기 서재','본편 30장 · 번외 7편')+row('chars','인물 사전','16명')+row('about','정보','')+'</div>';
+    return head('설정',rootBack[0],rootBack[1])+'<div class="pc">'+row('reading','읽기 설정',pref.fs+'px · '+THEME_NAME[pref.theme]+(pref.dim?' · 밝기 '+['','조금 낮게','낮게'][pref.dim]:''))+row('sound','소리',pref.sound?'켬':'끔')+row('save','저장과 불러오기',S?('노트 '+n+'줄'):'')+row('library','이야기 서재','본편 30장 · 번외 7편')+row('chars','인물 사전','16명')+row('about','정보','')+'</div>';
   }
   const back=(lb,v)=>head(lb,sub==='reader'?'서재':'설정',sub==='reader'?'sub':'sub',sub==='reader'?'library':'root');
   if(sub==='reading'){
     const seg=(k,lb)=>'<button class="'+(pref.theme===k?'on':'')+'" data-act="theme" data-v="'+k+'">'+lb+'</button>';
-    return back('읽기 설정')+'<div class="pc"><div class="field">글자 크기<span class="seg"><button data-act="fs" data-v="-1">작게</button><span style="align-self:center;font-size:13px;color:var(--soft);min-width:3em;text-align:center">'+pref.fs+'px</span><button data-act="fs" data-v="1">크게</button></span></div><div class="field">화면<span class="seg">'+seg('auto','자동')+seg('light','밝게')+seg('dark','어둡게')+'</span></div><p class="note-s">이야기 본문과 서재에 같이 적용돼요.</p></div>';
+    return back('읽기 설정')+'<div class="pc"><div class="field">글자 크기<span class="seg"><button data-act="fs" data-v="-1">작게</button><span style="align-self:center;font-size:13px;color:var(--soft);min-width:3em;text-align:center">'+pref.fs+'px</span><button data-act="fs" data-v="1">크게</button></span></div><div class="field">화면<span class="seg">'+seg('auto','자동')+seg('light','밝게')+seg('paper','종이')+seg('dark','어둡게')+'</span></div><div class="field">밝기<span class="seg">'+[0,1,2].map(k=>'<button class="'+((pref.dim||0)===k?'on':'')+'" data-act="dim" data-v="'+k+'">'+['보통','조금 낮게','낮게'][k]+'</button>').join('')+'</span></div><p class="note-s">이야기 본문과 서재에 같이 적용돼요. 읽는 화면 오른쪽 위 단추로도 밝게·종이·어둡게를 바로 바꿀 수 있어요.</p></div>';
   }
   if(sub==='sound'){
     return back('소리')+'<div class="pc"><div class="field">배경 소리<span class="seg"><button class="'+(pref.sound?'on':'')+'" data-act="sound" data-v="1">켬</button><button class="'+(!pref.sound?'on':'')+'" data-act="sound" data-v="0">끔</button></span></div><p class="note-s">소리 파일은 아직 없어요. 켜 두면 준비되는 대로 계절 소리가 재생돼요.</p></div>';
@@ -194,7 +200,7 @@ function tocHtml(){
 function readerHtml(){
   const c=CHAPTERS.find(x=>x.n===ui.chap); if(!c) return '';
   const i=CHAPTERS.indexOf(c), prev=CHAPTERS[i-1], next=CHAPTERS[i+1];
-  let o=head(chLabel(c),'서재','sub','library')+'<div class="pc"><article class="chapter"><div class="meta">'+VOLS[volOf(c.n)]+' · '+c.season+'</div><h3>'+c.title+'</h3>'+renderText(c.text);
+  let o=head(chLabel(c),'서재','sub','library',true)+'<div class="pc"><article class="chapter"><div class="meta">'+VOLS[volOf(c.n)]+' · '+c.season+'</div><h3>'+c.title+'</h3>'+renderText(c.text);
   if(c.branches){
     const groups=[]; c.branches.forEach(b=>{ let g=groups.find(x=>x.t===b.group); if(!g){ g={t:b.group,items:[]}; groups.push(g);} g.items.push(b); });
     o+='<section class="fork"><h4>이야기가 갈라지는 곳</h4><p class="hint2">읽고 싶은 길을 하나 고르세요. 어느 길이든 마지막 장면은 같아요.</p>';
@@ -228,6 +234,8 @@ document.addEventListener('click',e=>{
    case 'branch': ui.fork=el.dataset.id; draw(); { const ep=$('#epi'); if(ep&&ep.scrollIntoView) ep.scrollIntoView({block:'start'}); } return;
    case 'fs': pref.fs=Math.max(14,Math.min(26,pref.fs+(+v))); applyPref(); break;
    case 'theme': pref.theme=v; applyPref(); break;
+   case 'qtheme': { const order=['light','paper','dark']; pref.theme=order[(order.indexOf(curTheme())+1)%3]; applyPref(); break; }
+   case 'dim': pref.dim=+v; applyPref(); break;
    case 'sound': pref.sound=v==='1'; applyPref(); break;
    case 'toggleCode': ui.code=!ui.code; break;
    case 'copyCode': { const ta=$('#codeOut'); if(ta){ ta.select(); try{ navigator.clipboard.writeText(ta.value); ui.msg='복사했어요.'; }catch(err){ ui.msg='선택된 코드를 직접 복사해 주세요.'; } } break; }
