@@ -85,7 +85,7 @@ const BOY_FIG={
 ,
  sebastian:{hair:['#5e4c3e','#8a7662','#ac9884','#cdbcaa'],eye:['#3a4a7a','#5a6a9a','#a8b4d8'],lock:'r',face:'sebastian',glasses:'#8a6a3a',
    coat:['#2e3260','#40467e','#5a609e','#7278b8','#9096cc'],vest:['#40467e','#5a609e','#7278b8','#9096cc'],pants:['#2e3260','#40467e','#5a609e','#7278b8'],boots:['#2a2236','#3a3048','#4e4460','#62587a'],btn:'#d9b24a',robe:true,trim2:['#8a6a20','#c09030','#d9b24a'],book:['#4a2a3a','#6a3a50','#8a4e66','#a86680']},
- hadel:{hair:['#3e2c22','#5e4636','#7e624c','#9e8064'],eye:['#3a5a2e','#5a7a4a','#a0c088'],lock:'none',tuft:true,face:'hadel',ears:true,skin:'#f2c8ae',
+ hadel:{hair:['#121014','#1e1a1e','#2e282c','#4a4246'],eye:['#3a5a2e','#5a7a4a','#a0c088'],lock:'none',tuft:true,face:'hadel',ears:true,skin:'#f2c8ae',
    coat:['#4a3220','#6a4a30','#8a6844','#a8865e','#c4a47c'],vest:['#9a9a9e','#b8b8bc','#d4d4d8','#ececf0'],pants:['#2e2a26','#423c36','#5a524a','#72685e'],boots:['#2a1e18','#3e2e24','#56402e','#6e5640'],btn:'#c0c4cc',belt:['#2a1e18','#3e2e24','#56402e'],sword:true,pauldron:true}
 };
 // 얼굴 차이: 눈(16~20행, 두 눈 같은 무늬), 눈썹(13~15행), 입(23~25행)
