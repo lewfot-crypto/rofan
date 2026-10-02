@@ -56,7 +56,7 @@ function notebookHtml(p){
 }
 function sceneHtml(){
   const sc=SCENES[S.scene];
-  const stage=stageSVG(sc.place,sc.season,sc.chars,sc.time);
+  const stage=stageSVG(sc.place,sc.season,sc.chars,sc.time,sc.props);
   let paras='';
   (sc.paras||[]).forEach(p=>{
     let t=p;
@@ -75,7 +75,7 @@ function sceneHtml(){
     const n=Object.keys(S.noticed).length;
     body='<div class="endcard"><h3>'+(sc.endTitle||'여기까지예요')+'</h3><p>알아차린 것 '+n+'줄이 노트에 적혀 있어요. 무엇을 알아챘는지에 따라 달라진 장면이 있었어요. 다음 장면은 순서대로 추가될 거예요.</p></div>';
   } else {
-    const left=Object.keys(NOTICES).some(id=>NOTICES[id].scene===S.scene&&!S.noticed[id]);
+    const left=Object.keys(NOTICES).some(id=>NOTICES[id].scene===S.scene&&!NOTICES[id].byChoice&&!S.noticed[id]);   // 선택으로 적히는 노트(byChoice)는 밑줄 안내에서 뺀다
     body=paras+(left?'<div class="hint">밑줄 친 부분을 누르면 노트에 적어요</div>':'')+jots;
   }
   let ch='';
@@ -246,6 +246,7 @@ document.addEventListener('click',e=>{
    case 'choice': {
      const sc=SCENES[S.scene], c=sc.choices[+el.dataset.i]; if(!c) return;
      if(c.flag) S.flags[c.flag]=1;
+     if(c.note&&!S.noticed[c.note]) S.noticed[c.note]=Date.now();   // 선택으로 노트에 적기
      if(c.go==='notes'){ ui.tab='notes'; }
      else if(c.go==='library'){ ui.tab='settings'; ui.sub='reader'; ui.chap=c.chap||4; ui.fork=null; }
      else if(c.go==='restart'){ ui.confirmEnd=true; }

@@ -657,11 +657,21 @@ function bgCanvas(place,season,time){
     (NIGHT_LIGHTS[place]||[]).forEach(l=>warmGlow(o,l[0],l[1],[[l[2],.07],[Math.round(l[2]*.6),.09],[Math.round(l[2]*.3),.12]])); }
   BGCACHE[key]=o.c; return o.c;
 }
-function stageSVG(place,season,chars,time){
-  const key='st|'+place+'|'+season+'|'+(time||'')+'|'+JSON.stringify(chars||[]);
+// 장면에만 올리는 소품 (scene.props)
+const PROPS={
+ box(o){   // 서재 책상 위 에버하트 호두나무 상자 (뚜껑에 금빛 글씨)
+  const R=(x,y,w,h,c)=>o.r(x,y,w,h,c), W=['#1e120c','#3a2416','#583822','#74502f','#8e6a44'];
+  R(149,85,30,13,W[0]); R(150,86,28,11,W[2]); R(150,86,28,1,W[4]); R(150,86,1,11,W[3]); R(177,86,1,11,W[1]);
+  R(149,84,30,4,W[0]); R(150,84,28,3,W[3]); R(150,84,28,1,W[4]);          // 뚜껑
+  for(let k=0;k<7;k++){ R(155+k*3,85,2,1,'#d8b45a'); } o.p(163,92,'#d8b45a'); R(162,91,3,3,'#b08a3a'); o.p(163,92,'#1e120c');   // 글씨·자물쇠
+ }
+};
+function stageSVG(place,season,chars,time,props){
+  const key='st|'+place+'|'+season+'|'+(time||'')+'|'+(props||[]).join(',')+'|'+JSON.stringify(chars||[]);
   if(IMGCACHE[key]) return IMGCACHE[key];
   const o=PX(BW,BH); if(!o.x) return '';
   o.x.drawImage(bgCanvas(place,season,time),0,0);
+  (props||[]).forEach(k=>{ if(PROPS[k]) PROPS[k](o); });
   if(place==='carriage'){ const rs=sprite('adeline','neutral'); o.x.save(); o.x.globalAlpha=.3; o.x.drawImage(rs.c,0,Math.max(0,rs.top-2),56,64,92,28,56,64); o.x.restore(); }
   const xs={left:18,center:92,right:166};
   (chars||[]).forEach(ch=>{ const s=sprite(ch.id,ch.expr||'neutral'); const X=xs[ch.pos||'center'], Y=156-s.feet; o.x.globalAlpha=.3; o.x.fillStyle='#1a1226'; for(let k=0;k<4;k++){ o.x.fillRect(X+8+k*2,152+k,40-k*4,1); } o.x.globalAlpha=1;

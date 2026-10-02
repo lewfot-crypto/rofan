@@ -117,6 +117,8 @@ SCENES.c3c = {
   end:true, endTitle:'…'                                          // 끝 카드
 };
 NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의 노트 어투)'};
+// 선택지로 노트에 적기: choice에 note:'misread' → NOTICES.misread = {scene, byChoice:true, text} (밑줄 안내에서 빠짐)
+// 장면 소품: props:['box'] (art_bg.js 의 PROPS)
 ```
 - 모든 `{{id|…}}` 는 `NOTICES[id]` 가 있어야 하고 **같은 장면 소속**이어야 한다 (`npm run check` 가 검사).
 - 문장은 가능하면 소설 본문(`chapters.js`)의 단락을 그대로 가져온다. 단락 위치는 `node tools/dump_paras.js 4 5` 로 확인.
@@ -143,11 +145,12 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 
 ## 현재 구현 상태 (v0.5)
 - 완성: 실행화면, 게임 화면, 4개 탭, 설정(읽기·소리·저장·서재·인물 사전·정보), 소설 전문 열람(본편 30장 + 번외 7편, 30장 아홉 갈래 선택 UI), 새 그림체 배경 11곳(대저택)·인물 16명·표정 5종, 밤 장면(`time:'night'`).
-- 플레이 가능: **1권 1~5장** (장면 38개). 마지막은 `send` 끝 카드("1권 5장까지").
+- 플레이 가능: **1권 1~6장** (장면 45개). 마지막은 `send` 끝 카드("1권 6장까지").
+- 6장 분기(사용자 승인): 안경 `tookGlasses`/`onlyLooked`, 오해의 노트 `wroteMisread`(노트 `misread`)/`wroteNothing`. 8장에서 `misread` 에 줄 긋기, `dustless` 사용.
 - 5장 분기(사용자 승인): 성 선택 `nameTrone`/`nameEverhart`/`nameSilent`(2권 이후 아드리안 장면에 다시 쓸 것), 차 `gaveTea`/`keptTea`.
 - 4장 분기(사용자 승인): 설탕 두 조각/넣지 않음(`sugar`/`noSugar`, 8장에서 다시 쓸 예정), "원하지 않아요"/"말씀하셔도 돼요"(`noTell`/`mayTell`), 누구의 말인지 묻기/외투(`askedWhose`/`tookCoat`). 노트 표시 `{fn:'notebook', pre:'c4', empty:'…'}`.
-- 미구현: 편지 탭 내용(첫 편지는 10장 이후), 저택 탭의 장소 이동, 소리, 6장 이후 장면.
+- 미구현: 편지 탭 내용(첫 편지는 10장 이후), 저택 탭의 장소 이동, 소리, 7장 이후 장면, 노트 줄 긋기(8장).
 - 읽기 화면: 테마 자동/밝게/종이/어둡게 + 밝기 3단계(`pref.dim`), 상태줄·서재 본문 오른쪽 위 빠른 단추(`qtheme`).
 
 ## 다음 할 일
-`docs/roadmap.md` 참고. 우선순위: ① 1권 6~9장 장면화(설계 완료, 5장까지 끝남) ② 노트 수정(줄 긋기) 메커니즘(6·8장) ③ 2권 이후. (`corridor`/`office` 배경은 완료)
+`docs/roadmap.md` 참고. 우선순위: ① 1권 7~9장 장면화(설계 완료, 6장까지 끝남) ② 노트 수정(줄 긋기) 메커니즘(6·8장) ③ 2권 이후. (`corridor`/`office` 배경은 완료)
