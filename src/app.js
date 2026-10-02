@@ -45,10 +45,12 @@ const ICON={
  go:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>'
 };
 
-function notebookHtml(){
-  const early=Object.keys(SCENES).filter(k=>/^s\d/.test(k));
+function notebookHtml(p){
+  // p.pre: 이 장면 id로 시작하는 장면에서 적은 노트만 (기본: 1장 s*), p.empty: 하나도 없을 때 문장
+  p=p||{}; const re=p.pre?new RegExp('^'+p.pre):/^s\d/;
+  const early=Object.keys(SCENES).filter(k=>re.test(k));
   const ids=Object.keys(S.noticed).filter(id=>NOTICES[id]&&early.indexOf(NOTICES[id].scene)>=0).sort((x,y)=>S.noticed[x]-S.noticed[y]).slice(-4);
-  if(!ids.length) return '<p class="hint">낡은 노트는 거의 비어 있었다.</p>';
+  if(!ids.length) return '<p class="hint">'+esc(p.empty||'낡은 노트는 거의 비어 있었다.')+'</p>';
   return ids.map(id=>'<div class="jot">'+esc(NOTICES[id].text)+'</div>').join('');
 }
 function sceneHtml(){
@@ -60,7 +62,7 @@ function sceneHtml(){
     if(typeof p==='object'){
       if(p.if&&!S.flags[p.if]) return; if(p.not&&S.flags[p.not]) return;
       if(p.ifN&&!S.noticed[p.ifN]) return; if(p.notN&&S.noticed[p.notN]) return;
-      if(p.fn==='notebook'){ paras+=notebookHtml(); return; }
+      if(p.fn==='notebook'){ paras+=notebookHtml(p); return; }
       t=p.t;
     }
     paras+='<p>'+inline(t).replace(/\{\{(\w+)\|([^}]+)\}\}/g,(m,id,ph)=>'<span class="notice'+(S.noticed[id]?' done':'')+'" role="button" tabindex="0" data-act="notice" data-id="'+id+'">'+ph+'</span>')+'</p>';
