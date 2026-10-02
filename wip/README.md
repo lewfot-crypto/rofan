@@ -6,11 +6,11 @@
 - `study2.js` — 새 서재 배경 `study2(o,P)` (샘플, 사용자 확인함)
 - `ade2.js` — 새 아델라인 `adeSprite(expr)` (얼굴은 점 지도 `ADE_HEAD`, 땋은 머리 점 지도), `outlinePass()`
 - `more2.js` — 새 탠지(굵은 컬 단발) `tangieSprite`, 남자 얼굴 지도 + 몸 `maleSprite('edric'|'marot')`
-- `more3.js` — 홀트·마르타(어른 여자 얼굴 지도 `femSprite`), 아드리안(아이 얼굴 지도 `adrianSprite`). 캡처 `node wip/batch1_view.js 파일.png`
+- `more3.js` — 홀트·마르타(어른 여자 얼굴 지도 `femSprite`), 소년들(아이 얼굴 지도 `boySprite(id,expr)`: adrian·kylen·julian·lionel). 캡처 `node wip/batch1_view.js 파일.png`
 - `ade_view.js`, `more_view.js`, `cmp.js` — 비교 캡처 (`node wip/more_view.js /tmp/more.png`, 먼저 `npm run build`)
-- 미리보기 결과: `preview/study-redraw-compare.png`, `preview/adeline-redraw.png`, `preview/tangie-edric-marot-redraw.png`, `preview/holt-marta-adrian-redraw.png`
+- 미리보기 결과: `preview/study-redraw-compare.png`, `preview/adeline-redraw.png`, `preview/tangie-edric-marot-redraw.png`, `preview/holt-marta-adrian-redraw.png`, `preview/kylen-julian-lionel-redraw.png` (`node wip/batch2_view.js`)
 
-남은 일: 나머지 인물 9명(kylen, julian, lionel, sebastian, hadel, rosalie, serena, gregor, count), 배경 9곳(+복도, 집사실)을 같은 방식으로 → `src/art_sprites.js`, `src/art_bg.js` 에 정식 반영(`sprite(id,expr)` / `bgCanvas` 인터페이스 유지) → 테스트·캡처.
+남은 일: 나머지 인물 6명(sebastian, hadel, rosalie, serena, gregor, count), 배경 9곳(+복도, 집사실)을 같은 방식으로 → `src/art_sprites.js`, `src/art_bg.js` 에 정식 반영(`sprite(id,expr)` / `bgCanvas` 인터페이스 유지) → 테스트·캡처.
 
 ## 사용자 결정 (2026-10-02)
 - 홀트 선생님은 **안경 없음**, "엄격하지만 다정하게": 곧은 눈썹 + 살짝 올린 입꼬리, 따뜻한 갈색 눈.

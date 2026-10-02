@@ -72,46 +72,63 @@ const FEM_FIG={
    dress:['#3e2a1e','#5a3e2a','#7a5638','#9a6e4a','#b88c64'],trim:['#b9ad9a','#ddd3c0','#f3ecdc','#fffaf0'],belt:['#b9ad9a','#ddd3c0','#f3ecdc'],apron:true,rolled:true,wide:3,feet:126}
 };
 function femSprite(id,expr){ const cfg=FEM_FIG[id]; const o=PX(56,132); femBody(o,cfg); femHead(o,15,5,cfg,expr); outlinePass(o); return {c:o.c,feet:cfg.feet}; }
-// ── 아드리안: 아이 얼굴 지도(아델라인 것) + 모래빛 짧은 머리, 하늘색 외투, 잉크 묻은 손
-function adrianSprite(expr){
-  const o=PX(56,132); const SK=['#c98a78','#e2a892','#f5d2bd','#fde8d8'], WH=['#a9a3b0','#d6d1da','#f2eff4','#ffffff'];
-  const C=['#3e5468','#56708a','#7290aa','#8eaac2','#b0c8da'], PT=['#3a3434','#4e4848','#625c5c','#7a7474'], fy=124;
-  const BT=['#2a1e18','#3e2e24','#56402e','#6e5640'];
+// ── 소년들: 아이 얼굴 지도(아델라인 것) + 짧은 머리, 외투. 아드리안·카일런·율리안·리오넬
+const BOY_FIG={
+ adrian:{hair:['#9a7a4a','#c8a46a','#e4c890','#f6e2b4'],eye:['#3e5a3a','#6a8a5a','#a8c890'],lock:'r',
+   coat:['#3e5468','#56708a','#7290aa','#8eaac2','#b0c8da'],vest:['#8a7a5a','#a8987a','#c4b494','#dccdb0'],pants:['#3a3434','#4e4848','#625c5c','#7a7474'],boots:['#2a1e18','#3e2e24','#56402e','#6e5640'],btn:'#e8d6a8',ink:true},
+ kylen:{hair:['#141822','#222836','#343c50','#4a5470'],eye:['#3a5a8a','#7a9ac0','#c0d8f0'],lock:'l',tuft:true,
+   coat:['#1a2234','#26304a','#344262','#46587e','#5a6e96'],vest:['#26304a','#344262','#46587e','#5a6e96'],pants:['#181c26','#22283a','#2e3448','#3c4458'],boots:['#141218','#221e28','#34303c','#4a4452'],btn:'#b8c0d0',fur:['#8a8a94','#b4b4bc','#d6d6dc','#f0f0f4'],gloves:['#2a2024','#3e3034','#56444a','#6e5a60']},
+ julian:{hair:['#8a6430','#b08a58','#d6b47c','#f2dcaa'],eye:['#3a5a8a','#6a8ab0','#b0c8e8'],lock:'l',
+   coat:['#a8a094','#cfc6ba','#e6dfd6','#f4efe8','#ffffff'],vest:['#a08850','#c0a868','#d8c08a','#ecd8a8'],pants:['#8e8678','#aaa294','#c4bcae','#dcd4c6'],boots:['#2a1e18','#3e2e24','#56402e','#6e5640'],btn:'#d9b24a',epaulet:['#8a6a20','#c09030','#d9b24a','#f0d878'],sash:['#2e3e78','#40549a','#5a70b8']},
+ lionel:{hair:['#1e1412','#2e201c','#3e2c26','#5a4038'],eye:['#5a3e24','#8a643e','#c8a070'],lock:'none',
+   coat:['#1a4440','#245a56','#34807a','#4a9c94','#6ab8ae'],vest:['#8a6a20','#c09030','#d9b24a','#f0d878'],pants:['#1e2a2c','#2a3a3c','#384a4c','#4a5e60'],boots:['#2a1e18','#3e2e24','#56402e','#6e5640'],btn:'#d9b24a',trim:'#d9b24a'}
+};
+function boySprite(id,expr){
+  const f=BOY_FIG[id]; const o=PX(56,132); const SK=['#c98a78','#e2a892','#f5d2bd','#fde8d8'], WH=['#a9a3b0','#d6d1da','#f2eff4','#ffffff'];
+  const C=f.coat, PT=f.pants, fy=124, BT=f.boots;
   celPath(o,`M20 84 L27 84 L27 ${fy-6} L20 ${fy-6} Z`,PT); celPath(o,`M29 84 L36 84 L36 ${fy-6} L29 ${fy-6} Z`,PT);
   celPath(o,`M18 ${fy-8} L27 ${fy-8} L27 ${fy} L16 ${fy} C16 ${fy-3} 17 ${fy-6} 18 ${fy-8} Z`,BT); celPath(o,`M29 ${fy-8} L38 ${fy-8} C39 ${fy-6} 40 ${fy-3} 40 ${fy} L29 ${fy} Z`,BT);
   celPath(o,'M15 38 C20 34 36 34 41 38 L40 66 L42 88 L31 88 L28 72 L25 88 L14 88 L16 66 Z',C);
-  celPath(o,'M24 38 L32 38 L32 60 L28 63 L24 60 Z',['#8a7a5a','#a8987a','#c4b494','#dccdb0']);
+  if(f.trim){ o.line(16,66,14,88,f.trim); o.line(40,66,42,88,f.trim); o.r(14,88,11,1,f.trim); o.r(31,88,12,1,f.trim); }
+  celPath(o,'M24 38 L32 38 L32 60 L28 63 L24 60 Z',f.vest);
   [46,52,58].forEach(yy=>{ o.p(28,yy,'#f4eac8'); o.p(28,yy+1,'#8a7040'); });
   celPath(o,'M24 32 L32 32 L33 40 L28 45 L23 40 Z',WH); celPath(o,'M25 35 L31 35 L30 40 L28 45 L26 40 Z',WH);
   celPath(o,'M22 37 L28 56 L24 58 L18 41 Z',C.map(c=>mix(c,'#ffffff',.1))); celPath(o,'M34 37 L28 56 L32 58 L38 41 Z',C.map(c=>mix(c,'#000000',.15)));
-  [[18,48],[18,58],[38,48],[38,58]].forEach(p=>{ o.p(p[0],p[1],'#e8d6a8'); });
+  [[18,48],[18,58],[38,48],[38,58]].forEach(p=>o.p(p[0],p[1],f.btn));
+  if(f.sash){ for(let k=0;k<22;k++){ const x=22+Math.round(k*.75), y=38+k; o.p(x,y,f.sash[1]); o.p(x+1,y,f.sash[2]); o.p(x+2,y,f.sash[1]); o.p(x+3,y,f.sash[0]); } }
   celPath(o,'M15 38 C11 50 11 64 12 78 L18 78 C18 66 19 52 21 42 Z',C); celPath(o,'M41 38 C45 50 45 64 44 78 L38 78 C38 66 37 52 35 42 Z',C);
-  o.r(12,77,6,2,WH[2]); o.r(38,77,6,2,WH[2]);
-  celPath(o,'M12 79 L18 79 L18 83 C17 86 13 86 12 83 Z',SK); celPath(o,'M38 79 L44 79 L44 83 C43 86 39 86 38 83 Z',SK);
-  o.p(14,82,'#2a3a6a'); o.p(15,83,'#2a3a6a'); o.p(16,81,'#3e5290'); o.p(41,83,'#2a3a6a');   // 잉크 자국
+  if(f.epaulet){ celPath(o,'M12 37 C14 34 19 34 21 37 L20 40 L13 40 Z',f.epaulet); celPath(o,'M44 37 C42 34 37 34 35 37 L36 40 L43 40 Z',f.epaulet);
+    [13,15,17,19].forEach(x=>{ o.p(x,41,f.epaulet[2]); o.p(56-x,41,f.epaulet[2]); }); }
+  if(f.fur){ celPath(o,'M13 40 C14 33 21 31 28 33 C35 31 42 33 43 40 C40 43 36 42 34 40 L28 44 L22 40 C20 42 16 43 13 40 Z',f.fur);
+    [[16,38],[20,36],[24,35],[32,35],[36,36],[40,38]].forEach(p=>{ o.p(p[0],p[1],f.fur[3]); o.p(p[0]+1,p[1]+1,f.fur[1]); }); }
+  if(f.gloves){ o.r(12,76,6,3,C[1]); o.r(38,76,6,3,C[1]); celPath(o,'M12 78 L18 78 L18 83 C17 86 13 86 12 83 Z',f.gloves); celPath(o,'M38 78 L44 78 L44 83 C43 86 39 86 38 83 Z',f.gloves); }
+  else { o.r(12,77,6,2,WH[2]); o.r(38,77,6,2,WH[2]);
+    celPath(o,'M12 79 L18 79 L18 83 C17 86 13 86 12 83 Z',SK); celPath(o,'M38 79 L44 79 L44 83 C43 86 39 86 38 83 Z',SK); }
+  if(f.ink){ o.p(14,82,'#2a3a6a'); o.p(15,83,'#2a3a6a'); o.p(16,81,'#3e5290'); o.p(41,83,'#2a3a6a'); }   // 잉크 자국
   o.r(25,28,6,6,SK[2]); o.r(29,28,2,6,SK[1]);
   // 머리: 아델라인 얼굴 지도에서 옆머리·윤곽선을 걷어 내고 짧게
-  const pal=Object.assign({},ADE_PAL,{h:'#9a7a4a',H:'#c8a46a',L:'#e4c890',W:'#f6e2b4',b:'#3e5a3a',B:'#6a8a5a',c:'#a8c890',r:'#f2b8aa'});
+  const pal=Object.assign({},ADE_PAL,{h:f.hair[0],H:f.hair[1],L:f.hair[2],W:f.hair[3],b:f.eye[0],B:f.eye[1],c:f.eye[2],r:'#f2b8aa'});
   const rows=ADE_HEAD.slice(); const ex=ADE_EXPR[expr]; if(ex) for(const k in ex) rows[k]=ex[k];
   rows[21]=rows[21].replace(/rr/g,'SS');
   const face=/[SsKebBcwrm]/;
   const out=rows.map((row,j)=>{ let r=row.replace(/O/g,'.'); if(j<16) return r;
     const a=r.search(face); let z=-1; for(let i=r.length-1;i>=0;i--) if(face.test(r[i])){ z=i; break; }
     return r.split('').map((ch,i)=>(i<a||i>z)?'.':ch).join(''); });
-  // 귀 옆은 짧게: 16행 이전에도 너무 넓은 옆머리를 한 칸씩 깎는다
   for(let j=12;j<16;j++) out[j]='..'+out[j].slice(2,26)+'..';
-  // 앞머리 한 갈래를 이마 오른쪽으로 내린다
-  out[10]=out[10].slice(0,15)+'HHhh'+out[10].slice(19); out[11]=out[11].slice(0,16)+'Hh'+out[11].slice(18);
+  // 앞머리 한 갈래
+  if(f.lock==='r'){ out[10]=out[10].slice(0,15)+'HHhh'+out[10].slice(19); out[11]=out[11].slice(0,16)+'Hh'+out[11].slice(18); }
+  if(f.lock==='l'){ out[10]=out[10].slice(0,8)+'hHHH'+out[10].slice(12); out[11]=out[11].slice(0,9)+'hH'+out[11].slice(11); }
   stampMap(o,out,14,0,pal);
+  if(f.tuft){ [[19,1],[22,0],[33,1],[36,2]].forEach(p=>{ o.p(p[0],p[1],f.hair[1]); o.p(p[0]+1,p[1],f.hair[0]); }); }
   outlinePass(o);
   return {c:o.c,feet:fy};
 }
-
+function adrianSprite(expr){ return boySprite('adrian',expr); }
 // ── 아이 키 줄이기: 머리 크기는 그대로, [y0,y1) 사이(다리·치마)에서 n줄을 고르게 빼고 윗부분을 내린다. 발 위치(feet)는 그대로.
 function shrinkKid(s,y0,y1,n){
   const W=s.c.width,H=s.c.height, o=PX(W,H); const drop=new Set(); for(let k=0;k<n;k++) drop.add(Math.floor(y0+(k+.5)*(y1-y0)/n));
   let ty=H-1; for(let y=H-1;y>=0;y--){ if(drop.has(y)) continue; o.x.drawImage(s.c,0,y,W,1,0,ty,W,1); ty--; }
   return {c:o.c,feet:s.feet};
 }
-const KID={adeline:[62,120,18],adrian:[64,116,18],tangie:[62,110,10]};
+const KID={adeline:[62,120,18],adrian:[64,116,18],kylen:[64,116,16],julian:[64,116,18],lionel:[64,116,18],tangie:[62,110,10]};
 function kid(id,s){ const k=KID[id]; return k?shrinkKid(s,k[0],k[1],k[2]):s; }
