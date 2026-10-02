@@ -1,0 +1,14 @@
+const launchOpts=require('../test/launch');
+const puppeteer=require('puppeteer-core');
+const fs=require('fs'); const SP=__dirname;
+(async()=>{ const b=await puppeteer.launch(await launchOpts()); const p=await b.newPage(); const errs=[]; p.on('pageerror',e=>errs.push(e.message));
+  await p.setViewport({width:1000,height:700});
+  await p.goto('file://'+require('path').resolve(__dirname,'../dist/game.html'));
+  const old=await p.evaluate(()=>['neutral','smile','sad','surprise'].map(e=>sprite('adeline',e).c.toDataURL()));
+  for(const f of ['cel.js','study2.js','ade2.js']) await p.addScriptTag({content:fs.readFileSync(SP+'/'+f,'utf8')});
+  const nw=await p.evaluate(()=>['neutral','smile','sad','surprise'].map(e=>adeSprite(e).c.toDataURL()));
+  const stage=await p.evaluate(()=>{ const o=PX(240,160); study2(o,seasonPal('겨울')); const s=adeSprite('neutral'); o.x.drawImage(s.c,92,156-s.feet); return o.c.toDataURL(); });
+  await p.evaluate((old,nw,stage)=>{ document.body.innerHTML='<div style="background:#3a3040;padding:8px;color:#fff;font:14px sans-serif"><div>위: 지금 / 아래: 새로 그린 아델라인 (보통·웃음·슬픔·놀람)</div><div id=a></div><div id=b></div><div id=c></div></div>';
+    const put=(el,arr,w,h)=>arr.forEach(u=>{ const i=new Image(); i.src=u; i.style.cssText='width:'+w+'px;height:'+h+'px;image-rendering:pixelated;margin:2px'; document.getElementById(el).appendChild(i); });
+    put('a',old,112,264); put('b',nw,168,396); put('c',[stage],720,480); },old,nw,stage);
+  await p.screenshot({path:process.argv[2],fullPage:true}); console.log('errors',errs.join('|')||'none'); await b.close(); })();

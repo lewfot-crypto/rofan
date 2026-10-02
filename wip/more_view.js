@@ -1,0 +1,15 @@
+const launchOpts=require('../test/launch');
+const puppeteer=require('puppeteer-core');
+const fs=require('fs'); const SP=__dirname;
+(async()=>{ const b=await puppeteer.launch(await launchOpts()); const p=await b.newPage(); const errs=[]; p.on('pageerror',e=>errs.push(e.message));
+  await p.setViewport({width:1000,height:700});
+  await p.goto('file://'+require('path').resolve(__dirname,'../dist/game.html'));
+  const ids=['tangie','edric','marot'];
+  const old=await p.evaluate(ids=>ids.map(id=>sprite(id,id==='tangie'?'smile':'neutral').c.toDataURL()),ids);
+  for(const f of ['cel.js','study2.js','ade2.js','more2.js']) await p.addScriptTag({content:fs.readFileSync(SP+'/'+f,'utf8')});
+  const nw=await p.evaluate(()=>[tangieSprite('smile'),tangieSprite('worry'),maleSprite('edric','neutral'),maleSprite('edric','sad'),maleSprite('marot','neutral'),maleSprite('marot','smile')].map(s=>s.c.toDataURL()));
+  const stage=await p.evaluate(()=>{ const o=PX(240,160); study2(o,seasonPal('겨울')); [[adeSprite('neutral'),18],[maleSprite('edric','neutral'),92],[maleSprite('marot','neutral'),166]].forEach(a=>o.x.drawImage(a[0].c,a[1],156-a[0].feet)); return o.c.toDataURL(); });
+  await p.evaluate((old,nw,stage)=>{ document.body.innerHTML='<div style="background:#3a3040;padding:8px;color:#fff;font:14px sans-serif"><div>위: 지금 (탠지·에드릭·마로트)</div><div id=a></div><div>아래: 새로 그린 것 (탠지 웃음·걱정 / 에드릭 보통·슬픔 / 마로트 보통·웃음)</div><div id=b></div><div id=c></div></div>';
+    const put=(el,arr,w,h)=>arr.forEach(u=>{ const i=new Image(); i.src=u; i.style.cssText='width:'+w+'px;height:'+h+'px;image-rendering:pixelated;margin:2px'; document.getElementById(el).appendChild(i); });
+    put('a',old,112,264); put('b',nw,140,330); put('c',[stage],720,480); },old,nw,stage);
+  await p.screenshot({path:process.argv[2],fullPage:true}); console.log('errors',errs.join('|')||'none'); await b.close(); })();

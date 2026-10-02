@@ -1,0 +1,15 @@
+const launchOpts=require('../test/launch');
+const puppeteer=require('puppeteer-core');
+const fs=require('fs'); const SP=__dirname;
+(async()=>{ const b=await puppeteer.launch(await launchOpts()); const p=await b.newPage(); const errs=[]; p.on('pageerror',e=>errs.push(e.message));
+  await p.setViewport({width:980,height:700});
+  await p.goto('file://'+require('path').resolve(__dirname,'../dist/game.html'));
+  await p.addScriptTag({content:fs.readFileSync(SP+'/study2.js','utf8')});
+  await p.evaluate(()=>{ document.body.innerHTML='<div id=g style="display:flex;flex-wrap:wrap;gap:8px;background:#333;padding:8px;color:#fff;font:14px sans-serif"></div>'; const g=document.getElementById('g');
+    const add=(c,label)=>{ const d=document.createElement('div'); d.innerHTML='<div>'+label+'</div>'; const i=new Image(); i.src=c.toDataURL(); i.style.cssText='width:480px;height:320px;image-rendering:pixelated'; d.appendChild(i); g.appendChild(d); };
+    const before=PX(240,160); before.x.drawImage(bgCanvas('study','겨울'),0,0); add(before.c,'지금');
+    const o=PX(240,160); study2(o,seasonPal('겨울')); add(o.c,'새로 그린 것');
+    const o2=PX(240,160); o2.x.drawImage(before.c,0,0); const s=sprite('adeline','neutral'); o2.x.drawImage(s.c,92,156-s.feet); add(o2.c,'지금 + 인물');
+    const o3=PX(240,160); o3.x.drawImage(o.c,0,0); o3.x.drawImage(s.c,92,156-s.feet); const e=sprite('edric','neutral'); o3.x.drawImage(e.c,166,156-e.feet); add(o3.c,'새 배경 + 인물(기존)');
+  });
+  await p.screenshot({path:process.argv[2]||'/tmp/cmp.png',fullPage:true}); console.log('errors',errs.join('|')||'none'); await b.close(); })();
