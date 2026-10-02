@@ -8,7 +8,7 @@ const LOCAL=[
 ];
 module.exports=async function launchOpts(){
   const local=process.env.CHROME_PATH||(process.platform!=='linux'&&LOCAL.find(p=>fs.existsSync(p)));
-  if(local) return {executablePath:local,headless:true,args:['--no-sandbox']};
+  if(local) return {executablePath:local,headless:true,args:['--no-sandbox'],protocolTimeout:600000};
   const chromium=require('@sparticuz/chromium').default||require('@sparticuz/chromium');
-  return {args:chromium.args.concat(['--no-sandbox']),executablePath:await chromium.executablePath(),headless:'shell'};
+  return {args:chromium.args.concat(['--no-sandbox']),executablePath:await chromium.executablePath(),headless:'shell',protocolTimeout:600000};   // 무작위 플레이 300회는 장면이 늘수록 오래 걸린다
 };

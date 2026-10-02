@@ -147,14 +147,15 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 3. 화면 비율: 배경 3:2, 인물은 전신 투명 PNG(발 위치 맞추기 위해 `feet` 값 필요 → `sprite().feet`).
 - 이미지 생성은 Claude가 직접 못 한다 (연결된 이미지 생성 도구 없음, Google Flow 연결도 없음을 확인함). 사용자가 따로 생성해 올려야 한다.
 
-## 현재 구현 상태 (v0.10)
+## 현재 구현 상태 (v0.11)
+- 0.11(2026-10): 17장 완성(장면 c17a~c17f) → **2권 완성**. 사용자가 "일단 진행"이라 추천안으로 설계(검토는 나중에 하겠다고 함): 5장 성 선택 `nameSilent/nameTrone/nameEverhart` → 에드릭의 "네 이름은 둘이다" 뒤 회상 한 줄(새 문장), 12장 `heldSleeve` → 어깨를 쥔 손 한 줄, 16장 `stitch` → 새 소매 한 줄, 6장 `dustless` → 열쇠 구멍 한 줄. 지도책 첫 동그라미 `circledHome`(소설)/`circledNorth`/`circledEverhart` — **30장 갈래(가문·북부·독립)에서 다시 쓸 것**. 노트 `emptyspot`·`hidingsmile`·`newcuff`·`ribbon`·`warmleather`·`oneword`·`scratch`·`keyhole`. 무작위 플레이 테스트가 길어져 `test/launch.js` 에 `protocolTimeout`.
 - 0.10(2026-10): 16장 완성(장면 c16a~c16g). 2장 노트 `tremble` → 기침 장면에 한 줄(새 문장). 아버지의 편지 `LETTERS.e1`(open `readFatherLetter`, 서명 없음 — `sign:''` 이면 서명 줄 생략). 점심 `kitchenLunch`(소설)/`schoolLunch`(새 문장: 대화 과목, 공부방 점심). 노트 `stitch`·`cough`·`pity`·`stroke`·`twomonths`. 홀트의 부치지 않은 편지 네 통(번외 33)은 **4권 끝(18세 생일 밤 뒤)** 에 건네받는 장면으로(사용자 결정).
 - 0.9(2026-10): 15장 완성(장면 c15a~c15h). 9장 `askedGlove`(아니면 새 문장 "내 장갑을 보고 있었다")·10장 `spokeUp`(카일런이 마차 앞 말을 기억하는 새 문장)이 발코니 고백을 바꿈. 대답 `saidCaught`(소설)/`quietHand`(새 문장). 노트 `stillglove`·`chin`·`fingertips`·`flatvoice`·`ears`·`thinpaper`. **편지 탭** 열림: `LETTERS`(scenes.js, `open` flag 가 켜지면 탭에 보임, 단락 조건 if/not/ifN/notN), 장면 본문 `{fn:'letter',id}`. 제1신(`gotLetter1`)·제1답(`wroteLetter1`, `thinpaper` 알아채면 지운 흔적 단락). 발코니는 무도회장 밤 배경. 마차 밤 장면은 창이 별 하늘. 이후 편지(번외 4의 제2신~)는 16장 이후 장 사이에 둘 것.
 - 0.8(2026-10): 14장 완성(장면 c14a~c14g). 연습 중 대답 `notYet`(소설)/`keptSilent`(새 문장 두 줄) → 마지막 노트 둘째 줄이 달라짐. 노트 `heel`(뒤꿈치)을 알아챘다면 무도회에서 "미리 알고 있었다", 못 알아챘다면 그 자리에서 `halfbeat`. 덮어 주는 행동은 공통(정사). 노트 `shadow`·`knuckle`·`posture`·`heavy`. 탈의실은 무도회장 밤(`time:'night'`, 밤이면 춤추는 사람 그림자 숨김). 21장 〈세레나의 선택〉에서 `notYet/keptSilent`·`heel` 다시 쓸 것.
 - 0.7(2026-10): 설정 맨 아래 **업데이트 기록**(한 페이지에 한 판, 왼쪽으로 밀면 이전 판, ‹ › 단추·방향키도 됨). 13장 완성(장면 c13a~c13f): 로잘리 말버릇 노트 `notbig` → 회상 단락이 보이고 "저는 알고 있었어요"(`knewRosalie`), 아니면 "나쁜 사람이 아니라는 건 알아요"(`trustedRosalie`). 노트 `obliged`(신세)·`truth`. 이후 장에서 로잘리 장면에 다시 쓸 것.
 - 0.6 정리(2026-10): 옛 점무늬 그림 함수 삭제, 점 찍기를 한꺼번에(`o.paint`) 처리해 인물 그림 생성이 약 50배 빨라짐(80장 11초→0.2초), `npm run check` 가 조건 flag 오타·배경 없는 장소·적을 길 없는 노트까지 검사, 테스트에 무작위 플레이 300회(막다른 장면·빈 장면·도달 못 하는 장면 검사).
 - 완성: 실행화면, 게임 화면, 4개 탭, 설정(읽기·소리·저장·서재·인물 사전·정보), 소설 전문 열람(본편 30장 + 번외 7편, 30장 아홉 갈래 선택 UI), 새 그림체 배경 11곳(대저택)·인물 16명·표정 5종, 밤 장면(`time:'night'`).
-- 플레이 가능: **1권 전체 + 2권 10~16장** (장면 125개). 마지막은 `send` 끝 카드("2권 16장까지").
+- 플레이 가능: **1권·2권 전체** (장면 131개). 마지막은 `send` 끝 카드("2권까지").
 - 12장(사용자 승인): 정원 모임 `walkedOut`/`rebutted`, 무도회 `heldSleeve`/`stoodBy`. 새 배경 `garden`(양산 탁자 정원), `ballroom`(무도회장, 4권에서도 사용).
 - 11장(사용자 승인): `willGo`/`askedMeaning`, 황후에게 `notEmpty`/`justQuiet`, 율리안 비밀 `toldThumb`(노트 `thumb` 필요, 이후 "율" 호칭 장면에 씀)/`politeJulian`. 새 배경 `palace`(황궁 정원 다과회, PLACES 밖). 로잘리 그림: 주근깨·색이 다른 리본 두 개(소설대로, 사용자 승인). 세레나는 그림 유지(머리를 올린 소설 묘사와 다름, 사용자 결정). 2권은 사용자 결정으로 **한 장씩 설계 승인** 후 제작.
 - 10장(사용자 승인): 편들기 `defended`(노트 `latelaugh` 필요)/`justWatched`, 떠나는 카일런에게 `saidBye`/`spokeUp`(15장 화해에서 다시 씀), 서명 없는 노트 해석 `readCourage`(노트 `courage`)/`readNoNeed`(노트 `noneed`). 편지 탭은 15장(첫 편지)과 함께 연다.
@@ -170,4 +171,4 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 - 읽기 화면: 테마 자동/밝게/종이/어둡게 + 밝기 3단계(`pref.dim`), 상태줄·서재 본문 오른쪽 위 빠른 단추(`qtheme`).
 
 ## 다음 할 일
-`docs/roadmap.md` 참고. 우선순위: ① 2권 17장 장면 — 초안 승인 ② 카일런 편지 이어 가기(번외 34) ③ 이른 봄 배경 등 그림 보강. (1권 완료) (`corridor`/`office` 배경은 완료)
+`docs/roadmap.md` 참고. 우선순위: ① 3권 18장~ 장면 — 장마다 초안 승인 ② 카일런 편지 이어 가기(번외 34, 장 사이에 제2신~) ③ 사용자가 미뤄 둔 16·17장 검토 ③ 이른 봄 배경 등 그림 보강. (1권 완료) (`corridor`/`office` 배경은 완료)
