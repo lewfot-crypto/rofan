@@ -6,7 +6,7 @@ const fs=require('fs'); const SP=__dirname;
   await p.setViewport({width:1000,height:700});
   await p.goto('file://'+require('path').resolve(__dirname,'../dist/game.html'));
   const places=(process.argv[3]||'exterior,hall,schoolroom').split(',');
-  const NEW={exterior:'exterior3',hall:'hall3',schoolroom:'school3',study:'study2',bedroom:'bedroom3',dining:'dining3',kitchen:'kitchen3',orchard:'orchard2',carriage:'carriage2',corridor:'corridor2',office:'office2'};
+  const NEW={exterior:'exterior3',hall:'hall3',schoolroom:'school3',study:'study2',bedroom:'bedroom4',dining:'dining3',kitchen:'kitchen3',orchard:'orchard2',carriage:'carriage2',corridor:'corridor2',office:'office2'};
   const season=process.argv[4]||'늦가을';
   const old=await p.evaluate((pl,s)=>pl.map(k=>{ try{ return bgCanvas(k,s).toDataURL(); }catch(e){ return ''; } }),places,season);
   for(const f of ['cel.js','study2.js','ade2.js','more2.js','more3.js','bg2.js']) await p.addScriptTag({content:fs.readFileSync(SP+'/'+f,'utf8')});
