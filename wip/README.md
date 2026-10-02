@@ -7,7 +7,7 @@
 - `ade2.js` — 새 아델라인 `adeSprite(expr)` (얼굴은 점 지도 `ADE_HEAD`, 땋은 머리 점 지도), `outlinePass()`
 - `more2.js` — 새 탠지(굵은 컬 단발) `tangieSprite`, 남자 얼굴 지도 + 몸 `maleSprite('edric'|'marot')`
 - `more3.js` — 홀트·마르타(어른 여자 얼굴 지도 `femSprite`), 소년들(아이 얼굴 지도 `boySprite(id,expr)`: adrian·kylen·julian·lionel·sebastian·hadel), 소녀들(`girlSprite(id,expr)`: rosalie·serena), 어른 남자 추가(`adultMale(id,expr)`: gregor·count). 캡처 `node wip/batch1_view.js 파일.png`
-- `bg2.js` — 새 배경. 대저택판 `exterior3`·`hall3`·`school3`·`bedroom4`(로판풍)·`dining3`·`kitchen3`(사용자: "완전 대저택") — 처음 그린 `exterior2`·`hall2`·`school2`는 작아서 폐기 예정 (공통 재료 `frameWin`·`curtainPair`·`plankFloor`). 캡처 `node wip/bg_view.js 파일.png exterior,hall,schoolroom 늦가을`
+- `bg2.js` — 새 배경. 대저택판 `exterior3`·`hall3`·`school3`·`bedroom5`(나무+로판풍 천)·`dining3`·`kitchen3`·`orchard3`·`corridor3`·`office3`·`carriage3`(사용자: "완전 대저택") — 처음 그린 `exterior2`·`hall2`·`school2`는 작아서 폐기 예정 (공통 재료 `frameWin`·`curtainPair`·`plankFloor`). 캡처 `node wip/bg_view.js 파일.png exterior,hall,schoolroom 늦가을`
 - `ade_view.js`, `more_view.js`, `cmp.js` — 비교 캡처 (`node wip/more_view.js /tmp/more.png`, 먼저 `npm run build`)
 - 미리보기 결과: `preview/study-redraw-compare.png`, `preview/adeline-redraw.png`, `preview/tangie-edric-marot-redraw.png`, `preview/holt-marta-adrian-redraw.png`, `preview/kylen-julian-lionel-redraw.png` (`node wip/batch2_view.js`), `preview/sebastian-hadel-rosalie-redraw.png` (`node wip/batch3_view.js`), `preview/serena-gregor-count-redraw.png` (`node wip/batch4_view.js`)
 
@@ -25,3 +25,5 @@
 - 세레나는 단순한 버전(girlSprite, 나비 리본)을 사용자가 선택. 정교하게 다시 그린 버전은 되돌림.
 - 배경은 **대저택** 규모: 외관은 3층 본관+좌우 날개, 기둥 현관·박공·망사르 지붕·시계 박공, 분수(정사 805행 '정원의 분수, 대리석 계단'), 서재 불은 이층 가장 왼쪽 창. 현관 홀은 2층 높이, 가운데 대리석 계단과 위층 회랑, 큰 샹들리에. 공부방은 정사상 '서재 옆 작은 공부방'이라 크기는 작게 두되 꾸밈(몰딩·대리석 벽난로·거울·탁상시계·책장·샹들리에)은 고급스럽게.
 - 침실은 로판풍(사용자 요청): 크림빛 벽·하늘색 꽃무늬·금 몰딩, 금관에서 흘러내리는 얇은 휘장 침대, 흰 금장 책상, 흰 대리석 벽난로와 금 거울, 크리스털 샹들리에, 둥근 꽃무늬 양탄자. 소설의 벽난로 불·창가 책상(노트·깃펜·잉크병) 유지.
+- 침실 최종(사용자): 나무 벽·나무 바닥·나무 가구, 커튼·휘장·침구·양탄자 같은 천만 로판풍 (bedroom5). bedroom4(크림 벽)는 폐기.
+- 과수원: 담 너머 공작 저택(본관+날개, 이층 가장 왼쪽 창 불). 이층 복도: 밤, 촛대 하나 건너 하나, 끝 문 아래 노란 선. 집사실: 장부 벽, 자로 잰 듯한 책상, 열쇠판, 벽시계, 창가 화분 하나. 마차: 남색 벨벳 다이아 누빔, 금단추, 붉은 커튼, 창밖 풍경.
