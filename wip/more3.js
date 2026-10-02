@@ -77,9 +77,9 @@ const BOY_FIG={
  adrian:{hair:['#9a7a4a','#c8a46a','#e4c890','#f6e2b4'],eye:['#3e5a3a','#6a8a5a','#a8c890'],lock:'r',
    coat:['#3e5468','#56708a','#7290aa','#8eaac2','#b0c8da'],vest:['#8a7a5a','#a8987a','#c4b494','#dccdb0'],pants:['#3a3434','#4e4848','#625c5c','#7a7474'],boots:['#2a1e18','#3e2e24','#56402e','#6e5640'],btn:'#e8d6a8',ink:true,map:true},
  kylen:{hair:['#141822','#222836','#343c50','#4a5470'],eye:['#3a5a8a','#7a9ac0','#c0d8f0'],lock:'l',tuft:true,
-   coat:['#1a2234','#26304a','#344262','#46587e','#5a6e96'],vest:['#26304a','#344262','#46587e','#5a6e96'],pants:['#181c26','#22283a','#2e3448','#3c4458'],boots:['#141218','#221e28','#34303c','#4a4452'],btn:'#b8c0d0',fur:['#8a8a94','#b4b4bc','#d6d6dc','#f0f0f4'],gloves:['#2a2024','#3e3034','#56444a','#6e5a60'],face:'kylen',skin:'#f8e2d6',sidehair:true},
+   coat:['#1a2234','#26304a','#344262','#46587e','#5a6e96'],vest:['#26304a','#344262','#46587e','#5a6e96'],pants:['#181c26','#22283a','#2e3448','#3c4458'],boots:['#141218','#221e28','#34303c','#4a4452'],btn:'#b8c0d0',fur:['#8a8a94','#b4b4bc','#d6d6dc','#f0f0f4'],gloves:['#2a2024','#3e3034','#56444a','#6e5a60'],face:'kylen',skin:'#f8e2d6'},
  julian:{hair:['#8a6430','#b08a58','#d6b47c','#f2dcaa'],eye:['#3a5a8a','#6a8ab0','#b0c8e8'],lock:'l',
-   coat:['#a8a094','#cfc6ba','#e6dfd6','#f4efe8','#ffffff'],vest:['#a08850','#c0a868','#d8c08a','#ecd8a8'],pants:['#8e8678','#aaa294','#c4bcae','#dcd4c6'],boots:['#2a1e18','#3e2e24','#56402e','#6e5640'],btn:'#d9b24a',epaulet:['#8a6a20','#c09030','#d9b24a','#f0d878'],sash:['#2e3e78','#40549a','#5a70b8'],face:'julian',clasp:true,curl:true},
+   coat:['#a8a094','#cfc6ba','#e6dfd6','#f4efe8','#ffffff'],vest:['#a08850','#c0a868','#d8c08a','#ecd8a8'],pants:['#8e8678','#aaa294','#c4bcae','#dcd4c6'],boots:['#2a1e18','#3e2e24','#56402e','#6e5640'],btn:'#d9b24a',epaulet:['#8a6a20','#c09030','#d9b24a','#f0d878'],sash:['#2e3e78','#40549a','#5a70b8'],face:'julian',clasp:true,wavy:true},
  lionel:{hair:['#1e1412','#2e201c','#3e2c26','#5a4038'],eye:['#5a3e24','#8a643e','#c8a070'],lock:'none',
    coat:['#1a4440','#245a56','#34807a','#4a9c94','#6ab8ae'],vest:['#8a6a20','#c09030','#d9b24a','#f0d878'],pants:['#1e2a2c','#2a3a3c','#384a4c','#4a5e60'],boots:['#2a1e18','#3e2e24','#56402e','#6e5640'],btn:'#d9b24a',trim:'#d9b24a',face:'lionel',chain:true}
 };
@@ -145,10 +145,17 @@ function boySprite(id,expr){
   // 앞머리 한 갈래
   if(f.lock==='r'){ out[10]=out[10].slice(0,15)+'HHhh'+out[10].slice(19); out[11]=out[11].slice(0,16)+'Hh'+out[11].slice(18); }
   if(f.lock==='l'){ out[10]=out[10].slice(0,8)+'hHHH'+out[10].slice(12); out[11]=out[11].slice(0,9)+'hH'+out[11].slice(11); }
-  if(f.face==='lionel'){ out[8]=out[8].slice(0,7)+'hhHHHHHHHHHHhh'+out[8].slice(21); out[9]=out[9].slice(0,6)+'hKSSSSSSSSSSSSSh'+out[9].slice(22); out[10]=out[10].slice(0,5)+'hSSSSSSSSSSSSSSSSh'+out[10].slice(23); out[11]=out[11].slice(0,5)+'SSSSSSSSSSSSSSSSSS'+out[11].slice(23); out[12]=out[12].slice(0,7)+'SSSSSSSSSSSSSS'+out[12].slice(21); }
-  if(f.sidehair){ for(let j=16;j<24;j++){ const r=out[j].split(''); const a=r.findIndex(c=>c!=='.'); let z=r.length-1; while(z>0&&r[z]==='.') z--; if(a>0){ r[a-1]='H'; if(a>1) r[a-2]='h'; } if(z<r.length-1){ r[z+1]='H'; if(z+2<r.length) r[z+2]='h'; } out[j]=r.join(''); } }
+  if(f.wavy){
+    for(let j=13;j<26;j++){ const r=out[j].split(''); const a=r.findIndex(c=>c!=='.'); let z=r.length-1; while(z>0&&r[z]==='.') z--;
+      const w=((j>>1)%2)?2:3; const L=Math.max(0,a-w), Z=Math.min(r.length-1,z+w);
+      for(let i=L;i<a;i++) r[i]=(i===L)?'h':((j%4===1)?'L':'H'); for(let i=z+1;i<=Z;i++) r[i]=(i===Z)?'h':((j%4===3)?'L':'H');
+      if(j>=24){ for(let i=0;i<r.length;i++) if(r[i]==='H'||r[i]==='L') r[i]='h'; }
+      out[j]=r.join(''); }
+    const put=(j,i,c)=>{ const r=out[j]; if(/[HLh]/.test(r[i])) out[j]=r.slice(0,i)+c+r.slice(i+1); };
+    [[3,9],[5,16],[7,6]].forEach(w=>{ const j=w[0],i=w[1]; put(j,i,'L'); put(j,i+1,'L'); put(j+1,i-1,'L'); put(j+1,i+2,'L'); put(j+1,i,'h'); put(j+1,i+1,'h'); });
+    out[10]=out[10].slice(0,7)+'hHh'+out[10].slice(10); out[11]=out[11].slice(0,7)+'.hH'+out[11].slice(10);
+  }
   stampMap(o,out,14,0,pal);
-  if(f.curl){ [[22,3],[23,2],[24,2],[25,3],[30,2],[31,1],[32,1]].forEach(p=>o.p(p[0],p[1],f.hair[3])); o.p(17,13,f.hair[1]); o.p(16,14,f.hair[1]); }
   if(f.tuft){ [[19,1],[22,0],[33,1],[36,2]].forEach(p=>{ o.p(p[0],p[1],f.hair[1]); o.p(p[0]+1,p[1],f.hair[0]); }); }
   outlinePass(o);
   return {c:o.c,feet:fy};
