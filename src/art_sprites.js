@@ -8,6 +8,7 @@ function celShade(o,m,rp,opt){
   if(x1<x0) return; const at=(i,j)=>(i<0||j<0||i>=w||j>=h)?0:m[j*w+i];
   const base=Math.min(n-1,Math.max(1,Math.round((n-1)*.6))), sh=base-1, hi=Math.min(n-1,base+1), dd=Math.max(0,sh-1);
   const cx=(x0+x1)/2, hw=Math.max(1,(x1-x0)/2);
+  o.paint(x0,y0,x1-x0+1,y1-y0+1,set=>{
   for(let j=y0;j<=y1;j++) for(let i=x0;i<=x1;i++){ if(!at(i,j)) continue;
     let t=base;
     const nx=(i-cx)/hw;
@@ -16,8 +17,9 @@ function celShade(o,m,rp,opt){
     if((!at(i+1,j)&&!at(i,j+1))||(!at(i+1,j)&&nx>.42)) t=dd;      // 모서리 짙게
     if((!at(i-1,j)||!at(i,j-1)) && nx<.2 && t===base) t=hi;      // 왼쪽·위 하이라이트
     if(opt.f){ const v=opt.f(i,j,nx,0); if(v<-.06) t=Math.max(0,t-1); else if(v>.06) t=Math.min(n-1,t+1); }
-    o.p(i,j,rp[t]);
+    set(i,j,rp[t]);
   }
+  });
 }
 // 아델라인 새 스프라이트 (56x132). 머리는 점 지도로 직접, 몸은 셀 음영 도형.
 const ADE_PAL={
@@ -116,7 +118,7 @@ function outlinePass(o){
   o.x.putImageData(img,0,0);
 }
 // 탠지·에드릭·마로트 새 스프라이트
-function stampMap(o,rows,x,y,pal){ rows.forEach((row,j)=>{ for(let i=0;i<row.length;i++){ const ch=row[i]; if(ch!=='.'&&pal[ch]) o.p(x+i,y+j,pal[ch]); } }); }
+function stampMap(o,rows,x,y,pal){ let W=0; rows.forEach(r=>{ if(r.length>W) W=r.length; }); o.paint(x,y,W,rows.length,set=>rows.forEach((row,j)=>{ for(let i=0;i<row.length;i++){ const ch=row[i]; if(ch!=='.'&&pal[ch]) set(x+i,y+j,pal[ch]); } })); }
 function celPath(o,d,rp){ const m=o.mask(c=>c.fill(new Path2D(d))); celShade(o,m,rp); return m; }
 // ── 남자 얼굴 지도 (외곽선 없이, 나중에 외곽선을 두른다)
 const M_TOP={

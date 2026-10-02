@@ -50,7 +50,7 @@ docs/canon.md              세계관·인물·연대표 (정사)
 docs/roadmap.md            다음 작업 목록과 1권 4~9장 장면 설계
 src/head.html              HTML 머리말 + 전체 CSS
 src/chapters.js            소설 전문 CHAPTERS 배열 (본편 1~30장 + 번외 31~37). 편집 대상이자 정사
-src/art_core.js            픽셀 엔진(PX), 팔레트, 음영(mask+shade), 난수
+src/art_core.js            픽셀 엔진(PX: 점·사각형·타원·선·다각형·마스크·한꺼번에 찍기 paint), 색 섞기, 계절 팔레트, 난수
 src/art_sprites.js         인물 스프라이트 56×132 (FIG 정의 + sprite(id, expr))
 src/art_bg.js              배경 240×160 (BG 함수들) + 무대 합성(stageSVG) + 인물 사전 아바타 + 타이틀
 src/scenes.js              게임 장면 SCENES / 노트 NOTICES / 인물 사전 DICT
@@ -62,6 +62,8 @@ test/test_real.js          실제 브라우저(헤드리스 크로미움) 통합
 test/walk.js               장면별 스크린샷 캡처
 test/gallery.js, sprites.js  배경·스프라이트 갤러리 캡처
 reference/                 이미 게시된 소설 리더 단독 앱(HTML), 단락 덤프
+wip/                       새 그림체를 만들던 작업 기록과 시안(게임에는 안 들어감, README 참고)
+preview/                   사용자에게 보여 준 캡처 모음
 dist/game.html             빌드 결과 (직접 편집 금지)
 ```
 
@@ -143,7 +145,9 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 3. 화면 비율: 배경 3:2, 인물은 전신 투명 PNG(발 위치 맞추기 위해 `feet` 값 필요 → `sprite().feet`).
 - 이미지 생성은 Claude가 직접 못 한다 (연결된 이미지 생성 도구 없음, Google Flow 연결도 없음을 확인함). 사용자가 따로 생성해 올려야 한다.
 
-## 현재 구현 상태 (v0.5)
+## 현재 구현 상태 (v0.6)
+- 0.6 정리(2026-10): 옛 점무늬 그림 함수 삭제, 점 찍기를 한꺼번에(`o.paint`) 처리해 인물 그림 생성이 약 50배 빨라짐(80장 11초→0.2초), `npm run check` 가 조건 flag 오타·배경 없는 장소·적을 길 없는 노트까지 검사, 테스트에 무작위 플레이 300회(막다른 장면·빈 장면·도달 못 하는 장면 검사).
+- 13장: 배경(`salon` 살롱, 정원 달밤)만 그려 둠. 설계는 승인됨(장면 5개, 선택 1개: 로잘리 말버릇 `notbig` 알아챔 → "저는 알고 있었어요"). 장면은 다음에 만들 것.
 - 완성: 실행화면, 게임 화면, 4개 탭, 설정(읽기·소리·저장·서재·인물 사전·정보), 소설 전문 열람(본편 30장 + 번외 7편, 30장 아홉 갈래 선택 UI), 새 그림체 배경 11곳(대저택)·인물 16명·표정 5종, 밤 장면(`time:'night'`).
 - 플레이 가능: **1권 전체 + 2권 10~12장** (장면 97개). 마지막은 `send` 끝 카드("2권 12장까지").
 - 12장(사용자 승인): 정원 모임 `walkedOut`/`rebutted`, 무도회 `heldSleeve`/`stoodBy`. 새 배경 `garden`(양산 탁자 정원), `ballroom`(무도회장, 4권에서도 사용).

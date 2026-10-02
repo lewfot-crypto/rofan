@@ -190,7 +190,7 @@ function settingsHtml(fromTitle){
     DICT.forEach(d=>{ o+='<div class="chr"><div class="av">'+figSVG(d.id)+'</div><div><h4>'+d.name+'</h4><div class="rl">'+d.role+'</div><p>'+d.desc+'</p></div></div>'; });
     return o+'</div>';
   }
-  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">틀 0.1</span></div><div class="field">수록<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물 스탠딩은 임시 벡터 그림이에요. 이후 실제 일러스트로 교체할 수 있게 만들어 두었어요.</p></div>';
+  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">0.6</span></div><div class="field">플레이할 수 있는 장면<span style="color:var(--soft);font-size:13px">1권 전체 · 2권 10~12장</span></div><div class="field">이야기 서재<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물은 코드로 그린 픽셀 그림이에요. 나중에 실제 일러스트로 바꿔 끼울 수 있게 만들어 두었어요.</p></div>';
   return '';
 }
 function tocHtml(){

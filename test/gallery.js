@@ -8,8 +8,7 @@ const puppeteer=require('puppeteer-core');
   await page.evaluate(()=>{
     document.body.innerHTML='<div id="g" style="display:flex;flex-wrap:wrap;gap:8px;padding:8px;background:#444"></div>';
     const g=document.getElementById('g');
-    ['exterior','hall','bedroom','dining','study','orchard','kitchen','schoolroom','corridor'].forEach(k=>{ const d=document.createElement('div'); d.style.cssText='width:480px;height:320px'; d.innerHTML=bgSVG(k,'늦가을'); d.firstChild.style.cssText='width:480px;height:320px;image-rendering:pixelated'; g.appendChild(d); });
-    const d2=document.createElement('div'); d2.style.cssText='width:480px;height:320px'; d2.innerHTML=stageSVG('carriage','늦가을',[]); d2.firstChild.style.cssText='width:480px;height:320px;image-rendering:pixelated'; g.appendChild(d2);
+    Object.keys(BG).forEach(k=>{ const d=document.createElement('div'); d.style.cssText='width:480px;height:320px'; d.innerHTML=bgSVG(k,'늦가을'); d.firstChild.style.cssText='width:480px;height:320px;image-rendering:pixelated'; g.appendChild(d); });
   });
   await page.screenshot({path:'/tmp/g_bg.png',fullPage:true});
   console.log('errors',errs.join('|')||'none');

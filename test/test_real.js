@@ -33,6 +33,19 @@ const puppeteer=require('puppeteer-core');
   await T('ch9 glove question needs glove notice',async()=>page.evaluate(()=>{ const keep=JSON.stringify(S); S.flags={}; S.noticed={}; S.scene='c9f'; draw(); const a=document.querySelectorAll('[data-act=choice]').length===1; S.noticed={glove:1}; draw(); const b=document.querySelectorAll('[data-act=choice]').length===2; S=JSON.parse(keep); draw(); return a&&b; }));
   await T('ch10 glove choice from ch9 changes Kylen line',async()=>page.evaluate(()=>{ const keep=JSON.stringify(S); S.noticed={}; S.flags={askedGlove:1,defended:1}; S.scene='c10c'; draw(); const a=/또 장갑이냐/.test(document.querySelector('.textbox').innerText)&&/누구 편을 들었어/.test(document.querySelector('.textbox').innerText); S.flags={justWatched:1}; draw(); const t=document.querySelector('.textbox').innerText; const b=/장갑을 보는군/.test(t)&&/다 보고 있었지/.test(t); S=JSON.parse(keep); draw(); return a&&b; }));
   await T('ch11 thumb notice unlocks Julian secret',async()=>page.evaluate(()=>{ const keep=JSON.stringify(S); S.flags={notEmpty:1}; S.noticed={}; S.scene='c11g'; draw(); const a=document.querySelectorAll('[data-act=choice]').length===1; S.noticed={thumb:1}; draw(); const b=document.querySelectorAll('[data-act=choice]').length===2; S=JSON.parse(keep); draw(); return a&&b; }));
+  await T('300 random playthroughs: no dead ends, empty scenes or errors',async()=>page.evaluate(()=>{ const keep=JSON.stringify(S); const seen=new Set(); const bad=[]; let seed=7; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
+    for(let run=0;run<300;run++){ S=freshSave(); ui={screen:'game',tab:null,sub:'root'}; const pN=rnd();
+      for(let step=0;step<400;step++){ const sc=SCENES[S.scene]; seen.add(S.scene); draw();
+        const tb=document.querySelector('.textbox'); if(!tb){ bad.push(S.scene+':no textbox'); break; }
+        if(!sc.end&&!tb.querySelector('p')) bad.push(S.scene+':no paragraph');
+        if(!sc.end&&document.querySelectorAll('.textbox p').length===0) bad.push(S.scene+':empty');
+        document.querySelectorAll('[data-act=notice]').forEach(e=>{ if(rnd()<pN) e.click(); });
+        if(sc.end) break;
+        const cs=[...document.querySelectorAll('[data-act=choice]')]; if(!cs.length){ bad.push(S.scene+':no choice'); break; }
+        const c=cs[Math.floor(rnd()*cs.length)]; const before=S.scene; c.click(); if(S.scene===before&&!ui.tab){ bad.push(before+':choice did not move'); break; } ui.tab=null; } }
+    const unseen=Object.keys(SCENES).filter(k=>!seen.has(k)); S=JSON.parse(keep); ui={screen:'game',tab:null,sub:'root'}; draw();
+    if(bad.length||unseen.length) console.log('BAD',[...new Set(bad)].slice(0,10).join(' | '),'UNSEEN',unseen.join(','));
+    return !bad.length&&!unseen.length; }));
   await T('every scene image ok',async()=>page.evaluate(()=>Object.keys(SCENES).every(k=>{ const s=SCENES[k]; const h=stageSVG(s.place,s.season,s.chars,s.time,s.props); return h.includes('data:image/png;base64,'); })));
   await T('notes >=7',async()=>{ await click('[data-tab=notes]'); return (await page.evaluate(()=>document.querySelectorAll('.panel .jot').length))>=7; });
   await T('letters',async()=>{ await click('[data-tab=letters]'); return /아직 편지가 없어요/.test(await txt()); });

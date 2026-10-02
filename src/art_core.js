@@ -1,32 +1,27 @@
-const BAYER=[[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
-function hashStr(s){ let h=2166136261; for(const ch of String(s)){ h^=ch.charCodeAt(0); h=Math.imul(h,16777619); } return h>>>0; }
+// 픽셀 엔진: PX(w,h) 캔버스와 점·사각형·타원·선·다각형·마스크, 색 섞기, 계절 팔레트, 난수
 function rng(seed){ let a=seed>>>0; return function(){ a=(a+0x6D2B79F5)|0; let t=Math.imul(a^(a>>>15),1|a); t=(t+Math.imul(t^(t>>>7),61|t))^t; return ((t^(t>>>14))>>>0)/4294967296; }; }
 function hex2rgb(h){ h=h.replace('#',''); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
 function rgb2hex(a){ return '#'+a.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join(''); }
 function mix(a,b,t){ const x=hex2rgb(a),y=hex2rgb(b); return rgb2hex(x.map((v,i)=>v+(y[i]-v)*t)); }
-function ramp(c,n){ n=n||4; const out=[]; for(let i=0;i<n;i++){ const t=i/(n-1); out.push(t<.5?mix(mix(c,'#2c1f4a',.62),c,t*2):mix(c,'#fff1da',.5),); } const a=[]; for(let i=0;i<n;i++){ const t=i/(n-1); a.push(t<.5?mix(mix(c,'#2c1f4a',.62),c,t/.5):mix(c,'#fff1da',(t-.5)/.5*.52)); } return a; }
-function tone(c){ return {l:mix(c,'#fff4e4',.28),m:c,d:mix(c,'#2a1f3a',.36),dd:mix(c,'#1c1428',.6)}; }
-const OUT='#2b2030';
+const RGBC={};
+function RGB(col){ if(RGBC[col]!==undefined) return RGBC[col]; return RGBC[col]=(/^#[0-9a-f]{6}$/i.test(col)?hex2rgb(col):null); }
+const MASKS={};
+function maskCtx(w,h){ const k=w+'x'+h; if(!MASKS[k]){ const t=document.createElement('canvas'); t.width=w; t.height=h; MASKS[k]=t.getContext('2d',{willReadFrequently:true}); } return MASKS[k]; }
 function PX(w,h){
   const c=document.createElement('canvas'); c.width=w; c.height=h;
-  const x=c.getContext('2d'); const o={c,x,w,h};
-  if(!x){ o.p=o.r=o.ell=o.line=o.poly=o.dith=o.grad=o.mask=o.shade=()=>{}; return o; }
+  const x=c.getContext('2d',{willReadFrequently:true}); const o={c,x,w,h};
+  if(!x){ o.p=o.r=o.ell=o.line=o.poly=o.mask=()=>{}; return o; }
   o.p=(X,Y,col)=>{ X|=0; Y|=0; if(X<0||Y<0||X>=w||Y>=h) return; x.fillStyle=col; x.fillRect(X,Y,1,1); };
   o.r=(X,Y,W,H,col)=>{ x.fillStyle=col; x.fillRect(X|0,Y|0,W|0,H|0); };
   o.ell=(cx,cy,rx,ry,col)=>{ for(let yy=-ry;yy<=ry;yy++){ const dx=Math.round(rx*Math.sqrt(Math.max(0,1-(yy*yy)/(ry*ry+.0001)))); o.r(cx-dx,cy+yy,dx*2+1,1,col); } };
   o.line=(x0,y0,x1,y1,col)=>{ x0|=0;y0|=0;x1|=0;y1|=0; const dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1; let e=dx+dy; for(;;){ o.p(x0,y0,col); if(x0===x1&&y0===y1) break; const e2=2*e; if(e2>=dy){ e+=dy; x0+=sx; } if(e2<=dx){ e+=dx; y0+=sy; } } };
   o.poly=(pts,col)=>{ let mn=1e9,mx=-1e9; pts.forEach(p=>{ mn=Math.min(mn,p[1]); mx=Math.max(mx,p[1]); }); for(let yy=Math.floor(mn);yy<=Math.ceil(mx);yy++){ const xs=[]; for(let i=0;i<pts.length;i++){ const a=pts[i],b=pts[(i+1)%pts.length]; if((a[1]<=yy&&b[1]>yy)||(b[1]<=yy&&a[1]>yy)){ xs.push(a[0]+(yy-a[1])/(b[1]-a[1])*(b[0]-a[0])); } } xs.sort((m,n)=>m-n); for(let k=0;k+1<xs.length;k+=2){ o.r(Math.round(xs[k]),yy,Math.round(xs[k+1])-Math.round(xs[k])+1,1,col); } } };
-  o.dith=(X,Y,W,H,a,b,t)=>{ for(let j=0;j<H;j++) for(let i=0;i<W;i++) o.p(X+i,Y+j,(t*16>BAYER[(Y+j)&3][(X+i)&3])?b:a); };
-  o.grad=(X,Y,W,H,cols)=>{ const n=cols.length; for(let j=0;j<H;j++){ const f=j/Math.max(1,H-1)*(n-1); const i=Math.min(n-2,Math.floor(f)); const t=f-i; for(let k=0;k<W;k++){ o.p(X+k,Y+j,(t*16>BAYER[j&3][(X+k)&3])?cols[i+1]:cols[i]); } } };
-  o.mask=(draw)=>{ const t=document.createElement('canvas'); t.width=w; t.height=h; const cc=t.getContext('2d'); cc.fillStyle='#000'; draw(cc); const d=cc.getImageData(0,0,w,h).data; const m=new Uint8Array(w*h); for(let i=0;i<w*h;i++) m[i]=d[i*4+3]>110?1:0; return m; };
-  o.shade=(m,rp,opt)=>{ opt=opt||{}; const n=rp.length; let x0=w,x1=0,y0=h,y1=0; for(let j=0;j<h;j++) for(let i=0;i<w;i++) if(m[j*w+i]){ if(i<x0)x0=i; if(i>x1)x1=i; if(j<y0)y0=j; if(j>y1)y1=j; }
-    if(x1<x0) return; const cx=(x0+x1)/2, cy=(y0+y1)/2, hw=Math.max(1,(x1-x0)/2), hh=Math.max(1,(y1-y0)/2); const L=opt.light||[-.55,-.7]; const k=opt.k==null?.85:opt.k; const bias=opt.bias==null?.0:opt.bias;
-    const at=(i,j)=>(i<0||j<0||i>=w||j>=h)?0:m[j*w+i];
-    for(let j=y0;j<=y1;j++) for(let i=x0;i<=x1;i++){ if(!m[j*w+i]) continue;
-      const nx=(i-cx)/hw, ny=(j-cy)/hh; const z=Math.sqrt(Math.max(0,1-Math.min(1,nx*nx*.6+ny*ny*.4)));
-      let s=.5-(nx*L[0]+ny*L[1])*.5*k + (opt.flat?0:(z-.6)*.12) + bias; if(opt.f) s+=opt.f(i,j,nx,ny);
-      if(!at(i+1,j)) s-=.16; if(!at(i,j+1)) s-=.12; if(!at(i-1,j)) s+=.07; if(!at(i,j-1)) s+=.07;
-      s=Math.max(0,Math.min(.999,s)); const lv=s*(n-1); let a=Math.floor(lv); const t=lv-a; const tt=Math.max(0,Math.min(1,(t-.42)/.16)); const idx=opt.hard?Math.round(lv):((tt*16>BAYER[j&3][i&3])?a+1:a); o.p(i,j,rp[Math.min(n-1,idx)]); } };
+  o.mask=(draw)=>{ const cc=maskCtx(w,h); cc.clearRect(0,0,w,h); cc.fillStyle='#000'; cc.beginPath(); draw(cc); const d=cc.getImageData(0,0,w,h).data; const m=new Uint8Array(w*h); for(let i=0;i<w*h;i++) m[i]=d[i*4+3]>110?1:0; return m; };
+  // 점을 한꺼번에 찍기: 영역을 한 번 읽고, 점들을 메모리에서 바꾼 뒤 한 번에 되돌려 놓는다 (o.p 를 수백 번 부르는 것보다 훨씬 빠름)
+  o.paint=(X0,Y0,W,H,each)=>{ X0=Math.max(0,X0|0); Y0=Math.max(0,Y0|0); W=Math.min(w-X0,W|0); H=Math.min(h-Y0,H|0); if(W<=0||H<=0) return;
+    const img=x.getImageData(X0,Y0,W,H), d=img.data, later=[];
+    each((X,Y,col)=>{ X|=0; Y|=0; if(X<X0||Y<Y0||X>=X0+W||Y>=Y0+H) return; const c=RGB(col); if(!c){ later.push([X,Y,col]); return; } const k=((Y-Y0)*W+(X-X0))*4; d[k]=c[0]; d[k+1]=c[1]; d[k+2]=c[2]; d[k+3]=255; });
+    x.putImageData(img,X0,Y0); later.forEach(q=>o.p(q[0],q[1],q[2])); };
   return o;
 }
 function seasonPal(season){
