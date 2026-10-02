@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 mkdir -p dist
 {
   cat src/head.html
-  cat src/chapters.js src/art_core.js src/art_sprites.js src/art_bg.js src/scenes.js src/app.js
+  cat src/chapters.js src/art_core.js src/art_sprites.js src/art_bg.js src/scenes.js src/changelog.js src/app.js
   printf '\n</script>\n</body>\n</html>\n'
 } > dist/game.html
 node -e "

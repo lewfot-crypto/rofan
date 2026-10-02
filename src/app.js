@@ -159,7 +159,7 @@ function settingsHtml(fromTitle){
   if(sub==='root'){
     const n=S?Object.keys(S.noticed).length:0;
     const row=(k,lb,v)=>'<button class="row" data-act="sub" data-v="'+k+'">'+lb+'<span class="v">'+(v||'')+'</span>'+ICON.go+'</button>';
-    return head('설정',rootBack[0],rootBack[1])+'<div class="pc">'+row('reading','읽기 설정',pref.fs+'px · '+THEME_NAME[pref.theme]+(pref.dim?' · 밝기 '+['','조금 낮게','낮게'][pref.dim]:''))+row('sound','소리',pref.sound?'켬':'끔')+row('save','저장과 불러오기',S?('노트 '+n+'줄'):'')+row('library','이야기 서재','본편 30장 · 번외 7편')+row('chars','인물 사전','16명')+row('about','정보','')+'</div>';
+    return head('설정',rootBack[0],rootBack[1])+'<div class="pc">'+row('reading','읽기 설정',pref.fs+'px · '+THEME_NAME[pref.theme]+(pref.dim?' · 밝기 '+['','조금 낮게','낮게'][pref.dim]:''))+row('sound','소리',pref.sound?'켬':'끔')+row('save','저장과 불러오기',S?('노트 '+n+'줄'):'')+row('library','이야기 서재','본편 30장 · 번외 7편')+row('chars','인물 사전','16명')+row('about','정보','')+row('log','업데이트 기록','지금 '+CHANGELOG[0].v)+'</div>';
   }
   const back=(lb,v)=>head(lb,sub==='reader'?'서재':'설정',sub==='reader'?'sub':'sub',sub==='reader'?'library':'root');
   if(sub==='reading'){
@@ -190,9 +190,20 @@ function settingsHtml(fromTitle){
     DICT.forEach(d=>{ o+='<div class="chr"><div class="av">'+figSVG(d.id)+'</div><div><h4>'+d.name+'</h4><div class="rl">'+d.role+'</div><p>'+d.desc+'</p></div></div>'; });
     return o+'</div>';
   }
-  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">0.6</span></div><div class="field">플레이할 수 있는 장면<span style="color:var(--soft);font-size:13px">1권 전체 · 2권 10~12장</span></div><div class="field">이야기 서재<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물은 코드로 그린 픽셀 그림이에요. 나중에 실제 일러스트로 바꿔 끼울 수 있게 만들어 두었어요.</p></div>';
+  if(sub==='log') return logHtml(back);
+  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">'+CHANGELOG[0].v+'</span></div><div class="field">플레이할 수 있는 장면<span style="color:var(--soft);font-size:13px">1권 전체 · 2권 10~12장</span></div><div class="field">이야기 서재<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물은 코드로 그린 픽셀 그림이에요. 나중에 실제 일러스트로 바꿔 끼울 수 있게 만들어 두었어요.</p></div>';
   return '';
 }
+// 업데이트 기록: 한 장에 한 판씩. 왼쪽으로 넘기면(또는 오른쪽 단추) 더 이전 업데이트.
+function logHtml(back){
+  const n=CHANGELOG.length, i=Math.max(0,Math.min(n-1,ui.logPage||0)), e=CHANGELOG[i];
+  return back('업데이트 기록')+'<div class="pc"><div class="logpage'+(ui.logDir?' turn-'+ui.logDir:'')+'" id="logpage">'
+    +'<div class="logv">'+esc(e.v)+'</div><div class="logd">'+esc(e.date)+(i===0?' · 지금 판':'')+'</div><h3 class="logt">'+esc(e.title)+'</h3>'
+    +'<ul class="logl">'+e.items.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul></div>'
+    +'<div class="lognav"><button data-act="logp" data-v="-1"'+(i===0?' disabled':'')+'>‹ 최근</button><span>'+(i+1)+' / '+n+'</span><button data-act="logp" data-v="1"'+(i===n-1?' disabled':'')+'>이전 ›</button></div>'
+    +'<p class="note-s">왼쪽으로 밀면 이전 업데이트, 오른쪽으로 밀면 최근 업데이트로 넘어가요.</p></div>';
+}
+function turnLog(d){ const n=CHANGELOG.length, j=(ui.logPage||0)+d; if(j<0||j>=n) return; ui.logPage=j; ui.logDir=d>0?'next':'prev'; draw(); ui.logDir=null; }
 function tocHtml(){
   let h='',v=0;
   CHAPTERS.forEach(c=>{ const cv=volOf(c.n); if(cv!==v){ v=cv; h+='<li class="vol">'+VOLS[v]+'</li>'; }
@@ -231,7 +242,8 @@ document.addEventListener('click',e=>{
    case 'backTitle': ui.screen='title'; ui.sub='root'; break;
    case 'tab': ui.tab=(ui.tab===el.dataset.tab)?null:el.dataset.tab; ui.sub='root'; ui.confirm=false; ui.msg=''; break;
    case 'closeTab': ui.tab=null; ui.sub='root'; break;
-   case 'sub': ui.sub=v; ui.confirm=false; ui.msg=''; break;
+   case 'sub': ui.sub=v; ui.confirm=false; ui.msg=''; if(v==='log') ui.logPage=0; break;
+   case 'logp': turnLog(+v); return;
    case 'chap': if(el.dataset.n){ ui.chap=+el.dataset.n; ui.sub='reader'; ui.fork=null; ui.keep='top'; const pn=$('.panel'); if(pn) pn.scrollTop=0; } break;
    case 'branch': ui.fork=el.dataset.id; draw(); { const ep=$('#epi'); if(ep&&ep.scrollIntoView) ep.scrollIntoView({block:'start'}); } return;
    case 'fs': pref.fs=Math.max(14,Math.min(26,pref.fs+(+v))); applyPref(); break;
@@ -261,7 +273,12 @@ document.addEventListener('click',e=>{
   draw();
   if(act==='choice'){ const tb=$('#tb'); if(tb) tb.scrollTop=0; }
 });
+// 업데이트 기록 넘기기: 손가락으로 밀기
+let swX=null, swY=null;
+document.addEventListener('touchstart',e=>{ const t=e.target.closest&&e.target.closest('#logpage'); if(!t) { swX=null; return; } swX=e.touches[0].clientX; swY=e.touches[0].clientY; },{passive:true});
+document.addEventListener('touchend',e=>{ if(swX===null) return; const dx=e.changedTouches[0].clientX-swX, dy=e.changedTouches[0].clientY-swY; swX=null; if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.5) turnLog(dx<0?1:-1); },{passive:true});
 document.addEventListener('keydown',e=>{
+  if(ui.sub==='log'&&document.getElementById('logpage')){ if(e.key==='ArrowLeft'){ turnLog(-1); return; } if(e.key==='ArrowRight'){ turnLog(1); return; } }
   if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.getAttribute&&e.target.getAttribute('role')==='button'){ e.preventDefault(); e.target.click(); }
 });
 applyPref();

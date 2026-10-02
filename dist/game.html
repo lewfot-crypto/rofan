@@ -130,6 +130,18 @@ textarea{ width:100%; box-sizing:border-box; min-height:84px; font:12px/1.5 mono
 .fork button.fb.on{ border-color:var(--accent); background:var(--panel); }
 .epi{ margin-top:2.2em; } .epi h5{ font-size:19px; margin:0 0 1.2em; font-family:var(--serif); }
 .end{ color:var(--soft); text-align:center; font-size:13.5px; margin-top:2em; line-height:1.8; font-family:var(--sans); }
+.logpage{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px 18px 10px; margin:4px 0 12px; min-height:260px; }
+.logpage.turn-next{ animation:logNext .22s ease-out; } .logpage.turn-prev{ animation:logPrev .22s ease-out; }
+@keyframes logNext{ from{ opacity:.3; transform:translateX(24px); } to{ opacity:1; transform:none; } }
+@keyframes logPrev{ from{ opacity:.3; transform:translateX(-24px); } to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce){ .logpage.turn-next,.logpage.turn-prev{ animation:none; } }
+.logv{ font-family:var(--serif); font-size:26px; color:var(--accent); }
+.logd{ font-size:12px; color:var(--soft); margin-top:2px; }
+.logt{ font-family:var(--serif); font-weight:500; font-size:17px; margin:12px 0 8px; }
+.logl{ margin:0; padding-left:1.1em; line-height:1.75; font-size:15px; } .logl li{ margin-bottom:6px; }
+.lognav{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.lognav button{ border:1px solid var(--line); background:var(--panel); color:var(--ink); border-radius:8px; padding:.55em 1em; font-size:14px; }
+.lognav button[disabled]{ opacity:.35; } .lognav span{ font-size:13px; color:var(--soft); }
 </style>
 </head>
 <body>
@@ -7524,11 +7536,100 @@ const SCENES={
    {fn:'notebook',pre:'c12',empty:'그날은 아무것도 적지 못했다. 이름 하나가 오래 귀에 남아 있었다.'},
    '*—사람은 가끔, 아무것도 안 한 사람에게 가장 큰 것을 준다.*'
   ],
-  choices:[{label:'12장을 마친다',next:'send'}]},
+  choices:[{label:'12장을 마친다',next:'c13a'}]},
 
- send:{place:'ballroom',season:'여름',age:'열두 살',chLabel:'2권 · 12장까지',chars:[],end:true,paras:[],
-  endTitle:'2권 12장까지 읽었어요',
-  choices:[{label:'노트 열기',go:'notes'},{label:'이야기 서재에서 13장 읽기',go:'library',chap:13},{label:'처음부터 다시 하기',go:'restart'}]}
+ // ── 2권 13장 〈수다쟁이 영애의 의리〉 (사용자 승인 설계: 로잘리 말버릇 notbig 알아챔 → "저는 알고 있었어요")
+ c13a:{place:'salon',season:'가을',age:'열두 살',chLabel:'2권 · 13장 수다쟁이 영애의 의리',chars:[],
+  paras:[
+   '처음에는 단서가 하나뿐이었다. 같은 문장이 세 입을 거치며 변하는 사이, 맨 앞의 입이 쓰던 말버릇이 아직 문장 속에 남아 있었다. *{{notbig|"글쎄, 대단한 건 아니고요."}}*',
+   {t:'로잘리의 말버릇이었다. 모든 이야기를 대단한 것이 아니라고 시작하는 사람이 가장 대단하게 전한다는 것을, 나는 다과회 첫날에 알아챘다.',ifN:'notbig'},
+   {t:'로잘리 클레어몬트가 소문의 시작이라는 것을 나는 오래전부터 알고 있었다.',ifN:'notbig'},
+   {t:'하지만 그녀는 악의가 없었다. 그것도 알았다. 로잘리는 소문을 나쁘게 전하는 사람이 아니라, 소문을 가만히 두지 못하는 사람이었다. 들은 것이 목구멍에 걸려 있으면 그녀는 어떻게든 풀어내야 했다. 그래서 나는 아무 말도 하지 않았다. 말을 하면, 그녀가 그것을 이야기로 만들 테니까.',ifN:'notbig'},
+   {t:'그 말버릇이 누구의 것인지, 나는 아직 떠올리지 못했다.',notN:'notbig'},
+   '가을 사냥철, 클레어몬트 백작 저택의 살롱에서 일이 터졌다.',
+   '벽난로 앞에서 어느 부인이 큰 소리로 말하고 있었다.',
+   '"저 아이는 에버하트인가 하는 학자 집안의 빚 때문에 들어온 거라던데. 공작가가 그런 걸 거둘 필요가 있었을까요."',
+   '살롱이 조용해졌다. 나는 찻잔을 든 채 가만히 있었다. 반박하지 않을 작정이었다. 소문보다 재미없는 사실이 되겠다고 정한 사람이니까.',
+   {t:'정원 모임에서 내가 준 물이 소문을 얼마나 키웠는지, 나는 기억하고 있었다.',if:'rebutted'}
+  ],
+  choices:[{label:'그때, 의자가 뒤로 밀렸다',next:'c13b'}]},
+ c13b:{place:'salon',season:'가을',age:'열두 살',chLabel:'2권 · 13장 수다쟁이 영애의 의리',chars:[{id:'rosalie',pos:'center',expr:'surprise'}],
+  paras:[
+   '"그건 틀렸어요!"',
+   '로잘리였다. 리본은 이번에도 두 개가 달랐고, 얼굴은 목까지 붉었다. 손에 든 부채가 부러질 것처럼 떨리고 있었다.',
+   '"그 소문은 제가 처음 한 말이에요!"',
+   '모든 시선이 그녀에게 쏠렸다. 로잘리는 눈을 질끈 감았다가 떴다.',
+   '"봄에 제가 어머니한테 들은 얘기를 다른 영애한테 전했는데요, 그때 제가 한 말은 {{obliged|\'공작님이 에버하트 박사님께 신세를 졌대요\'}}였어요! 신세요! 빚이 아니라! 그런데 그게 어떻게 빚 때문에 입양했다가 돼요? 말은 전하는 사람이 키우는 거라고요! 제가 그렇게 말한 적 없는데 제가 한 말이 되어 있었어요!"',
+   '살롱 안은 이제 완전히 침묵이었다. 누군가의 부채가 바닥에 떨어졌다. 로잘리는 숨을 몰아쉬며 서 있었다. 그리고 아주 작게 말했다.',
+   '"그리고 아델라인은……우리 집 사촌들보다 훨씬 말이 없어서, 뭘 퍼뜨릴 수도 없어요."',
+   '잠깐의 정적. 이윽고 누군가 푸흡 소리를 내며 웃었다. 곧 웃음이 번졌다. 로잘리의 얼굴이 더 붉어졌다. 그녀는 부채를 쥔 채 문 쪽으로 달려 나갔다.'
+  ],
+  choices:[{label:'로잘리를 따라 나간다',next:'c13c'}]},
+ c13c:{place:'garden',time:'night',season:'가을',age:'열두 살',chLabel:'2권 · 13장 수다쟁이 영애의 의리',chars:[{id:'rosalie',pos:'center',expr:'sad'}],
+  paras:[
+   '로잘리는 테라스 난간 아래에 쪼그려 앉아 있었다.',
+   '나는 그 옆에 조용히 앉았다. 달빛이 정원 위로 흐르고 있었고, 멀리서 살롱의 웃음소리가 가늘게 들려왔다. 한참 동안 로잘리는 얼굴을 무릎에 묻고 있었다.',
+   '"저 이제 소문 못 내요."',
+   '목소리가 젖어 있었다.',
+   '"아무도 안 믿을 거예요. 저는 말이 제일 재미있는 사람인데. 말밖에 없는 사람인데."',
+   '"로잘리."',
+   '"네……"'
+  ],
+  choices:[{label:'"저는 알고 있었어요."',next:'c13d',flag:'knewRosalie',req:'notbig'},{label:'"로잘리가 나쁜 사람이 아니라는 건 알아요."',next:'c13d',flag:'trustedRosalie'}]},
+ c13d:{place:'garden',time:'night',season:'가을',age:'열두 살',chLabel:'2권 · 13장 수다쟁이 영애의 의리',chars:[{id:'rosalie',pos:'center',expr:'sad'}],
+  paras:[
+   {t:'"저는 알고 있었어요."',if:'knewRosalie'},
+   {t:'로잘리가 고개를 들었다. 눈이 퉁퉁 부어 있었다.',if:'knewRosalie'},
+   {t:'"뭘요?"',if:'knewRosalie'},
+   {t:'"소문이 로잘리에게서 시작됐다는 거요. 처음부터요."',if:'knewRosalie'},
+   {t:'"……그런데 왜 아무 말도 안 하셨어요?"',if:'knewRosalie'},
+   {t:'"로잘리가 나쁜 사람이 아니라서요."',if:'knewRosalie'},
+   {t:'"로잘리가 나쁜 사람이 아니라는 건 알아요."',if:'trustedRosalie'},
+   {t:'로잘리가 고개를 들었다. 눈이 퉁퉁 부어 있었다.',if:'trustedRosalie'},
+   {t:'"……그 소문이 저한테서 시작된 걸 오늘 처음 아셨잖아요."',if:'trustedRosalie'},
+   {t:'"네. 오늘 처음 알았어요. 그래도 로잘리가 나쁜 사람이 아니라는 건, 그 전부터 알았어요."',if:'trustedRosalie'},
+   '로잘리의 입술이 떨렸다. 그리고 갑자기 얼굴을 찡그리더니 엉엉 울기 시작했다. 나는 당황해서 손수건을 건넸다. 로잘리는 그것을 받아 코를 풀고, 다시 울었다. 한참 울고 나서 훌쩍거리며 말했다.',
+   {t:'"아델라인은 너무 이상해요. 사람이 어떻게 그렇게 다 알면서 가만히 있어요."',if:'knewRosalie'},
+   {t:'"아델라인은 너무 이상해요. 사람이 어떻게 그렇게 다 믿어 줘요."',if:'trustedRosalie'},
+   '"……죄송해요."',
+   '"사과하지 마세요! 고마운 건데!"',
+   '"……그럼 천만에요."',
+   '"그것도 이상해요!"',
+   '로잘리는 울다가 웃었다. 웃다가 다시 코를 풀었다. 그녀의 웃음은 소문을 전할 때보다 훨씬 맑았다.'
+  ],
+  choices:[{label:'"앞으로는 어떻게 하실 거예요?"',next:'c13e'}]},
+ c13e:{place:'garden',time:'night',season:'가을',age:'열두 살',chLabel:'2권 · 13장 수다쟁이 영애의 의리',chars:[{id:'rosalie',pos:'center',expr:'smile'}],
+  paras:[
+   '"앞으로는 어떻게 하실 거예요?"',
+   '내가 물었다.',
+   '"소문 말고요. 로잘리가 아는 것들요."',
+   '"몰라요. 저는 아는 걸 말하는 걸로만 사는 사람인데."',
+   '"{{truth|사실을 말하는 사람이 되면 돼요.}}"',
+   '로잘리가 나를 보았다.',
+   '"사실만 말하는 사람의 이야기는 느려요. 재미도 덜해요. 하지만 오래가요. 그리고 한번 믿음이 생기면, 사람들은 그 사람의 말을 기다려요."',
+   '한참 침묵이 흘렀다. 로잘리는 눈을 깜박이다가 갑자기 내 팔을 붙들었다.',
+   '"아델라인, 저 비밀 지키는 거 정말 못 해요."',
+   '"알아요."',
+   '"그런데 아델라인의 비밀은 지키고 싶어요."',
+   '"저는 비밀이 별로 없어서 괜찮아요."',
+   '"그럼 제가 몇 개 만들어 드릴까요?"',
+   '"……아니요."',
+   '"한 개만요!"',
+   '"아니요."',
+   '로잘리는 다시 웃었다. 달빛 아래에서 그 웃음은 아주 오래 남았다. 그날 나는 이 집 바깥에서 처음으로 이름을 불러 주는 친구를 얻었다.'
+  ],
+  choices:[{label:'그날 밤, 노트',next:'c13f'}]},
+ c13f:{place:'bedroom',time:'night',season:'가을',age:'열두 살',chLabel:'2권 · 13장 수다쟁이 영애의 의리',chars:[],
+  paras:[
+   '집으로 돌아와 노트를 폈다.',
+   {fn:'notebook',pre:'c13',empty:'그날은 아무것도 적지 못했다. 달빛 아래의 웃음만 오래 남았다.'},
+   {t:'*—공작님이 아버지에게 신세를 졌다. 그것은 어떤 신세일까.*',ifN:'obliged'}
+  ],
+  choices:[{label:'13장을 마친다',next:'send'}]},
+
+ send:{place:'salon',season:'가을',age:'열두 살',chLabel:'2권 · 13장까지',chars:[],end:true,paras:[],
+  endTitle:'2권 13장까지 읽었어요',
+  choices:[{label:'노트 열기',go:'notes'},{label:'이야기 서재에서 14장 읽기',go:'library',chap:14},{label:'처음부터 다시 하기',go:'restart'}]}
 
 };
 const NOTICES={
@@ -7606,6 +7707,9 @@ const NOTICES={
  boring:{scene:'c12d',text:'소문은 반박할수록 자란다. 소문보다 재미없는 사실이 될 것.'},
  eleven2:{scene:'c12e',text:'공작님은 열한 건의 초청에 응하셨다. 내가 그를 위해 한 일은 아무것도 없는데.'},
  nameit:{scene:'c12f',text:'소문은 이름을 불러 주는 사람이 있으면 자라지 못한다.'},
+ notbig:{scene:'c13a',text:'로잘리의 말버릇: "글쎄, 대단한 건 아니고요." 모든 이야기를 대단한 것이 아니라고 시작하는 사람이 가장 대단하게 전한다.'},
+ obliged:{scene:'c13b',text:'소문의 출발점은 대개 진실이다. 로잘리는 "신세를 졌다"고 했다.'},
+ truth:{scene:'c13e',text:'로잘리는 말이 많은 사람이 아니라, 말이 마음에 오래 머물지 못하는 사람이다. 그런 사람이 가장 솔직하다.'},
  orange:{scene:'c3b',text:'마로트 님은 기분이 좋으면 호칭이 바뀐다. "오렌지 양"이라 부를 때 눈이 부드러워진다.'},
  bread:{scene:'c3c',text:'탠지는 점심 빵을 남겨 손수건에 싼다. 간식이라고 했다. 대답이 질문보다 먼저 왔다.'},
  hands:{scene:'c3c',text:'탠지의 손바닥에 붉게 부르튼 자국이 겹겹이 있다. 새 상처가 아니다.'},
@@ -7629,6 +7733,50 @@ const NOTICES={
  {id:'serena',name:'세레나 발트하임',role:'라이벌 영애',desc:'황후 후보 일순위. 완벽하지만 자기가 무엇을 원하는지는 모른다.'},
  {id:'gregor',name:'그레고르 에르바인',role:'북부 대공',desc:'소리를 낮출 줄 모르는 사람. 에드릭의 오래된 벗이다.'},
  {id:'count',name:'발트하임 백작',role:'세레나의 아버지',desc:'오래 입을 다문 사람. 말할수록 더 오해받는 쪽에 서 있다.'}
+];
+// 업데이트 기록 (설정 → 업데이트 기록). 맨 앞이 가장 최근. 업데이트할 때마다 맨 앞에 하나씩 더한다.
+const CHANGELOG=[
+ {v:'0.7', date:'2026.10.02', title:'업데이트 기록, 2권 13장', items:[
+  '설정 맨 아래에 "업데이트 기록"이 생겼어요. 왼쪽으로 한 장씩 넘기면 이전 업데이트를 볼 수 있어요.',
+  '2권 13장 〈수다쟁이 영애의 의리〉: 클레어몬트 저택 살롱과 달밤의 테라스. 로잘리의 말버릇을 알아챘다면 대화가 달라져요.',
+  '새 배경: 살롱(응접실), 달밤의 정원.']},
+ {v:'0.6', date:'2026.10.02', title:'정리와 점검', items:[
+  '인물 그림을 만드는 속도가 약 50배 빨라졌어요. 처음 열 때와 새 장면으로 넘어갈 때 기다림이 줄었어요.',
+  '쓰이지 않는 옛 그림 코드를 정리했어요.',
+  '무작위 플레이 300번으로 막다른 장면·빈 장면이 없는지 확인하는 점검을 더했어요.',
+  '정보 화면의 판 번호와 설명을 지금 상태로 고쳤어요.']},
+ {v:'0.5.6', date:'2026.10.02', title:'2권 시작: 10~12장', items:[
+  '1권 마지막 장면에서 바로 2권으로 이어져요.',
+  '10장 〈북쪽에서 온 소년〉, 11장 〈첫 다과회〉, 12장 〈소문의 계절〉.',
+  '새 배경: 황궁 정원 다과회, 귀족가 정원 모임, 무도회장.',
+  '로잘리에게 주근깨와 색이 다른 리본 두 개가 생겼어요(소설대로).']},
+ {v:'0.5.5', date:'2026.10.02', title:'1권 완성: 7~9장, 노트 줄 긋기', items:[
+  '7장 〈마로트의 침묵〉, 8장 〈봄, 처음 불린 이름〉, 9장 〈여름 끝의 손님〉.',
+  '노트의 틀린 줄에 가로선을 그을 수 있어요. 그은 줄은 노트 탭에도 남아요.',
+  '카일런을 소설대로: 뒤로 넘긴 검은 머리, 오른손에만 장갑.']},
+ {v:'0.5.4', date:'2026.10.02', title:'1권 4~6장, 읽는 화면 색', items:[
+  '4장 〈불 켜진 서재 앞의 찻잔〉, 5장 〈과수원 담장 너머〉, 6장 〈유품 상자〉.',
+  '선택지로 노트에 한 줄을 적을 수 있어요.',
+  '화면 색: 밝게 · 종이 · 어둡게, 밝기 3단계. 화면 오른쪽 위 단추로 바로 바꿀 수 있어요.']},
+ {v:'0.5.3', date:'2026.10.02', title:'새 그림체를 게임에 반영', items:[
+  '인물 16명과 배경 11곳이 새 그림으로 바뀌었어요. 저택은 대저택 규모예요.',
+  '아이들은 어른보다 작게, 밤 장면은 어둡게(불빛 자리만 밝게).',
+  '부엌 화덕을 가운데로, 처음 실행 화면을 공작가 마차 창으로.']},
+ {v:'0.5.2', date:'2026.10.02', title:'새 그림체: 배경', items:[
+  '대저택판 외관 · 현관 홀 · 공부방 · 침실 · 식당 · 부엌 · 과수원 · 이층 복도 · 집사실 · 마차 안.',
+  '침실은 나무 벽·바닥·가구에 로판풍 휘장과 침구.']},
+ {v:'0.5.1', date:'2026.10.02', title:'새 그림체: 인물', items:[
+  '점무늬 없는 셀 음영과 윤곽선, 점 지도로 그린 얼굴(스타듀풍).',
+  '탠지는 굵은 컬 단발, 홀트 선생님은 안경 없이 엄격하지만 다정하게, 하델은 검은 머리, 율리안은 부드러운 웨이브.',
+  '소년들의 얼굴과 소품에 차이를 두었어요(지도, 털깃, 견장, 회중시계 줄, 검).']},
+ {v:'0.5', date:'2026.10.01', title:'1권 1~3장', items:[
+  '1장 〈도착〉, 2장 〈가정교사의 첫 수업〉, 3장 〈부엌의 소식통〉: 장면 23개.',
+  '밑줄을 눌러 노트에 적는 "알아차림"과, 알아챈 것에 따라 달라지는 장면.',
+  '배경 9곳과 인물 16명(첫 도트 그림).']},
+ {v:'0.1', date:'처음', title:'틀', items:[
+  '실행 화면, 게임 화면, 노트 · 편지 · 저택 · 설정 탭.',
+  '이야기 서재: 본편 30장과 번외 7편을 처음부터 전부 읽을 수 있어요. 30장은 아홉 갈래.',
+  '저장과 불러오기, 글자 크기, 어두운 화면.']}
 ];
 const VOLS={1:'1권 · 겨울의 문턱',2:'2권 · 사교계의 규칙',3:'3권 · 편지와 균열',4:'4권 · 무도회',5:'번외편'};
 const volOf=n=>n>=31?5:(n<=9?1:(n<=17?2:(n<=25?3:4)));
@@ -7791,7 +7939,7 @@ function settingsHtml(fromTitle){
   if(sub==='root'){
     const n=S?Object.keys(S.noticed).length:0;
     const row=(k,lb,v)=>'<button class="row" data-act="sub" data-v="'+k+'">'+lb+'<span class="v">'+(v||'')+'</span>'+ICON.go+'</button>';
-    return head('설정',rootBack[0],rootBack[1])+'<div class="pc">'+row('reading','읽기 설정',pref.fs+'px · '+THEME_NAME[pref.theme]+(pref.dim?' · 밝기 '+['','조금 낮게','낮게'][pref.dim]:''))+row('sound','소리',pref.sound?'켬':'끔')+row('save','저장과 불러오기',S?('노트 '+n+'줄'):'')+row('library','이야기 서재','본편 30장 · 번외 7편')+row('chars','인물 사전','16명')+row('about','정보','')+'</div>';
+    return head('설정',rootBack[0],rootBack[1])+'<div class="pc">'+row('reading','읽기 설정',pref.fs+'px · '+THEME_NAME[pref.theme]+(pref.dim?' · 밝기 '+['','조금 낮게','낮게'][pref.dim]:''))+row('sound','소리',pref.sound?'켬':'끔')+row('save','저장과 불러오기',S?('노트 '+n+'줄'):'')+row('library','이야기 서재','본편 30장 · 번외 7편')+row('chars','인물 사전','16명')+row('about','정보','')+row('log','업데이트 기록','지금 '+CHANGELOG[0].v)+'</div>';
   }
   const back=(lb,v)=>head(lb,sub==='reader'?'서재':'설정',sub==='reader'?'sub':'sub',sub==='reader'?'library':'root');
   if(sub==='reading'){
@@ -7822,9 +7970,20 @@ function settingsHtml(fromTitle){
     DICT.forEach(d=>{ o+='<div class="chr"><div class="av">'+figSVG(d.id)+'</div><div><h4>'+d.name+'</h4><div class="rl">'+d.role+'</div><p>'+d.desc+'</p></div></div>'; });
     return o+'</div>';
   }
-  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">0.6</span></div><div class="field">플레이할 수 있는 장면<span style="color:var(--soft);font-size:13px">1권 전체 · 2권 10~12장</span></div><div class="field">이야기 서재<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물은 코드로 그린 픽셀 그림이에요. 나중에 실제 일러스트로 바꿔 끼울 수 있게 만들어 두었어요.</p></div>';
+  if(sub==='log') return logHtml(back);
+  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">'+CHANGELOG[0].v+'</span></div><div class="field">플레이할 수 있는 장면<span style="color:var(--soft);font-size:13px">1권 전체 · 2권 10~12장</span></div><div class="field">이야기 서재<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물은 코드로 그린 픽셀 그림이에요. 나중에 실제 일러스트로 바꿔 끼울 수 있게 만들어 두었어요.</p></div>';
   return '';
 }
+// 업데이트 기록: 한 장에 한 판씩. 왼쪽으로 넘기면(또는 오른쪽 단추) 더 이전 업데이트.
+function logHtml(back){
+  const n=CHANGELOG.length, i=Math.max(0,Math.min(n-1,ui.logPage||0)), e=CHANGELOG[i];
+  return back('업데이트 기록')+'<div class="pc"><div class="logpage'+(ui.logDir?' turn-'+ui.logDir:'')+'" id="logpage">'
+    +'<div class="logv">'+esc(e.v)+'</div><div class="logd">'+esc(e.date)+(i===0?' · 지금 판':'')+'</div><h3 class="logt">'+esc(e.title)+'</h3>'
+    +'<ul class="logl">'+e.items.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul></div>'
+    +'<div class="lognav"><button data-act="logp" data-v="-1"'+(i===0?' disabled':'')+'>‹ 최근</button><span>'+(i+1)+' / '+n+'</span><button data-act="logp" data-v="1"'+(i===n-1?' disabled':'')+'>이전 ›</button></div>'
+    +'<p class="note-s">왼쪽으로 밀면 이전 업데이트, 오른쪽으로 밀면 최근 업데이트로 넘어가요.</p></div>';
+}
+function turnLog(d){ const n=CHANGELOG.length, j=(ui.logPage||0)+d; if(j<0||j>=n) return; ui.logPage=j; ui.logDir=d>0?'next':'prev'; draw(); ui.logDir=null; }
 function tocHtml(){
   let h='',v=0;
   CHAPTERS.forEach(c=>{ const cv=volOf(c.n); if(cv!==v){ v=cv; h+='<li class="vol">'+VOLS[v]+'</li>'; }
@@ -7863,7 +8022,8 @@ document.addEventListener('click',e=>{
    case 'backTitle': ui.screen='title'; ui.sub='root'; break;
    case 'tab': ui.tab=(ui.tab===el.dataset.tab)?null:el.dataset.tab; ui.sub='root'; ui.confirm=false; ui.msg=''; break;
    case 'closeTab': ui.tab=null; ui.sub='root'; break;
-   case 'sub': ui.sub=v; ui.confirm=false; ui.msg=''; break;
+   case 'sub': ui.sub=v; ui.confirm=false; ui.msg=''; if(v==='log') ui.logPage=0; break;
+   case 'logp': turnLog(+v); return;
    case 'chap': if(el.dataset.n){ ui.chap=+el.dataset.n; ui.sub='reader'; ui.fork=null; ui.keep='top'; const pn=$('.panel'); if(pn) pn.scrollTop=0; } break;
    case 'branch': ui.fork=el.dataset.id; draw(); { const ep=$('#epi'); if(ep&&ep.scrollIntoView) ep.scrollIntoView({block:'start'}); } return;
    case 'fs': pref.fs=Math.max(14,Math.min(26,pref.fs+(+v))); applyPref(); break;
@@ -7893,7 +8053,12 @@ document.addEventListener('click',e=>{
   draw();
   if(act==='choice'){ const tb=$('#tb'); if(tb) tb.scrollTop=0; }
 });
+// 업데이트 기록 넘기기: 손가락으로 밀기
+let swX=null, swY=null;
+document.addEventListener('touchstart',e=>{ const t=e.target.closest&&e.target.closest('#logpage'); if(!t) { swX=null; return; } swX=e.touches[0].clientX; swY=e.touches[0].clientY; },{passive:true});
+document.addEventListener('touchend',e=>{ if(swX===null) return; const dx=e.changedTouches[0].clientX-swX, dy=e.changedTouches[0].clientY-swY; swX=null; if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.5) turnLog(dx<0?1:-1); },{passive:true});
 document.addEventListener('keydown',e=>{
+  if(ui.sub==='log'&&document.getElementById('logpage')){ if(e.key==='ArrowLeft'){ turnLog(-1); return; } if(e.key==='ArrowRight'){ turnLog(1); return; } }
   if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.getAttribute&&e.target.getAttribute('role')==='button'){ e.preventDefault(); e.target.click(); }
 });
 applyPref();

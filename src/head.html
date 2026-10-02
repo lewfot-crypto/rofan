@@ -130,6 +130,18 @@ textarea{ width:100%; box-sizing:border-box; min-height:84px; font:12px/1.5 mono
 .fork button.fb.on{ border-color:var(--accent); background:var(--panel); }
 .epi{ margin-top:2.2em; } .epi h5{ font-size:19px; margin:0 0 1.2em; font-family:var(--serif); }
 .end{ color:var(--soft); text-align:center; font-size:13.5px; margin-top:2em; line-height:1.8; font-family:var(--sans); }
+.logpage{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px 18px 10px; margin:4px 0 12px; min-height:260px; }
+.logpage.turn-next{ animation:logNext .22s ease-out; } .logpage.turn-prev{ animation:logPrev .22s ease-out; }
+@keyframes logNext{ from{ opacity:.3; transform:translateX(24px); } to{ opacity:1; transform:none; } }
+@keyframes logPrev{ from{ opacity:.3; transform:translateX(-24px); } to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce){ .logpage.turn-next,.logpage.turn-prev{ animation:none; } }
+.logv{ font-family:var(--serif); font-size:26px; color:var(--accent); }
+.logd{ font-size:12px; color:var(--soft); margin-top:2px; }
+.logt{ font-family:var(--serif); font-weight:500; font-size:17px; margin:12px 0 8px; }
+.logl{ margin:0; padding-left:1.1em; line-height:1.75; font-size:15px; } .logl li{ margin-bottom:6px; }
+.lognav{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.lognav button{ border:1px solid var(--line); background:var(--panel); color:var(--ink); border-radius:8px; padding:.55em 1em; font-size:14px; }
+.lognav button[disabled]{ opacity:.35; } .lognav span{ font-size:13px; color:var(--soft); }
 </style>
 </head>
 <body>
