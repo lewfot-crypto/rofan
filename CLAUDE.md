@@ -147,7 +147,8 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 3. 화면 비율: 배경 3:2, 인물은 전신 투명 PNG(발 위치 맞추기 위해 `feet` 값 필요 → `sprite().feet`).
 - 이미지 생성은 Claude가 직접 못 한다 (연결된 이미지 생성 도구 없음, Google Flow 연결도 없음을 확인함). 사용자가 따로 생성해 올려야 한다.
 
-## 현재 구현 상태 (v1.0.1)
+## 현재 구현 상태 (v1.1)
+- 1.1(2026-10): **일러스트 교체 구현.** `tools/add_art.py <원본> <이름>` 이 `art/<이름>.webp` 로 변환(배경 1200×800, 인물은 투명 테두리 잘라 세로 1000)하고 `src/assets.js`(`ART` 이름 집합)를 다시 만든다. 이름: `bg_<장소>_<계절|any>_<day|night>`, `ch_<인물>_<a|b|c|all>_<표정>`(a=1~14장, b=15~25장, c=26~30장). `app.js artStage()`: `pref.art==='illust'` 이고 배경·모든 인물 그림이 있을 때만 HTML 무대(배경 img + 인물 img, 높이 a72%/b84%/c90%/all92%), 밤 그림이 없으면 낮 그림을 어둡게, 표정이 없으면 같은 나이의 기본 표정. 소품(`props`) 있는 장면은 도트. build 가 `art/` 를 `dist/art` 로 복사. 받은 그림: 서재 낮(`bg_study_any_day`), 마로트 기본(`ch_marot_all_neutral`). 기준 그림 캡처는 `wip/ref/`.
 - 1.0.1(2026-10): 홈 화면 아이콘(사용자 선택 A: 아델라인 얼굴 도트, 남색 바탕). `tools/make_icon.js` 가 dist 를 열어 그린 180px PNG 를 `src/head.html` 의 `apple-touch-icon` 에 data URI 로 넣음(그림을 바꾸면 build 후 다시 실행). 앱처럼 열기 메타(`apple-mobile-web-app-capable`, 제목 "아델라인"). 16~30장 검토 목록 `docs/review_16-30.md`(111개, 사용자 답 기다리는 중).
 - 1.0(2026-10): **30장 완성 → 이야기 전체 플레이 가능.** 사용자 결정: 아홉 갈래 **모두 열어 둠**(앞 선택으로 잠그지 않음), 갈래마다 장면 2개, 홀트의 편지 네 통은 공통 마지막 장면 직전(`c30m`, 편지 `h1~h4`, open `gotHoltLetters`, 장면에는 제4신). 구조: `c30a`(공통 도입, 선택 9개 flag `end_<id>`) → 갈래 `c30k/j/l/s/w/d/f/t/r` + `1·2` → `c30m` → `c30y`·`c30z`(공통 현관) → `send`(끝 카드: "30장의 다른 길 걸어 보기"=`c30a` 로, 노트, 편지, 처음부터). 갈래 안 되돌림: 17장 `circledNorth/Home/Everhart`, 15장 `quietHand`, 20장 `promisedYul`, 25장 `willWait`, 5장 `gaveTea`, 23장 `answeredHadel`, 1장 `chair`, 19장 `special`, 23장 `eighteen`, 25장 `blueink`. 마지막 장면: 4장 `tookCoat/askedWhose` 가 "외투 입어라"에 한 줄. 갈래 본문은 `/tmp` 스크립트로 소설 단락을 그대로 옮김(문장 수정 없음). 배경 대신 씀: 북쪽 고개→과수원, 서쪽 절벽→저택 앞, 마탑·문서고→서재, 온실(우정)→정원.
 - 0.15(2026-10): 4권 26~29장(장면 c26a~c29f). 사용자 "진행" → 추천안(검토 전). **소설 장 정보는 26·27장이 '여름'이지만 생일이 겨울(24·25장)이라 26~29장을 겨울로 둠.** 새 선택: 26장 `laughedDance`(소설)/`countedSteps`(28장 첫 춤에 한 줄), 27장 `keptLetter`(소설)/`sharedLetter`. 28·29장은 선택 없이 되돌림만: 25장 `willWait`(27장), 7장 `askedWatch`, 17장 `warmleather`, 12장 `nameit`, 15장 `quietHand`, 20장 `promisedYul`, 23장 `answeredHadel`(하델 대사 대체), 26장 `afraid`, 1장 `fingers`·`curtain`, 24장 `saidto`, 10장 `readCourage/readNoNeed`, 17장 `oneword`. 편지 `f18`(열여덟 살의 아델라인에게, open `readBirthdayLetter`). 끝 카드 "4권 29장까지". **다음은 30장 아홉 갈래 — 분량을 사용자에게 먼저 묻기로 함.**
@@ -172,7 +173,7 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 - 5장 분기(사용자 승인): 성 선택 `nameTrone`/`nameEverhart`/`nameSilent`(2권 이후 아드리안 장면에 다시 쓸 것), 차 `gaveTea`/`keptTea`.
 - 4장 분기(사용자 승인): 설탕 두 조각/넣지 않음(`sugar`/`noSugar`, 8장에서 다시 쓸 예정), "원하지 않아요"/"말씀하셔도 돼요"(`noTell`/`mayTell`), 누구의 말인지 묻기/외투(`askedWhose`/`tookCoat`). 노트 표시 `{fn:'notebook', pre:'c4', empty:'…'}`.
 - **그림 교체 방식(사용자 결정)**: 설정에 "그림: 도트 / 일러스트"를 두고, 일러스트가 아직 없는 장면만 도트로 보인다. 첫 일러스트가 오면 실제 그림으로 위치·크기를 맞추며 만든다(배경 3:2, 인물 전신 2:3 투명 PNG, `art/` 폴더에 따로 두고 GitHub Pages 판에서 읽기 — 한 파일 아티팩트 판은 도트 유지). 그림은 사용자가 **Claude 대화에 이미지로 붙임** — 붙인 이미지는 `/root/.claude/uploads/<세션>/` 에 파일로 저장됨(2026-10 확인). 사용자가 목록 번호(예: "② 마로트 기본", "B11")를 함께 적어 줌. 나이 구간 이름: 어린 시절(1~14장)·자라는 시절(15~25장)·성인식 무렵(26~30장).
-- 미구현: 저택 탭의 장소 이동, 소리(설정에 켬/끔은 있으나 소리 없음), 일러스트 교체 코드(`src/assets.js` 아직 없음). 그림 목록·ChatGPT 문장은 `docs/art_prompts.md`.
+- 미구현: 저택 탭의 장소 이동, 소리(설정에 켬/끔은 있으나 소리 없음), 그림 목록·ChatGPT 문장은 `docs/art_prompts.md`.
 - 앞으로 다시 쓸 1권 플래그: 성 `nameTrone/nameEverhart/nameSilent`(아드리안), 차 `gaveTea/keptTea`, 설탕 `sugar/noSugar`, `mayTell`, 장갑 `askedGlove/silentGlove`, 줄 긋기 `crossedLine/keptLine`.
 - 실행 화면(0.8.1, 사용자 선택): 해 질 녘 마차 창 150×300 (`titleCarriage`), 제목 금빛 명조 + 장식선, 단추 금테 고전풍. 부제 문구 없음.
 - 읽기 화면: 테마 자동/밝게/종이/어둡게 + 밝기 3단계(`pref.dim`), 상태줄·서재 본문 오른쪽 위 빠른 단추(`qtheme`).

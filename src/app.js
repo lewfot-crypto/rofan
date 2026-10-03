@@ -23,7 +23,7 @@ function renderText(text){
   return out;
 }
 
-let pref={fs:18,theme:'auto',sound:false,dim:0};
+let pref={fs:18,theme:'auto',sound:false,dim:0,art:'pixel'};
 try{ const p=JSON.parse(store('adeline-game-pref')||'null'); if(p) pref=Object.assign(pref,p); }catch(e){}
 function applyPref(){
   root.style.setProperty('--fs',pref.fs+'px');
@@ -70,9 +70,26 @@ function letterHtml(id){
   const L=LETTERS[id]; if(!L) return '';
   return '<div class="letter"><div class="lh">'+esc(L.head)+'</div>'+(L.to?'<p class="to">'+esc(L.to)+'</p>':'')+L.paras.filter(paraOn).map(p=>'<p>'+inline(typeof p==='object'?p.t:p)+'</p>').join('')+(L.sign?'<p class="sign">'+esc(L.sign)+'</p>':'')+'</div>';
 }
+// 일러스트 무대: 설정에서 '일러스트'를 골랐고, 배경과 등장인물 그림이 모두 있을 때만 (없으면 도트 그대로 — 한 화면에 섞지 않는다)
+function artStage(sc,id){
+  if(pref.art!=='illust'||typeof ART==='undefined'||!ART.size||sc.props&&sc.props.length) return null;
+  const ss=/겨울/.test(sc.season)?'겨울':/봄/.test(sc.season)?'봄':/여름/.test(sc.season)?'여름':'가을';
+  const night=sc.time==='night', tm=night?'night':'day';
+  let bg=['bg_'+sc.place+'_'+ss+'_'+tm,'bg_'+sc.place+'_any_'+tm].find(k=>ART.has(k)), dim=false;
+  if(!bg&&night){ bg=['bg_'+sc.place+'_'+ss+'_day','bg_'+sc.place+'_any_day'].find(k=>ART.has(k)); dim=!!bg; }   // 밤 그림이 없으면 낮 그림을 어둡게
+  if(!bg) return null;
+  const n=id[0]==='s'?1:+((id.match(/^c(\d+)/)||[0,1])[1]), st=n<=14?'a':n<=25?'b':'c';
+  const H={a:72,b:84,c:90,all:92};
+  const cs=[];
+  for(const c of (sc.chars||[])){ const e=c.expr||'neutral';
+    const k=[st,'all'].map(g=>['ch_'+c.id+'_'+g+'_'+e,'ch_'+c.id+'_'+g+'_neutral']).flat().find(k=>ART.has(k));
+    if(!k) return null; cs.push('<img class="ilch '+(c.pos||'center')+'" style="height:'+H[k.split('_')[2]]+'%" src="art/'+k+'.webp" alt="">'); }
+  return '<div class="stage il'+(night?' night':'')+'"><img class="ilbg" src="art/'+bg+'.webp" alt="">'+(dim?'<div class="ildim"></div>':'')+cs.join('')+'</div>';
+}
 function sceneHtml(){
   const sc=SCENES[S.scene];
-  const stage=stageSVG(sc.place,sc.season,sc.chars,sc.time,sc.props);
+  const ill=artStage(sc,S.scene);
+  const stage=ill?'':stageSVG(sc.place,sc.season,sc.chars,sc.time,sc.props);
   let paras='';
   (sc.paras||[]).forEach(p=>{
     let t=p;
@@ -97,7 +114,7 @@ function sceneHtml(){
   let ch='';
   if(sc.end&&ui.confirmEnd){ ch='<div class="hint">저장된 이야기가 지워져요. 처음부터 시작할까요?</div><button class="choice" data-act="endNo">취소</button><button class="choice" data-act="endYes">처음부터 시작</button>'; }
   else (sc.choices||[]).forEach((c,i)=>{ if(c.req&&!S.noticed[c.req]) return; if(c.not&&S.noticed[c.not]) return; ch+='<button class="choice" data-act="choice" data-i="'+i+'">'+esc(c.label)+'</button>'; });
-  return '<div class="scroller" id="tb"><div class="stage">'+stage+'</div><div class="textbox">'+body+'<div class="choices">'+ch+'</div></div></div>';
+  return '<div class="scroller" id="tb">'+(ill||'<div class="stage">'+stage+'</div>')+'<div class="textbox">'+body+'<div class="choices">'+ch+'</div></div></div>';
 }
 
 function drawTitle(){
@@ -183,7 +200,7 @@ function settingsHtml(fromTitle){
   const back=(lb,v)=>head(lb,sub==='reader'?'서재':'설정',sub==='reader'?'sub':'sub',sub==='reader'?'library':'root');
   if(sub==='reading'){
     const seg=(k,lb)=>'<button class="'+(pref.theme===k?'on':'')+'" data-act="theme" data-v="'+k+'">'+lb+'</button>';
-    return back('읽기 설정')+'<div class="pc"><div class="field">글자 크기<span class="seg"><button data-act="fs" data-v="-1">작게</button><span style="align-self:center;font-size:13px;color:var(--soft);min-width:3em;text-align:center">'+pref.fs+'px</span><button data-act="fs" data-v="1">크게</button></span></div><div class="field">화면<span class="seg">'+seg('auto','자동')+seg('light','밝게')+seg('paper','종이')+seg('dark','어둡게')+'</span></div><div class="field">밝기<span class="seg">'+[0,1,2].map(k=>'<button class="'+((pref.dim||0)===k?'on':'')+'" data-act="dim" data-v="'+k+'">'+['보통','조금 낮게','낮게'][k]+'</button>').join('')+'</span></div><p class="note-s">이야기 본문과 서재에 같이 적용돼요. 읽는 화면 오른쪽 위 단추로도 밝게·종이·어둡게를 바로 바꿀 수 있어요.</p></div>';
+    return back('읽기 설정')+'<div class="pc"><div class="field">글자 크기<span class="seg"><button data-act="fs" data-v="-1">작게</button><span style="align-self:center;font-size:13px;color:var(--soft);min-width:3em;text-align:center">'+pref.fs+'px</span><button data-act="fs" data-v="1">크게</button></span></div><div class="field">화면<span class="seg">'+seg('auto','자동')+seg('light','밝게')+seg('paper','종이')+seg('dark','어둡게')+'</span></div><div class="field">밝기<span class="seg">'+[0,1,2].map(k=>'<button class="'+((pref.dim||0)===k?'on':'')+'" data-act="dim" data-v="'+k+'">'+['보통','조금 낮게','낮게'][k]+'</button>').join('')+'</span></div><p class="note-s">이야기 본문과 서재에 같이 적용돼요. 읽는 화면 오른쪽 위 단추로도 밝게·종이·어둡게를 바로 바꿀 수 있어요.</p>'+'<div class="field">그림<span class="seg"><button class="'+(pref.art!=='illust'?'on':'')+'" data-act="art" data-v="pixel">도트</button><button class="'+(pref.art==='illust'?'on':'')+'" data-act="art" data-v="illust">일러스트</button></span></div><p class="note-s">일러스트는 배경과 인물 그림이 모두 준비된 장면에만 보여요. 지금 '+(typeof ART!=='undefined'?ART.size:0)+'장 준비됨.</p>'+'</div>';
   }
   if(sub==='sound'){
     return back('소리')+'<div class="pc"><div class="field">배경 소리<span class="seg"><button class="'+(pref.sound?'on':'')+'" data-act="sound" data-v="1">켬</button><button class="'+(!pref.sound?'on':'')+'" data-act="sound" data-v="0">끔</button></span></div><p class="note-s">소리 파일은 아직 없어요. 켜 두면 준비되는 대로 계절 소리가 재생돼요.</p></div>';
@@ -269,6 +286,7 @@ document.addEventListener('click',e=>{
    case 'theme': pref.theme=v; applyPref(); break;
    case 'qtheme': { const order=['light','paper','dark']; pref.theme=order[(order.indexOf(curTheme())+1)%3]; applyPref(); break; }
    case 'dim': pref.dim=+v; applyPref(); break;
+   case 'art': pref.art=v==='illust'?'illust':'pixel'; applyPref(); break;
    case 'sound': pref.sound=v==='1'; applyPref(); break;
    case 'toggleCode': ui.code=!ui.code; break;
    case 'copyCode': { const ta=$('#codeOut'); if(ta){ ta.select(); try{ navigator.clipboard.writeText(ta.value); ui.msg='복사했어요.'; }catch(err){ ui.msg='선택된 코드를 직접 복사해 주세요.'; } } break; }

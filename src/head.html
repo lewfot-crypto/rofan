@@ -64,6 +64,12 @@ svg{ display:block; }
 .stage{ width:100%; aspect-ratio:3/2; max-height:300px; background:#222; overflow:hidden; }
 .px{ image-rendering:pixelated; image-rendering:-moz-crisp-edges; image-rendering:crisp-edges; display:block; width:100%; height:100%; object-fit:cover; }
 .stage img{ width:100%; height:100%; }
+.stage.il{ position:relative; max-height:none; background:#1a1418; }
+.stage.il img.ilbg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.stage.il .ildim{ position:absolute; inset:0; background:rgba(24,24,64,.5); mix-blend-mode:multiply; }
+.stage.il img.ilch{ position:absolute; bottom:2%; width:auto; transform:translateX(-50%); filter:drop-shadow(0 6px 6px rgba(0,0,0,.35)); }
+.stage.il img.ilch.center{ left:50%; } .stage.il img.ilch.left{ left:24%; } .stage.il img.ilch.right{ left:76%; }
+.stage.il.night img.ilch{ filter:brightness(.78) drop-shadow(0 6px 6px rgba(0,0,0,.35)); }
 :root[data-theme="dark"] .stage img{ filter:brightness(.85); }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .stage img{ filter:brightness(.85); } }
 .textbox{ padding:18px 18px 40px; background:var(--panel); border-top:1px solid var(--line); }
