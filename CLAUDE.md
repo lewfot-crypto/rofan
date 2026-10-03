@@ -171,7 +171,7 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 - 6장 분기(사용자 승인): 안경 `tookGlasses`/`onlyLooked`, 오해의 노트 `wroteMisread`(노트 `misread`)/`wroteNothing`. 8장에서 `misread` 에 줄 긋기, `dustless` 사용.
 - 5장 분기(사용자 승인): 성 선택 `nameTrone`/`nameEverhart`/`nameSilent`(2권 이후 아드리안 장면에 다시 쓸 것), 차 `gaveTea`/`keptTea`.
 - 4장 분기(사용자 승인): 설탕 두 조각/넣지 않음(`sugar`/`noSugar`, 8장에서 다시 쓸 예정), "원하지 않아요"/"말씀하셔도 돼요"(`noTell`/`mayTell`), 누구의 말인지 묻기/외투(`askedWhose`/`tookCoat`). 노트 표시 `{fn:'notebook', pre:'c4', empty:'…'}`.
-- **그림 교체 방식(사용자 결정)**: 설정에 "그림: 도트 / 일러스트"를 두고, 일러스트가 아직 없는 장면만 도트로 보인다. 첫 일러스트가 오면 실제 그림으로 위치·크기를 맞추며 만든다(배경 3:2, 인물 전신 2:3 투명 PNG, `art/` 폴더에 따로 두고 GitHub Pages 판에서 읽기 — 한 파일 아티팩트 판은 도트 유지). 그림은 사용자가 GitHub 웹에서 `Add file → Upload files` 로 올림.
+- **그림 교체 방식(사용자 결정)**: 설정에 "그림: 도트 / 일러스트"를 두고, 일러스트가 아직 없는 장면만 도트로 보인다. 첫 일러스트가 오면 실제 그림으로 위치·크기를 맞추며 만든다(배경 3:2, 인물 전신 2:3 투명 PNG, `art/` 폴더에 따로 두고 GitHub Pages 판에서 읽기 — 한 파일 아티팩트 판은 도트 유지). 그림은 사용자가 **Claude 대화에 이미지로 붙임** — 붙인 이미지는 `/root/.claude/uploads/<세션>/` 에 파일로 저장됨(2026-10 확인). 사용자가 목록 번호(예: "② 마로트 기본", "B11")를 함께 적어 줌. 나이 구간 이름: 어린 시절(1~14장)·자라는 시절(15~25장)·성인식 무렵(26~30장).
 - 미구현: 저택 탭의 장소 이동, 소리(설정에 켬/끔은 있으나 소리 없음), 일러스트 교체 코드(`src/assets.js` 아직 없음). 그림 목록·ChatGPT 문장은 `docs/art_prompts.md`.
 - 앞으로 다시 쓸 1권 플래그: 성 `nameTrone/nameEverhart/nameSilent`(아드리안), 차 `gaveTea/keptTea`, 설탕 `sugar/noSugar`, `mayTell`, 장갑 `askedGlove/silentGlove`, 줄 긋기 `crossedLine/keptLine`.
 - 실행 화면(0.8.1, 사용자 선택): 해 질 녘 마차 창 150×300 (`titleCarriage`), 제목 금빛 명조 + 장식선, 단추 금테 고전풍. 부제 문구 없음.
