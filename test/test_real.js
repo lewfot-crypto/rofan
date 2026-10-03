@@ -1,3 +1,5 @@
+// 전체 검사: npm test (무작위 플레이 300회, 몇 분)  /  빠른 검사: npm run quick (30회, 1분 안쪽)
+const RUNS=+process.env.RUNS||300;
 const launchOpts=require('./launch');
 const puppeteer=require('puppeteer-core');
 (async()=>{
@@ -11,18 +13,21 @@ const puppeteer=require('puppeteer-core');
   const txt=()=>page.evaluate(()=>document.querySelector('#app').innerText.replace(/\s+/g,' '));
   const has=async(sel)=>page.evaluate(s=>!!document.querySelector(s),sel);
   const imgOk=async(sel)=>page.evaluate(s=>{ const i=document.querySelector(s); return !!i&&i.src.startsWith('data:image/png;base64,')&&i.src.length>500; },sel);
-  let fails=0; const T=async(n,f)=>{ try{ const r=await f(); if(r===false) throw new Error('false'); console.log('ok  ',n); }catch(e){ fails++; console.log('FAIL',n,e.message); } };
+  let fails=0; const T=async(n,f)=>{ const t0=Date.now(); try{ const r=await f(); if(r===false) throw new Error('false'); console.log('ok  ',n,process.env.TIMES?(Date.now()-t0)+'ms':''); }catch(e){ fails++; console.log('FAIL',n,e.message); } };
   await T('title text',async()=>/트로네 공작가의/.test(await txt()));
   await T('title pixel image',()=>imgOk('.title img.bgsvg'));
   await T('title settings',async()=>{ await click('[data-act=titleSettings]'); const ok=/읽기 설정/.test(await txt()); await click('[data-act=backTitle]'); return ok; });
   await T('new game + stage image',async()=>{ await click('[data-act=new]'); return await imgOk('.stage img')&&/도착했습니다/.test(await txt()); });
   await T('notice',async()=>{ await click('[data-act=notice]'); return has('.jot'); });
   await T('choice flows',async()=>{ await click('[data-act=choice]'); if(!/마로트라고 합니다/.test(await txt())) return false; await click('[data-act=choice][data-i="0"]'); return /물어도 되는 일인지/.test(await txt()); });
-  await T('walk to end card',async()=>{ for(let i=0;i<320;i++){ const ids=await page.evaluate(()=>[...document.querySelectorAll('[data-act=notice]')].map(e=>e.dataset.id)); for(const id of ids) await click(`[data-id=${id}]`); if(await has('.endcard')) break; const c=await page.$('[data-act=choice]'); if(!c) break; await click('[data-act=choice]'); } return has('.endcard'); });
+  await T('walk ch1 by real clicks',async()=>{ for(let i=0;i<60;i++){ const ids=await page.evaluate(()=>[...document.querySelectorAll('[data-act=notice]')].map(e=>e.dataset.id)); for(const id of ids) await click(`[data-id=${id}]`); if(await page.evaluate(()=>/^c2/.test(S.scene))) break; const c=await page.$('[data-act=choice]'); if(!c) break; await click('[data-act=choice]'); } return page.evaluate(()=>/^c2/.test(S.scene)&&Object.keys(S.noticed).length>=3); });
   await T('conditional choices (hands)',async()=>{ const r=await page.evaluate(()=>{ S.noticed={}; S.flags={}; S.scene='c3c'; draw(); const a=document.querySelectorAll('.choice').length; S.noticed={hands:1}; draw(); const b=document.querySelectorAll('.choice').length; return [a,b]; }); return r[0]===1&&r[1]===2; });
   await T('clock note changes Holt',async()=>{ const r=await page.evaluate(()=>{ S.noticed={}; S.flags={}; S.scene='c2f'; draw(); const a=document.querySelector('.textbox').innerText.includes('회중시계'); S.noticed={clock:1}; draw(); const b=document.querySelector('.textbox').innerText.includes('회중시계'); return [a,b]; }); return r[0]===false&&r[1]===true; });
   await T('notebook shows player notes',async()=>{ return page.evaluate(()=>{ S.noticed={lie:1,curtain:2}; S.flags={}; S.scene='c2d'; draw(); return document.querySelectorAll('.textbox .jot').length===2; }); });
-  await T('full playthrough to the end',async()=>{ await page.evaluate(()=>{ localStorage.clear(); S=freshSave(); persist(); ui={screen:'game',tab:null,sub:'root'}; draw(); }); for(let i=0;i<320;i++){ const ids=await page.evaluate(()=>[...document.querySelectorAll('[data-act=notice]')].map(e=>e.dataset.id)); for(const id of ids) await click('[data-id='+id+']'); if(await has('.endcard')) break; const c=await page.$('[data-act=choice]'); if(!c) break; await click('[data-act=choice]'); } return (await has('.endcard'))&&/그 후의 계절/.test(await txt()); });
+  if(RUNS<300) await T('full playthrough to the end (fast, in page)',async()=>page.evaluate(()=>{ localStorage.clear(); S=freshSave(); persist(); ui={screen:'game',tab:null,sub:'root'}; draw();   // 빠른 검사: 같은 길을 페이지 안에서 바로 누름
+    for(let i=0;i<320;i++){ document.querySelectorAll('[data-act=notice]').forEach(e=>{ const x=document.querySelector('[data-id='+e.dataset.id+']'); if(x) x.click(); }); if(document.querySelector('.endcard')) break; const c=document.querySelector('[data-act=choice]'); if(!c) break; c.click(); }
+    return !!document.querySelector('.endcard')&&/그 후의 계절/.test(document.querySelector('#app').innerText); }));
+  else await T('full playthrough to the end',async()=>{ await page.evaluate(()=>{ localStorage.clear(); S=freshSave(); persist(); ui={screen:'game',tab:null,sub:'root'}; draw(); }); for(let i=0;i<320;i++){ const ids=await page.evaluate(()=>[...document.querySelectorAll('[data-act=notice]')].map(e=>e.dataset.id)); for(const id of ids) await click('[data-id='+id+']'); if(await has('.endcard')) break; const c=await page.$('[data-act=choice]'); if(!c) break; await click('[data-act=choice]'); } return (await has('.endcard'))&&/그 후의 계절/.test(await txt()); });
   await T('ch4 sugar branch changes Marot',async()=>page.evaluate(()=>{ const keep=JSON.stringify(S); S.noticed={}; S.flags={sugar:1,noTell:1}; S.scene='c4e'; draw(); const t1=document.querySelector('.textbox').innerText; S.flags={noSugar:1,mayTell:1}; draw(); const t2=document.querySelector('.textbox').innerText; const r=/넣지 않으셔도 됩니다/.test(t1)&&/원하지 않아요/.test(t1)&&/이미 넣지 않으셨더군요/.test(t2)&&/물으시기 전에는/.test(t2)&&!/넣지 않으셔도 됩니다/.test(t2); S=JSON.parse(keep); draw(); return r; }));
   await T('ch4 notebook shows ch4 notes only',async()=>page.evaluate(()=>{ const keep=JSON.stringify(S); S.noticed={lie:1,pen:2,spoon:3}; S.flags={askedWhose:1}; S.scene='c4h'; draw(); const j=[...document.querySelectorAll('.textbox .jot')].map(e=>e.innerText); S.noticed={lie:1}; draw(); const e=/적지 못했다/.test(document.querySelector('.textbox').innerText); S=JSON.parse(keep); draw(); return j.length===2&&e; }));
   await T('quick theme button cycles light-paper-dark',async()=>{ await page.evaluate(()=>{ pref.theme='light'; pref.dim=0; applyPref(); ui.tab=null; draw(); }); const seq=[]; for(let i=0;i<3;i++){ await click('[data-act=qtheme]'); seq.push(await page.evaluate(()=>document.documentElement.getAttribute('data-theme'))); } await page.evaluate(()=>{ pref.theme='auto'; applyPref(); draw(); }); return seq.join(',')==='paper,dark,light'; });
@@ -33,8 +38,8 @@ const puppeteer=require('puppeteer-core');
   await T('ch9 glove question needs glove notice',async()=>page.evaluate(()=>{ const keep=JSON.stringify(S); S.flags={}; S.noticed={}; S.scene='c9f'; draw(); const a=document.querySelectorAll('[data-act=choice]').length===1; S.noticed={glove:1}; draw(); const b=document.querySelectorAll('[data-act=choice]').length===2; S=JSON.parse(keep); draw(); return a&&b; }));
   await T('ch10 glove choice from ch9 changes Kylen line',async()=>page.evaluate(()=>{ const keep=JSON.stringify(S); S.noticed={}; S.flags={askedGlove:1,defended:1}; S.scene='c10c'; draw(); const a=/또 장갑이냐/.test(document.querySelector('.textbox').innerText)&&/누구 편을 들었어/.test(document.querySelector('.textbox').innerText); S.flags={justWatched:1}; draw(); const t=document.querySelector('.textbox').innerText; const b=/장갑을 보는군/.test(t)&&/다 보고 있었지/.test(t); S=JSON.parse(keep); draw(); return a&&b; }));
   await T('ch11 thumb notice unlocks Julian secret',async()=>page.evaluate(()=>{ const keep=JSON.stringify(S); S.flags={notEmpty:1}; S.noticed={}; S.scene='c11g'; draw(); const a=document.querySelectorAll('[data-act=choice]').length===1; S.noticed={thumb:1}; draw(); const b=document.querySelectorAll('[data-act=choice]').length===2; S=JSON.parse(keep); draw(); return a&&b; }));
-  await T('300 random playthroughs: no dead ends, empty scenes or errors',async()=>page.evaluate(()=>{ const keep=JSON.stringify(S); const seen=new Set(); const bad=[]; let seed=7; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
-    for(let run=0;run<300;run++){ S=freshSave(); ui={screen:'game',tab:null,sub:'root'}; const pN=rnd();
+  await T(RUNS+' random playthroughs: no dead ends, empty scenes or errors',async()=>page.evaluate((RUNS)=>{ const keep=JSON.stringify(S); const seen=new Set(); const bad=[]; let seed=7; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
+    for(let run=0;run<RUNS;run++){ S=freshSave(); ui={screen:'game',tab:null,sub:'root'}; const pN=rnd();
       for(let step=0;step<400;step++){ const sc=SCENES[S.scene]; seen.add(S.scene); draw();
         const tb=document.querySelector('.textbox'); if(!tb){ bad.push(S.scene+':no textbox'); break; }
         if(!sc.end&&!tb.querySelector('p')) bad.push(S.scene+':no paragraph');
@@ -45,7 +50,7 @@ const puppeteer=require('puppeteer-core');
         const c=cs[Math.floor(rnd()*cs.length)]; const before=S.scene; c.click(); if(S.scene===before&&!ui.tab){ bad.push(before+':choice did not move'); break; } ui.tab=null; } }
     const unseen=Object.keys(SCENES).filter(k=>!seen.has(k)); S=JSON.parse(keep); ui={screen:'game',tab:null,sub:'root'}; draw();
     if(bad.length||unseen.length) console.log('BAD',[...new Set(bad)].slice(0,10).join(' | '),'UNSEEN',unseen.join(','));
-    return !bad.length&&!unseen.length; }));
+    return !bad.length&&(RUNS<300||!unseen.length); },RUNS));   // 빠른 검사는 횟수가 적어 못 가 본 장면은 따지지 않는다
   await T('changelog pages turn',async()=>page.evaluate(()=>{ const keep=JSON.stringify(ui); ui={screen:'game',tab:'settings',sub:'log',logPage:0}; draw(); const a=document.querySelector('#logpage .logv').innerText===CHANGELOG[0].v; turnLog(1); const b=ui.logPage===1&&document.querySelector('#logpage .logv').innerText===CHANGELOG[1].v; for(let i=0;i<CHANGELOG.length+2;i++) turnLog(1); const c=ui.logPage===CHANGELOG.length-1; turnLog(-1); const d=ui.logPage===CHANGELOG.length-2; ui=JSON.parse(keep); draw(); return a&&b&&c&&d; }));
   await T('ch15 glove/spokeUp change the confession, thinpaper changes reply, letters tab',async()=>page.evaluate(()=>{ const keep=JSON.stringify(S), ku=JSON.stringify(ui); const tb=()=>document.querySelector('.textbox').innerText;
     S.flags={askedGlove:1}; S.noticed={}; S.scene='c15c'; ui={screen:'game',tab:null,sub:'root'}; draw(); const a=/장갑 이야기를 했을 때/.test(tb())&&!/마차 앞에서/.test(tb());
@@ -118,5 +123,6 @@ const puppeteer=require('puppeteer-core');
   await T('end-card restart confirm',async()=>{ await page.evaluate(()=>{ S.scene='send'; persist(); draw(); }); await sleep(40); await click('[data-act=choice][data-i="3"]'); const c=/지워져요/.test(await txt()); await click('[data-act=endNo]'); const k=await has('.endcard'); return c&&k; });
   console.log(errs.length?('PAGE ERRORS: '+errs.join(' | ')):'no page errors');
   console.log(fails?('FAILED '+fails):'ALL PASSED');
+  process.exitCode=(fails||errs.length)?1:0;   // 실패하면 npm test 도 실패로 끝나게
   await browser.close();
 })();

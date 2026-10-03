@@ -5,8 +5,7 @@
 // - 본문 조건(if/not)이 어떤 선택지의 flag 로 실제로 켜지는지, ifN/notN 노트가 있는지 (오타로 영영 안 나오는 문장 찾기)
 // - {{id|…}} 로 밑줄이 없는데 byChoice 도 아닌 노트(눌러서 적을 길이 없는 노트), 장소(place)에 배경이 있는지
 const fs=require('fs'),path=require('path');
-const src=fs.readFileSync(path.join(__dirname,'../src/scenes.js'),'utf8');
-const {SCENES,NOTICES,DICT,LETTERS}=new Function(src+';return {SCENES,NOTICES,DICT,LETTERS}')();
+const {SCENES,NOTICES,DICT,LETTERS}=require('./sources').load('scenes','SCENES,NOTICES,DICT,LETTERS');
 const bad=[];
 const art=fs.readFileSync(path.join(__dirname,'../src/art_bg.js'),'utf8');
 const ARTPLACES=new Set([...art.slice(art.indexOf('const BG={')).matchAll(/(\w+):\(o,P\)=>/g)].map(m=>m[1]));

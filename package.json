@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "bash tools/build.sh",
     "check": "node tools/check_scenes.js",
+    "build": "bash tools/build.sh",
+    "quick": "npm run check && npm run build && RUNS=30 node test/test_real.js",
     "test": "npm run check && npm run build && node test/test_real.js",
     "shots": "npm run build && node test/walk.js 390 780 w",
     "gallery": "npm run build && node test/gallery.js"

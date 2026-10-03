@@ -49,14 +49,16 @@ CLAUDE.md                  이 문서
 docs/canon.md              세계관·인물·연대표 (정사)
 docs/roadmap.md            다음 작업 목록과 1권 4~9장 장면 설계
 src/head.html              HTML 머리말 + 전체 CSS
-src/chapters.js            소설 전문 CHAPTERS 배열 (본편 1~30장 + 번외 31~37). 편집 대상이자 정사
+src/novel/                 소설 전문 CHAPTERS (정사). 장마다 한 파일: 01.js~30.js 본편, 31~37.js 번외, _base.js 가 배열 선언
 src/art_core.js            픽셀 엔진(PX: 점·사각형·타원·선·다각형·마스크·한꺼번에 찍기 paint), 색 섞기, 계절 팔레트, 난수
 src/art_sprites.js         인물 스프라이트 56×132 (FIG 정의 + sprite(id, expr))
 src/art_bg.js              배경 240×160 (BG 함수들) + 무대 합성(stageSVG) + 인물 사전 아바타 + 타이틀
-src/scenes.js              게임 장면 SCENES / 노트 NOTICES / 인물 사전 DICT
+src/scenes/                게임 장면. ch01.js~ch30.js = 그 장의 SCENES + NOTICES (장 하나 고칠 때 그 파일만 열면 됨),
+                           letters.js 편지 LETTERS, dict.js 인물 사전 DICT, _base.js 그릇 선언
 src/changelog.js           업데이트 기록 CHANGELOG (설정 → 업데이트 기록, 왼쪽으로 넘기는 페이지). **업데이트할 때마다 맨 앞에 한 항목 추가**
 src/app.js                 화면(타이틀·게임·탭·설정·서재), 저장, 이벤트
-tools/build.sh             src → dist/game.html 합치기
+tools/sources.js           src 파일 순서(빌드·검사 공통)와 데이터 읽기 도우미 load('scenes','SCENES,…')
+tools/build.sh             src → dist/game.html 합치기 (순서는 sources.js)
 tools/check_scenes.js      장면 데이터 정합성 검사
 tools/dump_paras.js        소설 단락 앞부분 목록 (장면 만들 때 단락 찾기용)
 test/test_real.js          실제 브라우저(헤드리스 크로미움) 통합 테스트
@@ -74,12 +76,14 @@ index.html, .nojekyll      GitHub Pages용 (빌드가 dist/game.html 을 그대�
 npm install            # puppeteer-core, @sparticuz/chromium (헤드리스 크로미움 번들)
 npm run check          # 장면 정합성 검사
 npm run build          # dist/game.html 생성
-npm test               # check + build + 브라우저 통합 테스트
+npm run quick          # check + build + 빠른 브라우저 테스트 (무작위 플레이 30회, 약 35초) — 고칠 때마다 이것
+npm test               # check + build + 전체 브라우저 테스트 (무작위 300회 + 실제 클릭으로 끝까지, 3~4분) — 올리기 전 한 번
 npm run shots          # /tmp/w_*.png 로 장면별 캡처 (눈으로 확인)
 ```
 - **그림·레이아웃을 바꾸면 반드시 스크린샷을 눈으로 확인**한다 (`test/walk.js`, `test/sprites.js`). 지금까지의 버그(언덕 색이 바닥까지 번짐, 안경 렌즈가 검은 네모, 긴 머리가 몸을 덮음 등)는 전부 캡처로 발견했다.
 - 테스트 통과 ≠ 정상. 화면 문자열 검사는 `#app` 의 `innerText` 만 보라(소스 코드 문자열이 섞이면 거짓 통과한다 — 실제로 한 번 겪음).
 - jsdom은 canvas가 없어 쓰지 않는다. 실제 브라우저로만 검증.
+- 테스트는 실패하면 종료 코드 1로 끝난다(`npm test && git commit` 처럼 묶어 쓸 수 있음). 각 테스트 시간을 보려면 `TIMES=1`.
 
 ## 아키텍처 핵심
 ### 단일 파일 제약 (claude.ai 아티팩트로 게시할 때)
@@ -99,7 +103,7 @@ npm run shots          # /tmp/w_*.png 로 장면별 캡처 (눈으로 확인)
 - 저장 코드(설정 → 저장과 불러오기)는 `btoa(JSON.stringify(S))`.
 - 장면 id를 바꾸거나 지울 때는 `loadSave()` 에 이전 id 마이그레이션을 넣는다 (예: `s7 → c2a`).
 
-### 장면 데이터 형식 (`src/scenes.js`)
+### 장면 데이터 형식 (`src/scenes/chNN.js`)
 ```js
 SCENES.c3c = {
   place:'kitchen', season:'겨울', age:'열 살', chLabel:'1권 · 3장 부엌의 소식통',
@@ -125,7 +129,8 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 // 장면 소품: props:['box'] (art_bg.js 의 PROPS)
 ```
 - 모든 `{{id|…}}` 는 `NOTICES[id]` 가 있어야 하고 **같은 장면 소속**이어야 한다 (`npm run check` 가 검사).
-- 문장은 가능하면 소설 본문(`chapters.js`)의 단락을 그대로 가져온다. 단락 위치는 `node tools/dump_paras.js 4 5` 로 확인.
+- 새 장면은 그 장 파일의 `Object.assign(SCENES,{…})` 안에, 노트는 같은 파일 `Object.assign(NOTICES,{…})` 안에 넣는다.
+- 문장은 가능하면 소설 본문(`src/novel/NN.js`)의 단락을 그대로 가져온다. 단락 위치는 `node tools/dump_paras.js 4 5` 로 확인.
 - 노트 문장 어투: 짧은 평서문, 1인칭 관찰 기록 ("마로트 님은 …했다.").
 
 ### 핵심 메커니즘 = 알아차림
@@ -147,7 +152,8 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 3. 화면 비율: 배경 3:2, 인물은 전신 투명 PNG(발 위치 맞추기 위해 `feet` 값 필요 → `sprite().feet`).
 - 이미지 생성은 Claude가 직접 못 한다 (연결된 이미지 생성 도구 없음, Google Flow 연결도 없음을 확인함). 사용자가 따로 생성해 올려야 한다.
 
-## 현재 구현 상태 (v1.1)
+## 현재 구현 상태 (v1.1.1)
+- 1.1.1(2026-10): 파일 정리(동작 불변). `src/scenes.js` → `src/scenes/`(장마다 한 파일), `src/chapters.js` → `src/novel/`(장마다 한 파일), 순서는 `tools/sources.js`. `npm run quick`(약 35초) 추가, 테스트 실패 시 종료 코드 1. 나누기 전후 데이터가 같은지 확인함(노트 줄 순서만 장 순으로 바뀜 — 노트 표시는 적은 시간 순이라 영향 없음).
 - 1.1(2026-10): **일러스트 교체 구현.** `tools/add_art.py <원본> <이름>` 이 `art/<이름>.webp` 로 변환(배경 1200×800, 인물은 투명 테두리 잘라 세로 1000)하고 `src/assets.js`(`ART` 이름 집합)를 다시 만든다. 이름: `bg_<장소>_<계절|any>_<day|night>`, `ch_<인물>_<a|b|c|all>_<표정>`(a=1~14장, b=15~25장, c=26~30장). `app.js artStage()`: `pref.art==='illust'` 이고 배경·모든 인물 그림이 있을 때만 HTML 무대(배경 img + 인물 img, 높이 a72%/b84%/c90%/all92%), 밤 그림이 없으면 낮 그림을 어둡게, 표정이 없으면 같은 나이의 기본 표정. 소품(`props`) 있는 장면은 도트. build 가 `art/` 를 `dist/art` 로 복사. 받은 그림: 서재 낮(`bg_study_any_day`), 마로트 기본(`ch_marot_all_neutral`). 기준 그림 캡처는 `wip/ref/`.
 - 1.0.1(2026-10): 홈 화면 아이콘(사용자 선택 A: 아델라인 얼굴 도트, 남색 바탕). `tools/make_icon.js` 가 dist 를 열어 그린 180px PNG 를 `src/head.html` 의 `apple-touch-icon` 에 data URI 로 넣음(그림을 바꾸면 build 후 다시 실행). 앱처럼 열기 메타(`apple-mobile-web-app-capable`, 제목 "아델라인"). 16~30장 검토 목록 `docs/review_16-30.md`(111개, 사용자 답 기다리는 중).
 - 1.0(2026-10): **30장 완성 → 이야기 전체 플레이 가능.** 사용자 결정: 아홉 갈래 **모두 열어 둠**(앞 선택으로 잠그지 않음), 갈래마다 장면 2개, 홀트의 편지 네 통은 공통 마지막 장면 직전(`c30m`, 편지 `h1~h4`, open `gotHoltLetters`, 장면에는 제4신). 구조: `c30a`(공통 도입, 선택 9개 flag `end_<id>`) → 갈래 `c30k/j/l/s/w/d/f/t/r` + `1·2` → `c30m` → `c30y`·`c30z`(공통 현관) → `send`(끝 카드: "30장의 다른 길 걸어 보기"=`c30a` 로, 노트, 편지, 처음부터). 갈래 안 되돌림: 17장 `circledNorth/Home/Everhart`, 15장 `quietHand`, 20장 `promisedYul`, 25장 `willWait`, 5장 `gaveTea`, 23장 `answeredHadel`, 1장 `chair`, 19장 `special`, 23장 `eighteen`, 25장 `blueink`. 마지막 장면: 4장 `tookCoat/askedWhose` 가 "외투 입어라"에 한 줄. 갈래 본문은 `/tmp` 스크립트로 소설 단락을 그대로 옮김(문장 수정 없음). 배경 대신 씀: 북쪽 고개→과수원, 서쪽 절벽→저택 앞, 마탑·문서고→서재, 온실(우정)→정원.
@@ -157,7 +163,7 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 - 0.12(2026-10): 3권 18장 완성(장면 c18a~c18g, 열다섯 살). 사용자 "진행" → 추천안: 16장 `stroke` → 한 줄, 노트 셋째 줄 `keptSecretLine`(소설)/`erasedSecretLine`(새 문장, 15장 `thinpaper` 를 알아챘으면 한 줄 더). 끝에 카일런 **제2신·제2답**(`LETTERS.k2/a2`, open `gotLetter2/wroteLetter2`), 답장 둘째 단락은 노트 `slant` 를 알아챘을 때만(소설 제2답). 노트 `pageturn`·`penstop`·`tornedge`·`sameangle`·`sawnothing`·`slant`. 3권 이후 장마다 편지 한 쌍씩 이어 가기(번외 34: 제3신·제4답, 제8신·제8답, 제13신).
 - 0.11(2026-10): 17장 완성(장면 c17a~c17f) → **2권 완성**. 사용자가 "일단 진행"이라 추천안으로 설계(검토는 나중에 하겠다고 함): 5장 성 선택 `nameSilent/nameTrone/nameEverhart` → 에드릭의 "네 이름은 둘이다" 뒤 회상 한 줄(새 문장), 12장 `heldSleeve` → 어깨를 쥔 손 한 줄, 16장 `stitch` → 새 소매 한 줄, 6장 `dustless` → 열쇠 구멍 한 줄. 지도책 첫 동그라미 `circledHome`(소설)/`circledNorth`/`circledEverhart` — **30장 갈래(가문·북부·독립)에서 다시 쓸 것**. 노트 `emptyspot`·`hidingsmile`·`newcuff`·`ribbon`·`warmleather`·`oneword`·`scratch`·`keyhole`. 무작위 플레이 테스트가 길어져 `test/launch.js` 에 `protocolTimeout`.
 - 0.10(2026-10): 16장 완성(장면 c16a~c16g). 2장 노트 `tremble` → 기침 장면에 한 줄(새 문장). 아버지의 편지 `LETTERS.e1`(open `readFatherLetter`, 서명 없음 — `sign:''` 이면 서명 줄 생략). 점심 `kitchenLunch`(소설)/`schoolLunch`(새 문장: 대화 과목, 공부방 점심). 노트 `stitch`·`cough`·`pity`·`stroke`·`twomonths`. 홀트의 부치지 않은 편지 네 통(번외 33)은 **4권 끝(18세 생일 밤 뒤)** 에 건네받는 장면으로(사용자 결정).
-- 0.9(2026-10): 15장 완성(장면 c15a~c15h). 9장 `askedGlove`(아니면 새 문장 "내 장갑을 보고 있었다")·10장 `spokeUp`(카일런이 마차 앞 말을 기억하는 새 문장)이 발코니 고백을 바꿈. 대답 `saidCaught`(소설)/`quietHand`(새 문장). 노트 `stillglove`·`chin`·`fingertips`·`flatvoice`·`ears`·`thinpaper`. **편지 탭** 열림: `LETTERS`(scenes.js, `open` flag 가 켜지면 탭에 보임, 단락 조건 if/not/ifN/notN), 장면 본문 `{fn:'letter',id}`. 제1신(`gotLetter1`)·제1답(`wroteLetter1`, `thinpaper` 알아채면 지운 흔적 단락). 발코니는 무도회장 밤 배경. 마차 밤 장면은 창이 별 하늘. 이후 편지(번외 4의 제2신~)는 16장 이후 장 사이에 둘 것.
+- 0.9(2026-10): 15장 완성(장면 c15a~c15h). 9장 `askedGlove`(아니면 새 문장 "내 장갑을 보고 있었다")·10장 `spokeUp`(카일런이 마차 앞 말을 기억하는 새 문장)이 발코니 고백을 바꿈. 대답 `saidCaught`(소설)/`quietHand`(새 문장). 노트 `stillglove`·`chin`·`fingertips`·`flatvoice`·`ears`·`thinpaper`. **편지 탭** 열림: `LETTERS`(src/scenes/letters.js, `open` flag 가 켜지면 탭에 보임, 단락 조건 if/not/ifN/notN), 장면 본문 `{fn:'letter',id}`. 제1신(`gotLetter1`)·제1답(`wroteLetter1`, `thinpaper` 알아채면 지운 흔적 단락). 발코니는 무도회장 밤 배경. 마차 밤 장면은 창이 별 하늘. 이후 편지(번외 4의 제2신~)는 16장 이후 장 사이에 둘 것.
 - 0.8(2026-10): 14장 완성(장면 c14a~c14g). 연습 중 대답 `notYet`(소설)/`keptSilent`(새 문장 두 줄) → 마지막 노트 둘째 줄이 달라짐. 노트 `heel`(뒤꿈치)을 알아챘다면 무도회에서 "미리 알고 있었다", 못 알아챘다면 그 자리에서 `halfbeat`. 덮어 주는 행동은 공통(정사). 노트 `shadow`·`knuckle`·`posture`·`heavy`. 탈의실은 무도회장 밤(`time:'night'`, 밤이면 춤추는 사람 그림자 숨김). 21장 〈세레나의 선택〉에서 `notYet/keptSilent`·`heel` 다시 쓸 것.
 - 0.7(2026-10): 설정 맨 아래 **업데이트 기록**(한 페이지에 한 판, 왼쪽으로 밀면 이전 판, ‹ › 단추·방향키도 됨). 13장 완성(장면 c13a~c13f): 로잘리 말버릇 노트 `notbig` → 회상 단락이 보이고 "저는 알고 있었어요"(`knewRosalie`), 아니면 "나쁜 사람이 아니라는 건 알아요"(`trustedRosalie`). 노트 `obliged`(신세)·`truth`. 이후 장에서 로잘리 장면에 다시 쓸 것.
 - 0.6 정리(2026-10): 옛 점무늬 그림 함수 삭제, 점 찍기를 한꺼번에(`o.paint`) 처리해 인물 그림 생성이 약 50배 빨라짐(80장 11초→0.2초), `npm run check` 가 조건 flag 오타·배경 없는 장소·적을 길 없는 노트까지 검사, 테스트에 무작위 플레이 300회(막다른 장면·빈 장면·도달 못 하는 장면 검사).
