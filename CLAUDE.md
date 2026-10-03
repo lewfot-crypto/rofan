@@ -147,7 +147,8 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 3. 화면 비율: 배경 3:2, 인물은 전신 투명 PNG(발 위치 맞추기 위해 `feet` 값 필요 → `sprite().feet`).
 - 이미지 생성은 Claude가 직접 못 한다 (연결된 이미지 생성 도구 없음, Google Flow 연결도 없음을 확인함). 사용자가 따로 생성해 올려야 한다.
 
-## 현재 구현 상태 (v0.14)
+## 현재 구현 상태 (v0.15)
+- 0.15(2026-10): 4권 26~29장(장면 c26a~c29f). 사용자 "진행" → 추천안(검토 전). **소설 장 정보는 26·27장이 '여름'이지만 생일이 겨울(24·25장)이라 26~29장을 겨울로 둠.** 새 선택: 26장 `laughedDance`(소설)/`countedSteps`(28장 첫 춤에 한 줄), 27장 `keptLetter`(소설)/`sharedLetter`. 28·29장은 선택 없이 되돌림만: 25장 `willWait`(27장), 7장 `askedWatch`, 17장 `warmleather`, 12장 `nameit`, 15장 `quietHand`, 20장 `promisedYul`, 23장 `answeredHadel`(하델 대사 대체), 26장 `afraid`, 1장 `fingers`·`curtain`, 24장 `saidto`, 10장 `readCourage/readNoNeed`, 17장 `oneword`. 편지 `f18`(열여덟 살의 아델라인에게, open `readBirthdayLetter`). 끝 카드 "4권 29장까지". **다음은 30장 아홉 갈래 — 분량을 사용자에게 먼저 묻기로 함.**
 - 0.14(2026-10): **3권 완성**(20~25장, 장면 c20a~c25f). 사용자 "20~25장 진행" → 추천안(검토 전). 새 선택: 20장 `thankedYul`(소설)/`promisedYul`, 21장 `teasedSerena`(소설)/`welcomedSerena`, 22장 `leftTangie`(소설)/`waitedOutside`, 23장 `silentHadel`(소설)/`answeredHadel`, 24장 `satWindow`(소설)/`stayedOpposite`, 25장 `wallAlways`(소설)/`willWait` — **30장 갈래(율리안·세레나·하델·아드리안 등)에서 다시 쓸 것**. 앞 장 되돌림: 11장 `toldThumb`(아니면 새 문장), 14장 `notYet/keptSilent`, 16장 `stroke`, 3장 `hands`·`tangerine`·`shoes`, 17장 `circledNorth`, 19장 `special`, 18장 `erasedSecretLine`·`sameangle`, 7장 `wroteMaybe`(아니면 "쓰지 못하고 덮었던"), 4장 `sugar`(첫날 두 조각), 5장 `keptTea`, 13장 `truth`, 15장 `fingertips`. 편지 `k8/a8`(`quietcastle` 알아채면 추측 단락), `k13`(25장 편지 더미, `gotLetter13`), `inv`(모두에게 보내는 초대장, `sentInvitation`, 받는 이 줄 없음 — `to:''` 이면 생략). 배경은 새로 그리지 않고 대신 씀: 온실→`palace`, 상단 접견실→`salon`, 마탑 서고→`study` (새 배경 후보).
 - 0.13(2026-10): 3권 19장 완성(장면 c19a~c19h). 추천안: 잠든 마로트에게 `coatOn`(소설)/`freshTea`(새 문장, 4장 서재 앞 찻잔 회상), 7장 `askedWatch` → 시계 한 줄, 18장 `tornedge` → 한 줄. 카일런 **제3신·제4답**(`k3/a4`, open `gotLetter3/wroteLetter4`), 답장의 마로트 단락은 노트 `weatherman` 알아챘을 때만. 노트 `liarnum`·`special`·`whiteknuckle`·`shakycup`·`coldcups`·`clumsybow`·`eastbooks`·`weatherman`. 남은 편지: 제8신·제8답(가을, 21~23장 무렵), 제13신(이른 봄, 25장 무렵).
 - 0.12(2026-10): 3권 18장 완성(장면 c18a~c18g, 열다섯 살). 사용자 "진행" → 추천안: 16장 `stroke` → 한 줄, 노트 셋째 줄 `keptSecretLine`(소설)/`erasedSecretLine`(새 문장, 15장 `thinpaper` 를 알아챘으면 한 줄 더). 끝에 카일런 **제2신·제2답**(`LETTERS.k2/a2`, open `gotLetter2/wroteLetter2`), 답장 둘째 단락은 노트 `slant` 를 알아챘을 때만(소설 제2답). 노트 `pageturn`·`penstop`·`tornedge`·`sameangle`·`sawnothing`·`slant`. 3권 이후 장마다 편지 한 쌍씩 이어 가기(번외 34: 제3신·제4답, 제8신·제8답, 제13신).
@@ -158,7 +159,7 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 - 0.7(2026-10): 설정 맨 아래 **업데이트 기록**(한 페이지에 한 판, 왼쪽으로 밀면 이전 판, ‹ › 단추·방향키도 됨). 13장 완성(장면 c13a~c13f): 로잘리 말버릇 노트 `notbig` → 회상 단락이 보이고 "저는 알고 있었어요"(`knewRosalie`), 아니면 "나쁜 사람이 아니라는 건 알아요"(`trustedRosalie`). 노트 `obliged`(신세)·`truth`. 이후 장에서 로잘리 장면에 다시 쓸 것.
 - 0.6 정리(2026-10): 옛 점무늬 그림 함수 삭제, 점 찍기를 한꺼번에(`o.paint`) 처리해 인물 그림 생성이 약 50배 빨라짐(80장 11초→0.2초), `npm run check` 가 조건 flag 오타·배경 없는 장소·적을 길 없는 노트까지 검사, 테스트에 무작위 플레이 300회(막다른 장면·빈 장면·도달 못 하는 장면 검사).
 - 완성: 실행화면, 게임 화면, 4개 탭, 설정(읽기·소리·저장·서재·인물 사전·정보), 소설 전문 열람(본편 30장 + 번외 7편, 30장 아홉 갈래 선택 UI), 새 그림체 배경 11곳(대저택)·인물 16명·표정 5종, 밤 장면(`time:'night'`).
-- 플레이 가능: **1권·2권·3권 전체** (장면 181개). 마지막은 `send` 끝 카드("3권까지").
+- 플레이 가능: **1~3권 전체 + 4권 26~29장** (장면 205개). 마지막은 `send` 끝 카드("4권 29장까지").
 - 12장(사용자 승인): 정원 모임 `walkedOut`/`rebutted`, 무도회 `heldSleeve`/`stoodBy`. 새 배경 `garden`(양산 탁자 정원), `ballroom`(무도회장, 4권에서도 사용).
 - 11장(사용자 승인): `willGo`/`askedMeaning`, 황후에게 `notEmpty`/`justQuiet`, 율리안 비밀 `toldThumb`(노트 `thumb` 필요, 이후 "율" 호칭 장면에 씀)/`politeJulian`. 새 배경 `palace`(황궁 정원 다과회, PLACES 밖). 로잘리 그림: 주근깨·색이 다른 리본 두 개(소설대로, 사용자 승인). 세레나는 그림 유지(머리를 올린 소설 묘사와 다름, 사용자 결정). 2권은 사용자 결정으로 **한 장씩 설계 승인** 후 제작.
 - 10장(사용자 승인): 편들기 `defended`(노트 `latelaugh` 필요)/`justWatched`, 떠나는 카일런에게 `saidBye`/`spokeUp`(15장 화해에서 다시 씀), 서명 없는 노트 해석 `readCourage`(노트 `courage`)/`readNoNeed`(노트 `noneed`). 편지 탭은 15장(첫 편지)과 함께 연다.
@@ -174,4 +175,4 @@ NOTICES.hands = {scene:'c3c', text:'노트에 적히는 한 줄 (아델라인의
 - 읽기 화면: 테마 자동/밝게/종이/어둡게 + 밝기 3단계(`pref.dim`), 상태줄·서재 본문 오른쪽 위 빠른 단추(`qtheme`).
 
 ## 다음 할 일
-`docs/roadmap.md` 참고. 우선순위: ① 4권 26~29장 장면 ② 30장 아홉 갈래 엔딩 장면화(분량은 사용자에게 묻기) + 홀트의 편지 네 통 ③ 사용자가 미뤄 둔 16~25장 검토 ④ 새 배경 후보(온실, 남쪽 상단, 마탑 서고) ③ 이른 봄 배경 등 그림 보강. (1권 완료) (`corridor`/`office` 배경은 완료)
+`docs/roadmap.md` 참고. 우선순위: ① 30장 아홉 갈래 엔딩 장면화(분량은 사용자에게 묻기) + 홀트의 편지 네 통 ③ 사용자가 미뤄 둔 16~25장 검토 ④ 새 배경 후보(온실, 남쪽 상단, 마탑 서고) ③ 이른 봄 배경 등 그림 보강. (1권 완료) (`corridor`/`office` 배경은 완료)

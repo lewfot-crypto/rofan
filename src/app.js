@@ -210,7 +210,7 @@ function settingsHtml(fromTitle){
     return o+'</div>';
   }
   if(sub==='log') return logHtml(back);
-  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">'+CHANGELOG[0].v+'</span></div><div class="field">플레이할 수 있는 장면<span style="color:var(--soft);font-size:13px">1권 · 2권 · 3권 전체</span></div><div class="field">이야기 서재<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물은 코드로 그린 픽셀 그림이에요. 나중에 실제 일러스트로 바꿔 끼울 수 있게 만들어 두었어요.</p></div>';
+  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">'+CHANGELOG[0].v+'</span></div><div class="field">플레이할 수 있는 장면<span style="color:var(--soft);font-size:13px">1~3권 전체 · 4권 26~29장</span></div><div class="field">이야기 서재<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물은 코드로 그린 픽셀 그림이에요. 나중에 실제 일러스트로 바꿔 끼울 수 있게 만들어 두었어요.</p></div>';
   return '';
 }
 // 업데이트 기록: 한 장에 한 판씩. 왼쪽으로 넘기면(또는 오른쪽 단추) 더 이전 업데이트.
