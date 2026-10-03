@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """일러스트 넣기: python3 tools/add_art.py <원본 그림> <이름>
 이름 규칙
-  배경: bg_<장소>_<계절|any>_<day|night>     예) bg_study_any_day, bg_orchard_겨울_day
+  배경: bg_<장소>_<계절|any>_<day|night>     예) bg_study_any_day, bg_orchard_winter_day
+        계절: spring summer autumn(늦가을·가을) winter(초겨울·한겨울) — 늦여름은 summer, 이른 봄은 spring
   인물: ch_<인물>_<a|b|c|all>_<표정>          예) ch_marot_all_neutral, ch_kylen_b_smile
         a=어린 시절(1~14장) b=자라는 시절(15~25장) c=성인식 무렵(26~30장) all=나이 구분 없음(어른)
         표정: neutral smile sad worry surprise

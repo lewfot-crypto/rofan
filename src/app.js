@@ -73,7 +73,7 @@ function letterHtml(id){
 // 일러스트 무대: 설정에서 '일러스트'를 골랐고, 배경과 등장인물 그림이 모두 있을 때만 (없으면 도트 그대로 — 한 화면에 섞지 않는다)
 function artStage(sc,id){
   if(pref.art!=='illust'||typeof ART==='undefined'||!ART.size||sc.props&&sc.props.length) return null;
-  const ss=/겨울/.test(sc.season)?'겨울':/봄/.test(sc.season)?'봄':/여름/.test(sc.season)?'여름':'가을';
+  const ss=/겨울/.test(sc.season)?'winter':/봄/.test(sc.season)?'spring':/여름/.test(sc.season)?'summer':'autumn';   // 파일 이름은 영문(주소에 한글이 들어가지 않게)
   const night=sc.time==='night', tm=night?'night':'day';
   let bg=['bg_'+sc.place+'_'+ss+'_'+tm,'bg_'+sc.place+'_any_'+tm].find(k=>ART.has(k)), dim=false;
   if(!bg&&night){ bg=['bg_'+sc.place+'_'+ss+'_day','bg_'+sc.place+'_any_day'].find(k=>ART.has(k)); dim=!!bg; }   // 밤 그림이 없으면 낮 그림을 어둡게
