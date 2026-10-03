@@ -89,7 +89,7 @@ function sceneHtml(){
   let body;
   if(sc.end){
     const n=Object.keys(S.noticed).length;
-    body='<div class="endcard"><h3>'+(sc.endTitle||'여기까지예요')+'</h3><p>알아차린 것 '+n+'줄이 노트에 적혀 있어요. 무엇을 알아챘는지에 따라 달라진 장면이 있었어요. 다음 장면은 순서대로 추가될 거예요.</p></div>';
+    body='<div class="endcard"><h3>'+(sc.endTitle||'여기까지예요')+'</h3><p>알아차린 것 '+n+'줄이 노트에 적혀 있어요. 무엇을 알아챘는지에 따라 달라진 장면이 있었어요.</p></div>';
   } else {
     const left=Object.keys(NOTICES).some(id=>NOTICES[id].scene===S.scene&&!NOTICES[id].byChoice&&!S.noticed[id]);   // 선택으로 적히는 노트(byChoice)는 밑줄 안내에서 뺀다
     body=paras+(left?'<div class="hint">밑줄 친 부분을 누르면 노트에 적어요</div>':'')+jots;
@@ -210,7 +210,7 @@ function settingsHtml(fromTitle){
     return o+'</div>';
   }
   if(sub==='log') return logHtml(back);
-  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">'+CHANGELOG[0].v+'</span></div><div class="field">플레이할 수 있는 장면<span style="color:var(--soft);font-size:13px">1~3권 전체 · 4권 26~29장</span></div><div class="field">이야기 서재<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물은 코드로 그린 픽셀 그림이에요. 나중에 실제 일러스트로 바꿔 끼울 수 있게 만들어 두었어요.</p></div>';
+  if(sub==='about') return back('정보')+'<div class="pc"><div class="field">버전<span style="color:var(--soft);font-size:13px">'+CHANGELOG[0].v+'</span></div><div class="field">플레이할 수 있는 장면<span style="color:var(--soft);font-size:13px">1~4권 전체 (30장 아홉 갈래)</span></div><div class="field">이야기 서재<span style="color:var(--soft);font-size:13px">본편 30장 · 번외 7편</span></div><p class="note-s">《트로네 공작가의 아델라인》. 배경과 인물은 코드로 그린 픽셀 그림이에요. 나중에 실제 일러스트로 바꿔 끼울 수 있게 만들어 두었어요.</p></div>';
   return '';
 }
 // 업데이트 기록: 한 장에 한 판씩. 왼쪽으로 넘기면(또는 오른쪽 단추) 더 이전 업데이트.
@@ -282,6 +282,7 @@ document.addEventListener('click',e=>{
      if(c.note&&!S.noticed[c.note]) S.noticed[c.note]=Date.now();   // 선택으로 노트에 적기
      if(c.cross&&S.noticed[c.cross]){ if(!S.crossed) S.crossed={}; S.crossed[c.cross]=Date.now(); }   // 노트 줄 긋기
      if(c.go==='notes'){ ui.tab='notes'; }
+     else if(c.go==='letters'){ ui.tab='letters'; }
      else if(c.go==='library'){ ui.tab='settings'; ui.sub='reader'; ui.chap=c.chap||4; ui.fork=null; }
      else if(c.go==='restart'){ ui.confirmEnd=true; }
      else if(c.next){ S.scene=c.next; if(c.next==='send') S.endAt=LAST_CH; ui.keep='top'; }
